@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "318364884216",
+    "firebase_url": "https://posify-web-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "posify-web",
+    "storage_bucket": "posify-web.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318364884216:android:dfd72633ace389e1dbaf0d",
+        "android_client_info": {
+          "package_name": "com.cipher.posify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318364884216-j2lm00k6nl9emlgdock5r3vkklitljdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXBqzFeyBbH095PSWtAlKxc7ejFNoq7Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318364884216-j2lm00k6nl9emlgdock5r3vkklitljdb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
