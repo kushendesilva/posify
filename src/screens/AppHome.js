@@ -4,7 +4,7 @@ import {
   FlatList,
   StyleSheet,
   StatusBar,
-  TouchableNativeFeedback,
+  TouchableHighlight,
 } from "react-native";
 import {
   Button,
@@ -64,7 +64,7 @@ function AppHome(props) {
             <>
               {AppRenderIf(
                 null == item.shopName,
-                <TouchableNativeFeedback
+                <TouchableHighlight
                   onPress={(values) => {
                     props.navigation.navigate("AppDelInvoice", {
                       invoice: {
@@ -109,11 +109,11 @@ function AppHome(props) {
                       generating)
                     </Caption>
                   </View>
-                </TouchableNativeFeedback>
+                </TouchableHighlight>
               )}
               {AppRenderIf(
                 null != item.shopName,
-                <TouchableNativeFeedback
+                <TouchableHighlight
                   onLongPress={(values) => {
                     props.navigation.navigate("AppDelInvoice", {
                       invoice: {
@@ -165,7 +165,7 @@ function AppHome(props) {
                       </View>
                     </View>
                   </View>
-                </TouchableNativeFeedback>
+                </TouchableHighlight>
               )}
             </>
           )}
@@ -238,7 +238,9 @@ const styles = StyleSheet.create({
     width: "95%",
     alignSelf: "center",
     margin: "1%",
-    elevation: 10,
+    borderColor: AppColors.primary,
+    borderStyle: "solid",
+    borderWidth: 2,
   },
   fab: {
     position: "absolute",

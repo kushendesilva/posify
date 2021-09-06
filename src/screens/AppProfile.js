@@ -46,7 +46,7 @@ function AppProfile(props) {
             source={require("../assets/logo.png")}
             style={{ margin: "2%", backgroundColor: "white" }}
           />
-          <Title style={{ fontWeight: "bold", color: AppColors.black }}>
+          <Title style={{ fontWeight: "bold", color: AppColors.primary }}>
             Admin
           </Title>
           <View style={{ flexDirection: "row" }}>
@@ -107,7 +107,9 @@ const styles = StyleSheet.create({
     margin: "2%",
     padding: "2%",
     alignItems: "center",
-    elevation: 10,
+    borderColor: AppColors.primary,
+    borderStyle: "solid",
+    borderWidth: 2,
   },
   accountMiddle: {
     padding: 20,

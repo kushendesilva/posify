@@ -39,18 +39,16 @@ function AppDelInvoice({ route, navigation }) {
 
   return (
     <Provider>
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
+      <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
         <View
           style={{
             borderColor: AppColors.red,
             borderStyle: "solid",
             borderRadius: 10,
             borderWidth: 2,
-            padding: "20%",
+            padding: "5%",
             width: "90%",
             backgroundColor: AppColors.background,
-            elevation: 10,
-            marginVertical: "50%",
             alignItems: "stretch",
           }}
         >
@@ -73,6 +71,7 @@ function AppDelInvoice({ route, navigation }) {
             </Caption>
           </Caption>
           <Button
+            style={{ padding: "2%" }}
             mode="contained"
             color={AppColors.red}
             onPress={hideConfirmation}

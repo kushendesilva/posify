@@ -13,11 +13,23 @@ import {
   Paragraph,
   Dialog,
 } from "react-native-paper";
+import * as Print from "expo-print";
 import AppColors from "../configs/AppColors";
+import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 function AppInvoice({ route, navigation }) {
   const { invoice } = route.params;
+
+  const hideComponents = () => {
+    setShowComponents(false);
+  };
+  const printPDF = async () => {
+    await Print.printToFileAsync();
+    setShowComponents(true);
+  };
+
+  const [showComponents, setShowComponents] = React.useState(true);
 
   const [visible, setVisible] = React.useState(false);
 
@@ -95,11 +107,23 @@ function AppInvoice({ route, navigation }) {
   return (
     <Provider>
       <ScrollView>
-        <Appbar>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title="Invoice" subtitle={invoice.docID} />
-          <Appbar.Action icon="trash-can-outline" onPress={showConfirmation} />
-        </Appbar>
+        {AppRenderIf(
+          showComponents == true,
+          <Appbar>
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+            <Appbar.Content title="Invoice" subtitle={invoice.docID} />
+            <Appbar.Action
+              icon="trash-can-outline"
+              onPress={showConfirmation}
+            />
+            <Appbar.Action
+              icon="printer"
+              onPress={() => {
+                setShowComponents(false);
+              }}
+            />
+          </Appbar>
+        )}
         <View style={{ paddingBottom: "5%" }}>
           <View
             style={{
@@ -209,6 +233,20 @@ function AppInvoice({ route, navigation }) {
             Total After the Deduction of Returns: Rs.
             {invoice.total - invoice.returns}
           </Title>
+          {AppRenderIf(
+            showComponents == false,
+            <Button
+              icon="printer"
+              onPress={() => {
+                printPDF();
+              }}
+              onLongPress={() => {
+                setShowComponents(true);
+              }}
+            >
+              මුද්‍රණය කරන්න
+            </Button>
+          )}
         </View>
         <Portal>
           <Dialog visible={visible} onDismiss={hideConfirmation}>

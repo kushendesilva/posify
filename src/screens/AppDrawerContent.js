@@ -31,7 +31,12 @@ function AppDrawerContent(props) {
                   />
                   <View style={{ marginLeft: 15, flexDirection: "column" }}>
                     <Title
-                      style={{ fontSize: 16, marginTop: 3, fontWeight: "bold" }}
+                      style={{
+                        fontSize: 16,
+                        marginTop: 3,
+                        fontWeight: "bold",
+                        color: AppColors.primary,
+                      }}
                     >
                       Posify
                     </Title>
@@ -96,6 +101,7 @@ const styles = StyleSheet.create({
   caption: {
     fontSize: 14,
     lineHeight: 14,
+    color: AppColors.primaryVariant,
   },
   row: {
     marginTop: 20,

@@ -17,6 +17,7 @@ import AppStock from "./src/screens/AppStock";
 import AppEmployee from "./src/screens/AppEmployee";
 import AppProfile from "./src/screens/AppProfile";
 import AppReport from "./src/screens/AppReport";
+import AppReportExport from "./src/screens/AppReportExport";
 
 import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
@@ -140,10 +141,14 @@ const HomeScreens = (props) => (
     <HomeStack.Screen
       name="AppInvoice"
       component={AppInvoice}
-      options={{
-        title: "Invoice Details",
+      options={({ route }) => ({
+        title:
+          route.params.invoice.docID +
+          " (" +
+          route.params.invoice.shopName +
+          ") | Posify",
         headerShown: false,
-      }}
+      })}
     />
     <HomeStack.Screen
       name="AppDelInvoice"
@@ -308,6 +313,13 @@ const ReportScreens = (props) => (
             onPress={() => props.navigation.openDrawer()}
           />
         ),
+      }}
+    />
+    <ReportStack.Screen
+      name="ReportExport"
+      component={AppReportExport}
+      options={{
+        title: "Report",
       }}
     />
   </ReportStack.Navigator>

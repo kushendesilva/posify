@@ -1,24 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, TextInput, Button } from "react-native-paper";
-import AppColors from "../configs/AppColors";
-import { firebase } from "../configs/Database";
+import { Title } from "react-native-paper";
 
-function AppReport(props) {
+import { firebase } from "../configs/Database";
+import AppColors from "../configs/AppColors";
+
+function AppReportExport({ navigation, route }) {
+  const { selectedDate } = route.params;
   const [InvoiceItem, setInvoiceItems] = React.useState([]);
-  const [date, setDate] = React.useState("");
-  const [month, setMonth] = React.useState("");
-  const [year, setYear] = React.useState("");
+
+  const getDate = () => {
+    var date = selectedDate.date;
+    var month = selectedDate.month;
+    var year = selectedDate.year;
+    return date + "/" + month + "/" + year;
+  };
 
   let totalStock = 0;
   let totalPrice = 0;
-
-  const getCurrentDate = () => {
-    var date = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
-    return date + "/" + month + "/" + year;
-  };
 
   InvoiceItem.forEach((item) => {
     totalPrice += item.total;
@@ -28,9 +27,9 @@ function AppReport(props) {
   const invoiceItemRef = firebase
     .firestore()
     .collection("invoices")
-    .where("date", "==", getCurrentDate());
+    .where("date", "==", getDate());
 
-  useEffect(() => {
+  React.useEffect(() => {
     invoiceItemRef.onSnapshot(
       (querySnapshot) => {
         const newInvoiceItem = [];
@@ -46,7 +45,6 @@ function AppReport(props) {
       }
     );
   }, []);
-
   return (
     <View style={styles.screen}>
       <View
@@ -75,7 +73,7 @@ function AppReport(props) {
               fontSize: 16,
             }}
           >
-            {getCurrentDate()}
+            {getDate()}
           </Title>
         </Title>
         <View
@@ -141,59 +139,12 @@ function AppReport(props) {
           </Title>
         </View>
       </View>
-      <View style={{ marginHorizontal: "10%", marginTop: "5%" }}>
-        <TextInput
-          placeholder="Day"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setDate(text)}
-          value={date}
-          keyboardType="number-pad"
-        />
-        <TextInput
-          placeholder="Month"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setMonth(text)}
-          value={month}
-          keyboardType="number-pad"
-        />
-        <TextInput
-          placeholder="Year"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setYear(text)}
-          value={year}
-          keyboardType="number-pad"
-        />
-        <Button
-          style={{ padding: "5%", marginTop: "2%" }}
-          mode="contained"
-          icon="check-circle"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          onPress={(values) => {
-            props.navigation.navigate("ReportExport", {
-              selectedDate: {
-                date: date,
-                month: month,
-                year: year,
-              },
-            });
-          }}
-        >
-          Submit
-        </Button>
-      </View>
     </View>
   );
 }
 
-export default AppReport;
+export default AppReportExport;
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: { flex: 1, justifyContent: "center" },
 });

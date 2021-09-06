@@ -4,7 +4,7 @@ import {
   StatusBar,
   FlatList,
   StyleSheet,
-  TouchableNativeFeedback,
+  TouchableHighlight,
 } from "react-native";
 import {
   Avatar,
@@ -111,7 +111,7 @@ function AppStock(props) {
           data={filteredDataSource}
           keyExtractor={(stock) => stock.id.toString()}
           renderItem={({ item }) => (
-            <TouchableNativeFeedback
+            <TouchableHighlight
               onPress={(values) =>
                 props.navigation.navigate("EditStockScreen", {
                   stockItem: {
@@ -333,7 +333,7 @@ function AppStock(props) {
                   </View>
                 )}
               </View>
-            </TouchableNativeFeedback>
+            </TouchableHighlight>
           )}
         />
         <FAB

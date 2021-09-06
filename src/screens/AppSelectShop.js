@@ -6,7 +6,7 @@ import {
   Dimensions,
   StatusBar,
   FlatList,
-  TouchableNativeFeedback,
+  TouchableHighlight,
 } from "react-native";
 import {
   Title,
@@ -149,7 +149,7 @@ function AppSelectShop(props) {
               data={filteredDataSource}
               keyExtractor={(shop) => shop.id.toString()}
               renderItem={({ item }) => (
-                <TouchableNativeFeedback
+                <TouchableHighlight
                   onPress={(values) => {
                     createInvoice(),
                       props.navigation.navigate("AddInvoiceScreen", {
@@ -168,7 +168,7 @@ function AppSelectShop(props) {
                       Price category: {item.category}
                     </Caption>
                   </View>
-                </TouchableNativeFeedback>
+                </TouchableHighlight>
               )}
             />
           </View>
@@ -198,7 +198,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: "3%",
     paddingHorizontal: "5%",
-    elevation: 10,
+    borderColor: AppColors.primary,
+    borderStyle: "solid",
+    borderWidth: 2,
     backgroundColor: AppColors.background,
     margin: "1%",
     borderRadius: 10,

@@ -4,7 +4,7 @@ import {
   StatusBar,
   FlatList,
   StyleSheet,
-  TouchableNativeFeedback,
+  TouchableHighlight,
 } from "react-native";
 import { Avatar, Title, Caption, FAB, Provider } from "react-native-paper";
 import { firebase } from "../configs/Database";
@@ -44,7 +44,7 @@ function AppShop(props) {
           data={shops}
           keyExtractor={(shop) => shop.id}
           renderItem={({ item }) => (
-            <TouchableNativeFeedback
+            <TouchableHighlight
               onPress={(values) =>
                 props.navigation.navigate("EditShopScreen", {
                   shop: {
@@ -65,7 +65,7 @@ function AppShop(props) {
                   </Caption>
                 </Caption>
               </View>
-            </TouchableNativeFeedback>
+            </TouchableHighlight>
           )}
         />
         <FAB
@@ -86,7 +86,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: "3%",
     paddingHorizontal: "5%",
-    elevation: 10,
+    borderColor: AppColors.primary,
+    borderStyle: "solid",
+    borderWidth: 2,
     backgroundColor: AppColors.background,
     margin: "1%",
     borderRadius: 10,
