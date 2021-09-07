@@ -32,7 +32,7 @@ function AppLogin(props) {
               return;
             }
             const user = firestoreDocument.data();
-            props.navigation.navigate("DrawerNav");
+            props.navigation.navigate("AppHome");
           })
           .catch((error) => {
             alert(error);

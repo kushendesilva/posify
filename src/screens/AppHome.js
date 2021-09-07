@@ -1,254 +1,58 @@
 import React from "react";
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-  TouchableHighlight,
-} from "react-native";
-import {
-  Button,
-  Avatar,
-  Title,
-  Caption,
-  Dialog,
-  Portal,
-  Paragraph,
-  FAB,
-  Provider,
-} from "react-native-paper";
-
-import AppColors from "../configs/AppColors";
+import ExtendedButton from "../components/ExtendedButton";
+import Screen from "../components/Screen";
+import { TabBar, Tab, Icon, Text } from "@ui-kitten/components";
 import AppRenderIf from "../configs/AppRenderIf";
-import { firebase } from "../configs/Database";
 
-function AppHome(props) {
-  const [visible, setVisible] = React.useState(false);
-
-  const showDialog = () => setVisible(true);
-
-  const hideDialog = () => setVisible(false);
-
-  const [Invoices, setInvoices] = React.useState([]);
-
-  const invoiceRef = firebase.firestore().collection("invoices");
-
-  React.useEffect(() => {
-    invoiceRef.onSnapshot(
-      (querySnapshot) => {
-        const newInvoice = [];
-        querySnapshot.forEach((doc) => {
-          const invoice = doc.data();
-          invoice.id = doc.id;
-          newInvoice.push(invoice);
-        });
-        setInvoices(newInvoice);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }, []);
+function AppHome({ navigation, route }) {
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
+  const NewIcon = (props) => <Icon {...props} name="trending-up-outline" />;
+  const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
 
   return (
-    <Provider>
-      <View style={styles.screen}>
-        <StatusBar
-          backgroundColor={AppColors.primary}
-          barStyle="light-content"
-        />
-        <FlatList
-          data={Invoices}
-          keyExtractor={(invoice) => invoice.id}
-          renderItem={({ item }) => (
-            <>
-              {AppRenderIf(
-                null == item.shopName,
-                <TouchableHighlight
-                  onPress={(values) => {
-                    props.navigation.navigate("AppDelInvoice", {
-                      invoice: {
-                        docID: item.invoiceID,
-                      },
-                    });
-                  }}
-                >
-                  <View style={styles.invoiceInfoSection}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                      }}
-                    >
-                      <View
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Avatar.Icon size={40} icon="file-document" />
-                        <Title style={{ fontSize: 12 }}>{item.invoiceID}</Title>
-                      </View>
-                    </View>
-                    <Caption
-                      style={{
-                        textAlign: "center",
-                      }}
-                    >
-                      No Data Found. Please Remove This Record
-                    </Caption>
-                    <Caption
-                      style={{
-                        fontSize: 10,
-                        color: AppColors.red,
-                        textAlign: "center",
-                      }}
-                    >
-                      (Confirm Whether this is an Invoice in the process of
-                      generating)
-                    </Caption>
-                  </View>
-                </TouchableHighlight>
-              )}
-              {AppRenderIf(
-                null != item.shopName,
-                <TouchableHighlight
-                  onLongPress={(values) => {
-                    props.navigation.navigate("AppDelInvoice", {
-                      invoice: {
-                        docID: item.invoiceID,
-                      },
-                    });
-                  }}
-                  onPress={(values) => {
-                    props.navigation.navigate("AppInvoice", {
-                      invoice: {
-                        docID: item.invoiceID,
-                        payMethod: item.payMethod,
-                        returns: item.returns,
-                        shopName: item.shopName,
-                        date: item.date,
-                        total: item.total,
-                      },
-                    });
-                  }}
-                >
-                  <View style={styles.invoiceInfoSection}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                      }}
-                    >
-                      <View
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Avatar.Icon size={40} icon="file-document" />
-                        <Title style={{ fontSize: 12 }}>{item.invoiceID}</Title>
-                      </View>
+    <Screen>
+      <TabBar
+        style={{ marginVertical: "3%" }}
+        selectedIndex={selectedIndex}
+        onSelect={(index) => setSelectedIndex(index)}
+      >
+        <Tab icon={NewIcon} />
+        <Tab icon={AccountIcon} />
+        <Tab icon={HomeIcon} />
+      </TabBar>
+      {AppRenderIf(
+        selectedIndex == 0,
+        <>
+          <ExtendedButton
+            title="Invoices"
+            tabIcon={HomeIcon}
+            onPress={() => navigation.navigate("AppInvoices")}
+          />
+          <ExtendedButton title="Requests" tabIcon={HomeIcon} />
+          <ExtendedButton title="New Invoices" tabIcon={HomeIcon} />
+        </>
+      )}
 
-                      <View style={{ flexDirection: "column" }}>
-                        <Title style={styles.title}>{item.shopName}</Title>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Caption style={styles.caption}>{item.date}</Caption>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                </TouchableHighlight>
-              )}
-            </>
-          )}
-        />
-        <Portal>
-          <Dialog visible={visible} onDismiss={hideDialog}>
-            <Dialog.Title>Notice</Dialog.Title>
-            <Dialog.Content>
-              <Paragraph>Confirmation</Paragraph>
-            </Dialog.Content>
-            <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                mode="contained"
-                color={AppColors.red}
-                onPress={hideDialog}
-              >
-                Cancel
-              </Button>
-              <Button
-                mode="contained"
-                color={AppColors.secondaryVariant}
-                onPress={() => {
-                  hideDialog(), props.navigation.navigate("AddInvoiceScreens");
-                }}
-              >
-                Confirm
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-        <FAB style={styles.fab} icon="plus" onPress={showDialog} />
-      </View>
-    </Provider>
+      {AppRenderIf(
+        selectedIndex == 1,
+        <>
+          <ExtendedButton title="Stock" tabIcon={HomeIcon} />
+          <ExtendedButton title="Suppliers" tabIcon={HomeIcon} />
+          <ExtendedButton title="Stores" tabIcon={HomeIcon} />
+          <ExtendedButton title="Employees" tabIcon={HomeIcon} />
+        </>
+      )}
+      {AppRenderIf(
+        selectedIndex == 2,
+        <>
+          <ExtendedButton title="Account Information" tabIcon={HomeIcon} />
+          <ExtendedButton title="Reports" tabIcon={HomeIcon} />
+          <ExtendedButton title="Log Out" tabIcon={HomeIcon} />
+        </>
+      )}
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  drawerContent: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    marginTop: 3,
-    fontWeight: "bold",
-  },
-  screen: { flex: 1 },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-  },
-  row: {
-    marginTop: 20,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  section: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 15,
-  },
-  paragraph: {
-    fontWeight: "bold",
-    marginRight: 3,
-  },
-  invoiceInfoSection: {
-    backgroundColor: AppColors.background,
-    paddingVertical: "3%",
-    paddingHorizontal: "5%",
-    borderRadius: 10,
-    width: "95%",
-    alignSelf: "center",
-    margin: "1%",
-    borderColor: AppColors.primary,
-    borderStyle: "solid",
-    borderWidth: 2,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: AppColors.secondary,
-  },
-});
 
 export default AppHome;

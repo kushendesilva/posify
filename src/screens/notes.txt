@@ -1,0 +1,3 @@
+stock, suppliers, shops, employees
+reports, profile, logout
+requests, new, invoices --> flatlist with new button at top and requests button at bottom

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider, IconRegistry, Icon } from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import { ThemeContext } from "./src/configs/theme";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { Button } from "react-native-paper";
 
 import { firebase } from "./src/configs/Database";
 import AppColors from "./src/configs/AppColors";
-
-import AppDrawerContent from "./src/screens/AppDrawerContent";
 
 import AppLogin from "./src/screens/AppLogin";
 import AppHome from "./src/screens/AppHome";
@@ -29,19 +30,24 @@ import AppAddStock from "./src/screens/AppAddStock";
 import AppEditShop from "./src/screens/AppEditShop";
 import AppEditStock from "./src/screens/AppEditStock";
 import AppInvoice from "./src/screens/AppInvoice";
+import AppInvoices from "./src/screens/AppInvoices";
 import AppDelInvoice from "./src/screens/AppDelInvoice";
 
 const MainStack = createStackNavigator();
-const Drawer = createDrawerNavigator();
-const HomeStack = createStackNavigator();
 const InvoiceStack = createStackNavigator();
 const ShopStack = createStackNavigator();
 const StockStack = createStackNavigator();
 const ReportStack = createStackNavigator();
 const EmployeeStack = createStackNavigator();
-const ProfileStack = createStackNavigator();
 
-export default function App() {
+export default () => {
+  const [theme, setTheme] = React.useState("light");
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+  };
+
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -70,103 +76,150 @@ export default function App() {
     return <></>;
   }
   return (
-    <NavigationContainer>
-      <MainStack.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: AppColors.primary },
-          headerTintColor: AppColors.background,
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      >
-        {user ? (
-          <MainStack.Screen name="DrawerNav" options={{ headerShown: false }}>
-            {(props) => <DrawerNav {...props} extraData={user} />}
-          </MainStack.Screen>
-        ) : (
-          <MainStack.Screen
-            name="LoginScreen"
-            component={AppLogin}
-            options={{
-              title: "Login",
-              headerShown: false,
-            }}
-          />
-        )}
-      </MainStack.Navigator>
-    </NavigationContainer>
+    <>
+      <IconRegistry icons={EvaIconsPack} />
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ApplicationProvider {...eva} theme={eva[theme]}>
+          <NavigationContainer>
+            <MainStack.Navigator
+              screenOptions={{
+                headerStyle: { backgroundColor: AppColors.primary },
+                headerTintColor: AppColors.background,
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              }}
+            >
+              {user ? (
+                <>
+                  <MainStack.Screen
+                    name="AppHome"
+                    component={AppHome}
+                    options={{
+                      title: "Home",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppInvoices"
+                    component={AppInvoices}
+                    options={{
+                      title: "Invoices",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppInvoice"
+                    component={AppInvoice}
+                    options={({ route }) => ({
+                      title:
+                        route.params.invoice.docID +
+                        " (" +
+                        route.params.invoice.shopName +
+                        ") | Posify",
+                      headerShown: false,
+                    })}
+                  />
+                  <MainStack.Screen
+                    name="AppDelInvoice"
+                    component={AppDelInvoice}
+                    options={{
+                      title: "Remove Invoices",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddInvoiceScreens"
+                    component={AddInvoiceScreens}
+                    options={{
+                      title: "Add Invoice",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="ProfileScreen"
+                    component={AppProfile}
+                    options={{
+                      title: "Profile",
+                    }}
+                  />
+                </>
+              ) : (
+                <MainStack.Screen
+                  name="LoginScreen"
+                  component={AppLogin}
+                  options={{
+                    title: "Login",
+                    headerShown: false,
+                  }}
+                />
+              )}
+            </MainStack.Navigator>
+          </NavigationContainer>
+        </ApplicationProvider>
+      </ThemeContext.Provider>
+    </>
   );
-}
+};
 
-const DrawerNav = () => (
-  <Drawer.Navigator
-    initialRouteName="HomeScreens"
-    drawerContent={(props) => <AppDrawerContent {...props} />}
-  >
-    <Drawer.Screen name="HomeScreens" component={HomeScreens} />
-    <Drawer.Screen name="StockScreens" component={StockScreens} />
-    <Drawer.Screen name="ShopScreens" component={ShopScreens} />
-    <Drawer.Screen name="ReportScreens" component={ReportScreens} />
-    <Drawer.Screen name="EmployeeScreens" component={EmployeeScreens} />
-    <Drawer.Screen name="ProfileScreens" component={ProfileScreens} />
-  </Drawer.Navigator>
-);
+// const DrawerNav = () => (
+//   <Drawer.Navigator
+//     initialRouteName="HomeScreens"
+//     drawerContent={(props) => <AppDrawerContent {...props} />}
+//   >
+//     <Drawer.Screen name="HomeScreens" component={HomeScreens} />
+//     <Drawer.Screen name="StockScreens" component={StockScreens} />
+//     <Drawer.Screen name="ShopScreens" component={ShopScreens} />
+//     <Drawer.Screen name="ReportScreens" component={ReportScreens} />
+//     <Drawer.Screen name="EmployeeScreens" component={EmployeeScreens} />
+//     <Drawer.Screen name="ProfileScreens" component={ProfileScreens} />
+//   </Drawer.Navigator>
+// );
 
-const HomeScreens = (props) => (
-  <HomeStack.Navigator
-    screenOptions={{
-      headerStyle: { backgroundColor: AppColors.primary },
-      headerTintColor: AppColors.background,
-      headerTitleStyle: {
-        fontWeight: "bold",
-      },
-    }}
-  >
-    <HomeStack.Screen
-      name="HomeScreen"
-      component={AppHome}
-      options={{
-        title: "Invoices",
-        headerLeft: () => (
-          <Button
-            labelStyle={{ fontSize: 24 }}
-            icon="menu"
-            color={AppColors.background}
-            onPress={() => props.navigation.openDrawer()}
-          />
-        ),
-      }}
-    />
-    <HomeStack.Screen
-      name="AppInvoice"
-      component={AppInvoice}
-      options={({ route }) => ({
-        title:
-          route.params.invoice.docID +
-          " (" +
-          route.params.invoice.shopName +
-          ") | Posify",
-        headerShown: false,
-      })}
-    />
-    <HomeStack.Screen
-      name="AppDelInvoice"
-      component={AppDelInvoice}
-      options={{
-        title: "Remove Invoices",
-      }}
-    />
-    <HomeStack.Screen
-      name="AddInvoiceScreens"
-      component={AddInvoiceScreens}
-      options={{
-        title: "Add Invoice",
-        headerShown: false,
-      }}
-    />
-  </HomeStack.Navigator>
-);
+// const HomeScreens = (props) => (
+//   <HomeStack.Navigator
+//     screenOptions={{
+//       headerStyle: { backgroundColor: AppColors.primary },
+//       headerTintColor: AppColors.background,
+//       headerTitleStyle: {
+//         fontWeight: "bold",
+//       },
+//     }}
+//   >
+//     <HomeStack.Screen
+//       name="AppInvoices"
+//       component={AppInvoices}
+//       options={{
+//         title: "Invoices",
+//       }}
+//     />
+//     <HomeStack.Screen
+//       name="AppInvoice"
+//       component={AppInvoice}
+//       options={({ route }) => ({
+//         title:
+//           route.params.invoice.docID +
+//           " (" +
+//           route.params.invoice.shopName +
+//           ") | Posify",
+//         headerShown: false,
+//       })}
+//     />
+//     <HomeStack.Screen
+//       name="AppDelInvoice"
+//       component={AppDelInvoice}
+//       options={{
+//         title: "Remove Invoices",
+//       }}
+//     />
+//     <HomeStack.Screen
+//       name="AddInvoiceScreens"
+//       component={AddInvoiceScreens}
+//       options={{
+//         title: "Add Invoice",
+//         headerShown: false,
+//       }}
+//     />
+//   </HomeStack.Navigator>
+// );
 
 const AddInvoiceScreens = (props) => (
   <InvoiceStack.Navigator
@@ -360,30 +413,30 @@ const EmployeeScreens = (props) => (
   </EmployeeStack.Navigator>
 );
 
-const ProfileScreens = (props) => (
-  <ProfileStack.Navigator
-    screenOptions={{
-      headerStyle: { backgroundColor: AppColors.primary },
-      headerTintColor: AppColors.background,
-      headerTitleStyle: {
-        fontWeight: "bold",
-      },
-    }}
-  >
-    <ProfileStack.Screen
-      name="ProfileScreen"
-      component={AppProfile}
-      options={{
-        title: "Settings",
-        headerLeft: () => (
-          <Button
-            labelStyle={{ fontSize: 24 }}
-            icon="menu"
-            color={AppColors.background}
-            onPress={() => props.navigation.openDrawer()}
-          />
-        ),
-      }}
-    />
-  </ProfileStack.Navigator>
-);
+// const ProfileScreens = (props) => (
+//   <ProfileStack.Navigator
+//     screenOptions={{
+//       headerStyle: { backgroundColor: AppColors.primary },
+//       headerTintColor: AppColors.background,
+//       headerTitleStyle: {
+//         fontWeight: "bold",
+//       },
+//     }}
+//   >
+//     <ProfileStack.Screen
+//       name="ProfileScreen"
+//       component={AppProfile}
+//       options={{
+//         title: "Settings",
+//         headerLeft: () => (
+//           <Button
+//             labelStyle={{ fontSize: 24 }}
+//             icon="menu"
+//             color={AppColors.background}
+//             onPress={() => props.navigation.openDrawer()}
+//           />
+//         ),
+//       }}
+//     />
+//   </ProfileStack.Navigator>
+// );
