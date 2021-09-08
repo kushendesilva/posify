@@ -30,7 +30,6 @@ import AppAddStock from "./src/screens/AppAddStock";
 import AppEditShop from "./src/screens/AppEditShop";
 import AppEditStock from "./src/screens/AppEditStock";
 import AppInvoice from "./src/screens/AppInvoice";
-import AppInvoices from "./src/screens/AppInvoices";
 import AppDelInvoice from "./src/screens/AppDelInvoice";
 
 const MainStack = createStackNavigator();
@@ -98,13 +97,6 @@ export default () => {
                     options={{
                       title: "Home",
                       headerShown: false,
-                    }}
-                  />
-                  <MainStack.Screen
-                    name="AppInvoices"
-                    component={AppInvoices}
-                    options={{
-                      title: "Invoices",
                     }}
                   />
                   <MainStack.Screen

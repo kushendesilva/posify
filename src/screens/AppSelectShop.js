@@ -19,6 +19,7 @@ import {
   Paragraph,
   Button,
 } from "react-native-paper";
+import { Icon } from "@ui-kitten/components";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
@@ -162,7 +163,11 @@ function AppSelectShop(props) {
                   }}
                 >
                   <View style={styles.card}>
-                    <Avatar.Icon size={40} icon="store" />
+                    <Icon
+                      style={{ width: 32, height: 32 }}
+                      fill={AppColors.primary}
+                      name="home-outline"
+                    />
                     <Title style={styles.title}>{item.name}</Title>
                     <Caption style={{ textTransform: "uppercase" }}>
                       Price category: {item.category}
