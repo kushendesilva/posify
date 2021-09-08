@@ -7,14 +7,27 @@ import {
   Dimensions,
   StatusBar,
   Image,
+  TouchableWithoutFeedback,
 } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { Icon, Button, Input } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 
 function AppLogin(props) {
+  const LoginIcon = (props) => <Icon {...props} name="log-in-outline" />;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
+    </TouchableWithoutFeedback>
+  );
 
   const onLoginPress = () => {
     firebase
@@ -32,7 +45,7 @@ function AppLogin(props) {
               return;
             }
             const user = firestoreDocument.data();
-            props.navigation.navigate("AppHome");
+            props.navigation.navigate("AppHome", { user: user });
           })
           .catch((error) => {
             alert(error);
@@ -64,38 +77,37 @@ function AppLogin(props) {
 
         <View style={styles.innerFooter}>
           <ScrollView>
-            <TextInput
-              mode="outlined"
-              onChangeText={(text) => setEmail(text)}
+            <Input
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
               value={email}
-              placeholder="Email"
-            ></TextInput>
-            <TextInput
-              mode="outlined"
-              secureTextEntry
-              placeholder="Password"
-              onChangeText={(text) => setPassword(text)}
+              label="Email"
+              placeholder="Your Email"
+              onChangeText={(nextValue) => setEmail(nextValue)}
+            />
+            <Input
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
               value={password}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            ></TextInput>
+              label="Password"
+              placeholder="Your Password"
+              accessoryRight={renderIcon}
+              secureTextEntry={secureTextEntry}
+              onChangeText={(nextValue) => setPassword(nextValue)}
+            />
+
             <Button
-              mode="contained"
-              icon="check-circle"
+              status="primary"
+              accessoryRight={LoginIcon}
               style={styles.button}
               onPress={() => onLoginPress()}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
+              size="large"
             >
               Login
             </Button>
-            <Button
-              mode="text"
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            >
-              Forgot Password?
-            </Button>
+            <Button appearance="ghost">Forgot Password?</Button>
           </ScrollView>
         </View>
       </View>

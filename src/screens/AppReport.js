@@ -1,10 +1,16 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, TextInput, Button } from "react-native-paper";
+import { Title, TextInput } from "react-native-paper";
+import { Input, Button, Icon } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 
 function AppReport(props) {
+  const SaveIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-outline" />
+  );
+  const CalIcon = (props) => <Icon {...props} name="calendar-outline" />;
+
   const [InvoiceItem, setInvoiceItems] = React.useState([]);
   const [date, setDate] = React.useState("");
   const [month, setMonth] = React.useState("");
@@ -142,39 +148,43 @@ function AppReport(props) {
         </View>
       </View>
       <View style={{ marginHorizontal: "10%", marginTop: "5%" }}>
-        <TextInput
-          placeholder="Day"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setDate(text)}
+        <Input
+          style={{ marginHorizontal: "2%", marginBottom: "1%" }}
+          size="large"
+          status="primary"
           value={date}
+          label="Day"
+          placeholder="Type the Day"
+          accessoryLeft={CalIcon}
+          onChangeText={(text) => setDate(text)}
           keyboardType="number-pad"
         />
-        <TextInput
-          placeholder="Month"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setMonth(text)}
+        <Input
+          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+          size="large"
+          status="primary"
           value={month}
+          label="Month"
+          placeholder="Type the Month"
+          accessoryLeft={CalIcon}
+          onChangeText={(text) => setMonth(text)}
           keyboardType="number-pad"
         />
-        <TextInput
-          placeholder="Year"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          mode="outlined"
-          onChangeText={(text) => setYear(text)}
+        <Input
+          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+          size="large"
+          status="primary"
           value={year}
+          label="Year"
+          placeholder="Type the Year"
+          accessoryLeft={CalIcon}
+          onChangeText={(text) => setYear(text)}
           keyboardType="number-pad"
         />
         <Button
-          style={{ padding: "5%", marginTop: "2%" }}
-          mode="contained"
-          icon="check-circle"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
+          style={{ padding: "5%", marginTop: "5%" }}
+          accessoryRight={SaveIcon}
+          size="giant"
           onPress={(values) => {
             props.navigation.navigate("ReportExport", {
               selectedDate: {

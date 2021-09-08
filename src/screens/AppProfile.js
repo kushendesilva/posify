@@ -1,140 +1,166 @@
-import React, { useCallback } from "react";
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  Linking,
-  BackHandler,
-} from "react-native";
-import {
-  Avatar,
-  Title,
-  Dialog,
-  Portal,
-  Paragraph,
-  Provider,
-  Button,
-  Chip,
-} from "react-native-paper";
+import React, { useState } from "react";
+import { View, TouchableNativeFeedback, FlatList } from "react-native";
+import { Input, Button, Icon } from "@ui-kitten/components";
+import AppRenderIf from "../configs/AppRenderIf";
+import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
-import AppColors from "../configs/AppColors";
 
 function AppProfile(props) {
-  const closeApp = () => BackHandler.exitApp();
+  const { user } = props.route.params;
 
-  const [visible, setVisible] = React.useState(false);
+  // const [profile, setProfile] = React.useState([]);
 
-  const showDialog = () => setVisible(true);
+  // const profileRef = firebase
+  //   .firestore()
+  //   .collection("users")
+  //   .where("email", "==", user.email);
 
-  const hideDialog = () => setVisible(false);
-  const handlePress = useCallback(async () => {
-    await Linking.openURL("tel:+94717827878");
-  }, []);
-  const handleEmailPress = useCallback(async () => {
-    await Linking.openURL("mailto: support@expo.io");
-  }, []);
+  // React.useEffect(() => {
+  //   profileRef.onSnapshot(
+  //     (querySnapshot) => {
+  //       const newProfile = [];
+  //       querySnapshot.forEach((doc) => {
+  //         const profile = doc.data();
+  //         profile.id = doc.id;
+  //         newProfile.push(profile);
+  //       });
+  //       setProfile(newProfile);
+  //     },
+  //     (error) => {
+  //       console.log(error);
+  //     }
+  //   );
+  // }, []);
+
+  const userRef = firebase.firestore().collection("users").doc(user.id);
+
+  const onEditButtonPress = () => {
+    if (
+      (name && name.length > 0 && email && email.length > 0) ||
+      (password && password.length > 0)
+    ) {
+      const data = {
+        fullName: name,
+        email: email,
+        id: user.id,
+      };
+      userRef
+        .set(data)
+        .then((_doc) => {
+          setPassword("");
+          setVisibility(!visibility);
+          props.navigation.goBack();
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
+
+  const [name, setName] = useState(user.fullName);
+  const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState("");
+  const [visibility, setVisibility] = useState(true);
+
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableNativeFeedback onPress={toggleSecureEntry}>
+      <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
+    </TouchableNativeFeedback>
+  );
+  const EditIcon = (props) => <Icon {...props} name="edit-2-outline" />;
+  const CancelIcon = (props) => <Icon {...props} name="slash-outline" />;
+  const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+
   return (
-    <Provider>
-      <View>
-        <StatusBar
-          backgroundColor={AppColors.primary}
-          barStyle="light-content"
+    <Screen>
+      <View style={{ padding: 10 }}>
+        <Input
+          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+          size="large"
+          status="primary"
+          value={name}
+          label="Name"
+          placeholder="Change Your Name"
+          onChangeText={(nextValue) => setName(nextValue)}
+          disabled={visibility}
         />
-        <View style={styles.accountTop}>
-          <Avatar.Image
-            size={80}
-            source={require("../assets/logo.png")}
-            style={{ margin: "2%", backgroundColor: "white" }}
-          />
-          <Title style={{ fontWeight: "bold", color: AppColors.primary }}>
-            Admin
-          </Title>
-          <View style={{ flexDirection: "row" }}>
-            <Chip style={{ margin: "3%" }} icon="phone" onPress={handlePress}>
-              Telephone
-            </Chip>
-            <Chip
-              style={{ margin: "3%" }}
-              icon="email"
-              onPress={handleEmailPress}
-            >
-              Email
-            </Chip>
-          </View>
+        <Input
+          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+          size="large"
+          status="primary"
+          value={email}
+          label="Email"
+          placeholder="Change Your Email"
+          onChangeText={(nextValue) => setEmail(nextValue)}
+          disabled={true}
+        />
+        <Input
+          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+          size="large"
+          status="primary"
+          value={password}
+          label="Password"
+          accessoryRight={renderIcon}
+          secureTextEntry={secureTextEntry}
+          placeholder="Enter Your New Password"
+          onChangeText={(nextValue) => setPassword(nextValue)}
+          disabled={true}
+        />
 
+        {AppRenderIf(
+          visibility,
           <Button
-            style={{ marginVertical: "5%" }}
-            mode="contained"
-            icon="logout"
-            color={AppColors.primary}
+            accessoryRight={EditIcon}
+            style={{ alignSelf: "center", marginTop: "2%" }}
+            status="warning"
+            size="giant"
             onPress={() => {
-              firebase
-                .auth()
-                .signOut()
-                .then(
-                  () => {
-                    showDialog();
-                  },
-                  function (error) {
-                    // An error happened.
-                  }
-                );
+              setVisibility(!visibility);
             }}
           >
-            Log Out
+            Change
           </Button>
-          <Portal>
-            <Dialog visible={visible} onDismiss={closeApp}>
-              <Dialog.Title>Notice</Dialog.Title>
-              <Dialog.Content>
-                <Paragraph>Logging Out Successful!</Paragraph>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={(hideDialog, closeApp)}>Okay</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-        </View>
+        )}
+        {AppRenderIf(
+          !visibility,
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              marginTop: "2%",
+            }}
+          >
+            <Button
+              accessoryRight={CancelIcon}
+              status="danger"
+              size="giant"
+              onPress={() => {
+                setVisibility(!visibility);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              accessoryRight={SaveIcon}
+              status="success"
+              size="giant"
+              onPress={() => {
+                onEditButtonPress();
+              }}
+            >
+              Update
+            </Button>
+          </View>
+        )}
       </View>
-    </Provider>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  accountTop: {
-    backgroundColor: AppColors.background,
-    borderRadius: 20,
-    margin: "2%",
-    padding: "2%",
-    alignItems: "center",
-    borderColor: AppColors.primary,
-    borderStyle: "solid",
-    borderWidth: 2,
-  },
-  accountMiddle: {
-    padding: 20,
-  },
-  accountMiddleDetail: {
-    marginTop: 20,
-    marginLeft: 50,
-    marginRight: 50,
-    borderBottomWidth: 1,
-    fontWeight: "bold",
-  },
-  accountBottom: {
-    marginTop: 30,
-    marginLeft: 20,
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    width: "18%",
-    height: 30,
-    marginLeft: "40%",
-  },
-  title: {
-    marginTop: 20,
-    marginLeft: 10,
-  },
-});
 
 export default AppProfile;

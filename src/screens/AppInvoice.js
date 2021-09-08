@@ -109,7 +109,7 @@ function AppInvoice({ route, navigation }) {
       <ScrollView>
         {AppRenderIf(
           showComponents == true,
-          <Appbar>
+          <Appbar style={{ backgroundColor: AppColors.primary }}>
             <Appbar.BackAction onPress={() => navigation.goBack()} />
             <Appbar.Content title="Invoice" subtitle={invoice.docID} />
             <Appbar.Action

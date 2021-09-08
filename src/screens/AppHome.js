@@ -1,5 +1,11 @@
 import React from "react";
-import { View, FlatList, TouchableHighlight, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  TouchableHighlight,
+  StyleSheet,
+  BackHandler,
+} from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
 import { TabBar, Tab, Icon, Card, Button } from "@ui-kitten/components";
@@ -17,6 +23,8 @@ import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 
 function AppHome({ navigation, route }) {
+  const { user } = route.params;
+  const closeApp = () => BackHandler.exitApp();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
   const NewIcon = (props) => <Icon {...props} name="trending-up-outline" />;
@@ -225,18 +233,72 @@ function AppHome({ navigation, route }) {
       {AppRenderIf(
         selectedIndex == 1,
         <>
-          <ExtendedButton title="Stock" tabIcon={HomeIcon} />
+          <ExtendedButton
+            title="Stock"
+            tabIcon={HomeIcon}
+            onPress={() => navigation.navigate("StockScreen")}
+          />
           <ExtendedButton title="Suppliers" tabIcon={HomeIcon} />
-          <ExtendedButton title="Stores" tabIcon={HomeIcon} />
-          <ExtendedButton title="Employees" tabIcon={HomeIcon} />
+          <ExtendedButton
+            title="Stores"
+            tabIcon={HomeIcon}
+            onPress={() => navigation.navigate("ShopScreen")}
+          />
+          <ExtendedButton
+            title="Employees"
+            tabIcon={HomeIcon}
+            onPress={() => navigation.navigate("EmployeeScreen")}
+          />
         </>
       )}
       {AppRenderIf(
         selectedIndex == 2,
         <>
-          <ExtendedButton title="Account Information" tabIcon={HomeIcon} />
-          <ExtendedButton title="Reports" tabIcon={HomeIcon} />
-          <ExtendedButton title="Log Out" tabIcon={HomeIcon} />
+          <Provider>
+            <ExtendedButton
+              title="Account Information"
+              tabIcon={HomeIcon}
+              onPress={() =>
+                navigation.navigate("ProfileScreen", {
+                  user: user,
+                })
+              }
+            />
+            <ExtendedButton
+              title="Reports"
+              tabIcon={HomeIcon}
+              onPress={() => navigation.navigate("ReportScreen")}
+            />
+            <ExtendedButton
+              title="Log Out"
+              tabIcon={HomeIcon}
+              onPress={() => {
+                firebase
+                  .auth()
+                  .signOut()
+                  .then(
+                    () => {
+                      showDialog();
+                    },
+                    function (error) {
+                      // An error happened.
+                    }
+                  );
+              }}
+            />
+
+            <Portal>
+              <Dialog visible={visible} onDismiss={closeApp}>
+                <Dialog.Title>Notice</Dialog.Title>
+                <Dialog.Content>
+                  <Paragraph>Logging Out Successful!</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>
+                  <Button onPress={(hideDialog, closeApp)}>Okay</Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+          </Provider>
         </>
       )}
     </Screen>
