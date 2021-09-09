@@ -22,8 +22,31 @@ import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 
-function AppHome({ navigation, route }) {
-  const { user } = route.params;
+function AppHome({ navigation }) {
+  const [loading, setLoading] = React.useState(true);
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const usersRef = firebase.firestore().collection("users");
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        usersRef
+          .doc(user.uid)
+          .get()
+          .then((document) => {
+            const userData = document.data();
+            setLoading(false);
+            setUser(userData);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+      } else {
+        setLoading(false);
+      }
+    });
+  }, []);
+
   const closeApp = () => BackHandler.exitApp();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const HomeIcon = (props) => <Icon {...props} name="home-outline" />;

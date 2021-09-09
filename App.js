@@ -29,6 +29,8 @@ import AppEditStock from "./src/screens/AppEditStock";
 import AppInvoice from "./src/screens/AppInvoice";
 import AppDelInvoice from "./src/screens/AppDelInvoice";
 
+import { firebase } from "./src/configs/Database";
+
 const MainStack = createStackNavigator();
 
 export default () => {
@@ -38,6 +40,34 @@ export default () => {
     const nextTheme = theme === "light" ? "dark" : "light";
     setTheme(nextTheme);
   };
+
+  const [loading, setLoading] = React.useState(true);
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const usersRef = firebase.firestore().collection("users");
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        usersRef
+          .doc(user.uid)
+          .get()
+          .then((document) => {
+            const userData = document.data();
+            setLoading(false);
+            setUser(userData);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+      } else {
+        setLoading(false);
+      }
+    });
+  }, []);
+
+  if (loading) {
+    return <></>;
+  }
 
   return (
     <>
@@ -54,143 +84,148 @@ export default () => {
                 },
               }}
             >
-              <MainStack.Screen
-                name="LoginScreen"
-                component={AppLogin}
-                options={{
-                  title: "Login",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="AppHome"
-                component={AppHome}
-                options={{
-                  title: "Home",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="AppInvoice"
-                component={AppInvoice}
-                options={({ route }) => ({
-                  title:
-                    route.params.invoice.docID +
-                    " (" +
-                    route.params.invoice.shopName +
-                    ") | Posify",
-                  headerShown: false,
-                })}
-              />
-              <MainStack.Screen
-                name="AppDelInvoice"
-                component={AppDelInvoice}
-                options={{
-                  title: "Remove Invoices",
-                }}
-              />
-              <MainStack.Screen
-                name="ProfileScreen"
-                component={AppProfile}
-                options={{
-                  title: "Profile",
-                }}
-              />
-              <MainStack.Screen
-                name="SelectShopScreen"
-                component={AppSelectShop}
-                options={{
-                  title: "Select Shop",
-                }}
-              />
-              <MainStack.Screen
-                name="AddInvoiceScreen"
-                component={AppAddInvoice}
-                options={{
-                  title: "New Invoice",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="AddReturnScreen"
-                component={AppAddReturn}
-                options={{
-                  title: "Deduct Returns",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="StockScreen"
-                component={AppStock}
-                options={{
-                  title: "Stock",
-                }}
-              />
-              <MainStack.Screen
-                name="AddStockScreen"
-                component={AppAddStock}
-                options={{
-                  title: "New Items",
-                }}
-              />
-              <MainStack.Screen
-                name="EditStockScreen"
-                component={AppEditStock}
-                options={{
-                  title: "Edit Items",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="ShopScreen"
-                component={AppShop}
-                options={{
-                  title: "Shops",
-                }}
-              />
-              <MainStack.Screen
-                name="AddShopScreen"
-                component={AppAddShop}
-                options={{
-                  title: "New Shop",
-                }}
-              />
-              <MainStack.Screen
-                name="EditShopScreen"
-                component={AppEditShop}
-                options={{
-                  title: "Edit Shop Details",
-                  headerShown: false,
-                }}
-              />
-              <MainStack.Screen
-                name="ReportScreen"
-                component={AppReport}
-                options={{
-                  title: "Reports",
-                }}
-              />
-              <MainStack.Screen
-                name="ReportExport"
-                component={AppReportExport}
-                options={{
-                  title: "Report",
-                }}
-              />
-              <MainStack.Screen
-                name="EmployeeScreen"
-                component={AppEmployee}
-                options={{
-                  title: "Employees",
-                }}
-              />
-              <MainStack.Screen
-                name="AddEmployeeScreen"
-                component={AppAddEmployee}
-                options={{
-                  title: "New Employees",
-                }}
-              />
+              {user ? (
+                <>
+                  <MainStack.Screen
+                    name="AppHome"
+                    component={AppHome}
+                    options={{
+                      title: "Home",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppInvoice"
+                    component={AppInvoice}
+                    options={({ route }) => ({
+                      title:
+                        route.params.invoice.docID +
+                        " (" +
+                        route.params.invoice.shopName +
+                        ") | Posify",
+                      headerShown: false,
+                    })}
+                  />
+                  <MainStack.Screen
+                    name="AppDelInvoice"
+                    component={AppDelInvoice}
+                    options={{
+                      title: "Remove Invoices",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="ProfileScreen"
+                    component={AppProfile}
+                    options={{
+                      title: "Profile",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="SelectShopScreen"
+                    component={AppSelectShop}
+                    options={{
+                      title: "Select Shop",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddInvoiceScreen"
+                    component={AppAddInvoice}
+                    options={{
+                      title: "New Invoice",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddReturnScreen"
+                    component={AppAddReturn}
+                    options={{
+                      title: "Deduct Returns",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="StockScreen"
+                    component={AppStock}
+                    options={{
+                      title: "Stock",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddStockScreen"
+                    component={AppAddStock}
+                    options={{
+                      title: "New Items",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="EditStockScreen"
+                    component={AppEditStock}
+                    options={{
+                      title: "Edit Items",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="ShopScreen"
+                    component={AppShop}
+                    options={{
+                      title: "Shops",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddShopScreen"
+                    component={AppAddShop}
+                    options={{
+                      title: "New Shop",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="EditShopScreen"
+                    component={AppEditShop}
+                    options={{
+                      title: "Edit Shop Details",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="ReportScreen"
+                    component={AppReport}
+                    options={{
+                      title: "Reports",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="ReportExport"
+                    component={AppReportExport}
+                    options={{
+                      title: "Report",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="EmployeeScreen"
+                    component={AppEmployee}
+                    options={{
+                      title: "Employees",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddEmployeeScreen"
+                    component={AppAddEmployee}
+                    options={{
+                      title: "New Employees",
+                    }}
+                  />
+                </>
+              ) : (
+                <MainStack.Screen
+                  name="LoginScreen"
+                  component={AppLogin}
+                  options={{
+                    title: "Login",
+                    headerShown: false,
+                  }}
+                />
+              )}
             </MainStack.Navigator>
           </NavigationContainer>
         </ApplicationProvider>
