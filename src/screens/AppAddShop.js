@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Dimensions, StatusBar } from "react-native";
+import { Icon, Button, Input } from "@ui-kitten/components";
 import {
   Caption,
   ToggleButton,
-  Button,
-  TextInput,
   Dialog,
   Portal,
   Paragraph,
@@ -16,6 +15,9 @@ import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 
 function AppAddShop(props) {
+  const DoneIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-2-outline" />
+  );
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -73,14 +75,15 @@ function AppAddShop(props) {
           ]}
         >
           <View style={styles.innerFooter}>
-            <TextInput
+            <Input
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
               placeholder="Shop Name"
+              label="Shop Name"
               onChangeText={(text) => setEntityText(text)}
               value={entityText}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-              mode="outlined"
-              left={<TextInput.Icon name="store" />}
+              keyboardType="number-pad"
             />
 
             <View
@@ -101,12 +104,11 @@ function AppAddShop(props) {
               </ToggleButton.Row>
             </View>
             <Button
-              mode="contained"
-              icon="check-circle"
-              style={styles.button}
+              size="giant"
+              status="primary"
+              style={{ margin: "2%" }}
+              accessoryRight={DoneIcon}
               onPress={showDialog}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
             >
               Submit
             </Button>
@@ -125,8 +127,7 @@ function AppAddShop(props) {
                     Cancel
                   </Button>
                   <Button
-                    mode="contained"
-                    color={AppColors.secondaryVariant}
+                    status="success"
                     onPress={() => {
                       hideDialog();
                       onToggleSnackBar();

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StatusBar,
-  FlatList,
-  StyleSheet,
-  TouchableHighlight,
-} from "react-native";
+import { View, StatusBar, FlatList, StyleSheet } from "react-native";
+import { Icon, Card, useTheme, Button } from "@ui-kitten/components";
 import { Avatar, Title, Caption, FAB, Provider } from "react-native-paper";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
 
 function AppShop(props) {
+  const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
+
+  const theme = useTheme();
+
   const [shops, setShops] = useState([]);
 
   const shopRef = firebase.firestore().collection("shops");
@@ -44,7 +43,12 @@ function AppShop(props) {
           data={shops}
           keyExtractor={(shop) => shop.id}
           renderItem={({ item }) => (
-            <TouchableHighlight
+            <Card
+              status="primary"
+              style={{
+                marginVertical: "2%",
+                marginHorizontal: "15%",
+              }}
               onPress={(values) =>
                 props.navigation.navigate("EditShopScreen", {
                   shop: {
@@ -55,8 +59,12 @@ function AppShop(props) {
                 })
               }
             >
-              <View style={styles.card}>
-                <Avatar.Icon size={40} icon="store" />
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon
+                  style={{ width: 30, height: 30, margin: "2%" }}
+                  fill={theme["color-primary-default"]}
+                  name="shopping-cart-outline"
+                />
                 <Title style={styles.title}>{item.name}</Title>
                 <Caption>
                   Price Category:
@@ -65,12 +73,14 @@ function AppShop(props) {
                   </Caption>
                 </Caption>
               </View>
-            </TouchableHighlight>
+            </Card>
           )}
         />
-        <FAB
+        <Button
+          size="large"
           style={styles.fab}
-          icon="plus"
+          status="primary"
+          accessoryLeft={NewIcon}
           onPress={() => props.navigation.navigate("AddShopScreen")}
         />
       </View>
@@ -81,20 +91,6 @@ function AppShop(props) {
 export default AppShop;
 
 const styles = StyleSheet.create({
-  card: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: "3%",
-    paddingHorizontal: "5%",
-    borderColor: AppColors.primary,
-    borderStyle: "solid",
-    borderWidth: 2,
-    backgroundColor: AppColors.background,
-    margin: "1%",
-    borderRadius: 10,
-    width: "60%",
-    alignSelf: "center",
-  },
   title: { fontSize: 16 },
   screen: { flex: 1, justifyContent: "center" },
   fab: {
@@ -102,6 +98,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: AppColors.secondary,
+    borderRadius: 25,
   },
 });

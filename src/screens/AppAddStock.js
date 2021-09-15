@@ -6,8 +6,8 @@ import {
   Dimensions,
   StatusBar,
 } from "react-native";
+import { Icon, Button, Input } from "@ui-kitten/components";
 import {
-  Button,
   TextInput,
   Dialog,
   Portal,
@@ -19,6 +19,10 @@ import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 
 function AppAddStock(props) {
+  const DoneIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-2-outline" />
+  );
+
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -71,77 +75,77 @@ function AppAddStock(props) {
         />
 
         <ScrollView style={{ marginTop: "3%" }}>
-          <TextInput
-            placeholder="Stock Name"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
-            onChangeText={(text) => setItemName(text)}
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             value={itemName}
-            left={<TextInput.Icon name="package-variant" />}
+            label="Item Name"
+            placeholder="Enter Item Name"
+            onChangeText={(text) => setItemName(text)}
           />
-          <TextInput
+
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             placeholder="Wholesale Price"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            label="Wholesale Price"
             onChangeText={(text) => setStockPrice(text)}
             value={stockPrice}
             keyboardType="number-pad"
-            left={<TextInput.Icon name="cash" />}
           />
-          <TextInput
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             placeholder="Unit Price - Category A"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            label="Unit Price A"
             onChangeText={(text) => setUnitPriceA(text)}
             value={unitPriceA}
             keyboardType="number-pad"
-            left={<TextInput.Icon name="alpha-a-box-outline" />}
           />
-          <TextInput
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             placeholder="Unit Price - Category B"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            label="Unit Price B"
             onChangeText={(text) => setUnitPriceB(text)}
             value={unitPriceB}
             keyboardType="number-pad"
-            left={<TextInput.Icon name="alpha-b-box-outline" />}
           />
-          <TextInput
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             placeholder="Unit Price - Category C"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            label="Unit Price C"
             onChangeText={(text) => setUnitPriceC(text)}
             value={unitPriceC}
             keyboardType="number-pad"
-            left={<TextInput.Icon name="alpha-c-box-outline" />}
           />
-          <TextInput
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             placeholder="Stock"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            label="Stock"
             onChangeText={(text) => setStock(text)}
             value={stock}
             keyboardType="number-pad"
-            left={<TextInput.Icon name="numeric-9-plus-box-multiple-outline" />}
           />
+          <Button
+            size="giant"
+            status="primary"
+            style={{ margin: "2%" }}
+            onPress={showDialog}
+            accessoryRight={DoneIcon}
+          >
+            Submit
+          </Button>
         </ScrollView>
 
-        <Button
-          mode="contained"
-          icon="check-circle"
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          style={styles.button}
-          onPress={showDialog}
-        >
-          Submit
-        </Button>
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>Notice</Dialog.Title>
@@ -207,10 +211,6 @@ const styles = StyleSheet.create({
   logo: {
     width: height_logo,
     height: height_logo,
-  },
-  button: {
-    padding: "4%",
-    marginVertical: "3%",
   },
   text: {
     color: AppColors.primary,
