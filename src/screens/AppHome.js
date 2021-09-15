@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
-import { TabBar, Tab, Icon, Card, Button } from "@ui-kitten/components";
+import { TabBar, Tab, Icon, Card, Button, Text } from "@ui-kitten/components";
 import {
   Avatar,
   Title,
@@ -21,8 +21,11 @@ import {
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
+import { ThemeContext } from "../configs/theme";
 
 function AppHome({ navigation }) {
+  const themeContext = React.useContext(ThemeContext);
+
   const [loading, setLoading] = React.useState(true);
   const [user, setUser] = React.useState(null);
 
@@ -50,8 +53,22 @@ function AppHome({ navigation }) {
   const closeApp = () => BackHandler.exitApp();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
-  const NewIcon = (props) => <Icon {...props} name="trending-up-outline" />;
+  const ManagementIcon = (props) => (
+    <Icon {...props} name="briefcase-outline" />
+  );
+  const SettingsIcon = (props) => <Icon {...props} name="settings-2-outline" />;
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
+  const NewInvIcon = (props) => <Icon {...props} name="file-add-outline" />;
+  const ReqIcon = (props) => <Icon {...props} name="flip-2-outline" />;
+  const StockIcon = (props) => <Icon {...props} name="layers-outline" />;
+  const SuppliersIcon = (props) => <Icon {...props} name="car-outline" />;
+  const StoresIcon = (props) => (
+    <Icon {...props} name="shopping-cart-outline" />
+  );
+  const EmployeesIcon = (props) => <Icon {...props} name="people-outline" />;
+  const ReportsIcon = (props) => <Icon {...props} name="archive-outline" />;
+  const LogOutIcon = (props) => <Icon {...props} name="log-out-outline" />;
+  const DarkIcon = (props) => <Icon {...props} name="moon-outline" />;
 
   const [visible, setVisible] = React.useState(false);
 
@@ -87,9 +104,9 @@ function AppHome({ navigation }) {
         selectedIndex={selectedIndex}
         onSelect={(index) => setSelectedIndex(index)}
       >
-        <Tab icon={NewIcon} />
-        <Tab icon={AccountIcon} />
         <Tab icon={HomeIcon} />
+        <Tab icon={ManagementIcon} />
+        <Tab icon={SettingsIcon} />
       </TabBar>
       {AppRenderIf(
         selectedIndex == 0,
@@ -99,11 +116,18 @@ function AppHome({ navigation }) {
               ListHeaderComponent={() => (
                 <>
                   <ExtendedButton
-                    title="New Invoices"
-                    tabIcon={HomeIcon}
+                    title="New Invoice"
+                    tabIcon={NewInvIcon}
                     onPress={showDialog}
                   />
-                  <ExtendedButton title="Requests" tabIcon={HomeIcon} />
+                  <ExtendedButton title="Requests" tabIcon={ReqIcon} />
+                  <Text
+                    status="primary"
+                    category="h4"
+                    style={{ fontWeight: "bold", textAlign: "center" }}
+                  >
+                    Invoices
+                  </Text>
                 </>
               )}
               data={Invoices}
@@ -258,18 +282,18 @@ function AppHome({ navigation }) {
         <>
           <ExtendedButton
             title="Stock"
-            tabIcon={HomeIcon}
+            tabIcon={StockIcon}
             onPress={() => navigation.navigate("StockScreen")}
           />
-          <ExtendedButton title="Suppliers" tabIcon={HomeIcon} />
+          <ExtendedButton title="Suppliers" tabIcon={SuppliersIcon} />
           <ExtendedButton
             title="Stores"
-            tabIcon={HomeIcon}
+            tabIcon={StoresIcon}
             onPress={() => navigation.navigate("ShopScreen")}
           />
           <ExtendedButton
             title="Employees"
-            tabIcon={HomeIcon}
+            tabIcon={EmployeesIcon}
             onPress={() => navigation.navigate("EmployeeScreen")}
           />
         </>
@@ -280,7 +304,7 @@ function AppHome({ navigation }) {
           <Provider>
             <ExtendedButton
               title="Account Information"
-              tabIcon={HomeIcon}
+              tabIcon={AccountIcon}
               onPress={() =>
                 navigation.navigate("ProfileScreen", {
                   user: user,
@@ -289,12 +313,18 @@ function AppHome({ navigation }) {
             />
             <ExtendedButton
               title="Reports"
-              tabIcon={HomeIcon}
+              tabIcon={ReportsIcon}
               onPress={() => navigation.navigate("ReportScreen")}
             />
             <ExtendedButton
+              title="Dark Theme"
+              tabIcon={DarkIcon}
+              onPress={themeContext.toggleTheme}
+            />
+
+            <ExtendedButton
               title="Log Out"
-              tabIcon={HomeIcon}
+              tabIcon={LogOutIcon}
               onPress={() => {
                 firebase
                   .auth()
