@@ -1,12 +1,12 @@
 export default {
   primary: "#3366FF",
   primaryVariant: "#2541cc",
-  secondary: "#03DAC6",
-  secondaryVariant: "#018786",
+  secondary: "#46AAFC",
+  secondaryVariant: "#3385D8",
+  red: "#FF3932",
+  green: "#3CD15C",
+  yellow: "#FFE81C",
   background: "#FFFFFF",
-  red: "#B00020",
-  green: "#1dd141",
-  orange: "#ff4000",
-  yellow: "#FBD814",
   black: "#000000",
+  orange: "#f66723",
 };

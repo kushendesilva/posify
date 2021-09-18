@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Dimensions,
-  StatusBar,
-} from "react-native";
+import { StyleSheet, ScrollView, Dimensions, StatusBar } from "react-native";
 import { Icon, Button, Input } from "@ui-kitten/components";
 import {
-  TextInput,
   Dialog,
   Portal,
   Paragraph,
@@ -17,6 +10,7 @@ import {
 } from "react-native-paper";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
+import Screen from "../components/Screen";
 
 function AppAddStock(props) {
   const DoneIcon = (props) => (
@@ -68,7 +62,7 @@ function AppAddStock(props) {
 
   return (
     <Provider>
-      <View style={styles.container}>
+      <Screen>
         <StatusBar
           backgroundColor={AppColors.primary}
           barStyle="light-content"
@@ -187,7 +181,7 @@ function AppAddStock(props) {
         >
           Successful
         </Snackbar>
-      </View>
+      </Screen>
     </Provider>
   );
 }

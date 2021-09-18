@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   Appbar,
-  TextInput,
   ToggleButton,
-  Caption,
-  Button,
   Portal,
   Dialog,
   Provider,
@@ -13,10 +10,19 @@ import {
 } from "react-native-paper";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
-
+import { Icon, Button, Input, Text } from "@ui-kitten/components";
 import AppRenderIf from "../configs/AppRenderIf";
+import Screen from "../components/Screen";
 
 function AppEditShop({ navigation, route }) {
+  const EditIcon = (props) => <Icon {...props} name="edit-2-outline" />;
+  const CancelIcon = (props) => <Icon {...props} name="slash-outline" />;
+  const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+  const DelIcon = (props) => <Icon {...props} name="trash-2-outline" />;
+  const CheckIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-outline" />
+  );
+
   const [visible, setVisible] = React.useState(false);
 
   const showConfirmation = () => setVisible(true);
@@ -68,21 +74,21 @@ function AppEditShop({ navigation, route }) {
 
   return (
     <Provider>
-      <View style={styles.screen}>
+      <Screen>
         <Appbar style={{ backgroundColor: AppColors.primary }}>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title="Edit Shop Details" subtitle={shop.name} />
         </Appbar>
         <View style={styles.containers}>
-          <TextInput
-            disabled={visibility}
+          <Input
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
+            placeholder="Shop Name"
             label="Shop Name"
+            disabled={visibility}
             onChangeText={(text) => setEntityText(text)}
             value={entityText}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
-            left={<TextInput.Icon name="store" />}
           />
           <View
             style={{
@@ -92,7 +98,7 @@ function AppEditShop({ navigation, route }) {
               marginTop: "2%",
             }}
           >
-            <Caption style={{ fontSize: 16 }}>Price Category </Caption>
+            <Text category="label">Price Category : </Text>
             <ToggleButton.Row
               onValueChange={(value) => setValue(value)}
               value={value}
@@ -124,21 +130,20 @@ function AppEditShop({ navigation, route }) {
               }}
             >
               <Button
-                color={AppColors.orange}
-                mode="contained"
-                style={{ padding: "3%" }}
-                icon="square-edit-outline"
+                accessoryRight={EditIcon}
+                status="warning"
+                size="giant"
                 onPress={() => {
                   setVisibility(!visibility);
                 }}
               >
                 Edit
               </Button>
+
               <Button
-                color={AppColors.red}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="trash-can-outline"
+                accessoryRight={DelIcon}
+                status="danger"
+                size="giant"
                 onPress={showConfirmation}
               >
                 Delete
@@ -155,10 +160,9 @@ function AppEditShop({ navigation, route }) {
               }}
             >
               <Button
-                color={AppColors.red}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="block-helper"
+                accessoryRight={CancelIcon}
+                status="danger"
+                size="giant"
                 onPress={() => {
                   setVisibility(!visibility);
                 }}
@@ -166,10 +170,9 @@ function AppEditShop({ navigation, route }) {
                 Cancel
               </Button>
               <Button
-                color={AppColors.secondaryVariant}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="content-save"
+                accessoryRight={SaveIcon}
+                status="success"
+                size="giant"
                 onPress={() => {
                   onEditButtonPress();
                 }}
@@ -181,21 +184,25 @@ function AppEditShop({ navigation, route }) {
         </View>
         <Portal>
           <Dialog visible={visible} onDismiss={hideConfirmation}>
-            <Dialog.Title>Confirmation</Dialog.Title>
+            <Dialog.Title>
+              <Text category="h6" style={{ fontWeight: "bold" }}>
+                Confirmation
+              </Text>
+            </Dialog.Title>
             <Dialog.Content>
-              <Paragraph>Delete {shop.name} Details.</Paragraph>
+              <Text category="label">Delete {shop.name} Details.</Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
               <Button
-                mode="contained"
-                color={AppColors.red}
+                accessoryRight={CancelIcon}
+                status="danger"
                 onPress={hideConfirmation}
               >
                 Cancel
               </Button>
               <Button
-                mode="contained"
-                color={AppColors.secondaryVariant}
+                accessoryRight={CheckIcon}
+                status="success"
                 onPress={() => {
                   onDeleteButtonPress();
                 }}
@@ -205,7 +212,7 @@ function AppEditShop({ navigation, route }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-      </View>
+      </Screen>
     </Provider>
   );
 }

@@ -128,7 +128,7 @@ function AppAddInvoice({ navigation, route }) {
 
   return (
     <View>
-      <Appbar>
+      <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
         <Appbar.Content title="New Invoice" subtitle={invoice.name} />
         <Appbar.Action

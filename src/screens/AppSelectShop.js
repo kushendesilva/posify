@@ -2,24 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  Text,
   Dimensions,
   StatusBar,
   FlatList,
   TouchableHighlight,
 } from "react-native";
-import {
-  Title,
-  Caption,
-  Avatar,
-  Provider,
-  Searchbar,
-  Dialog,
-  Portal,
-  Paragraph,
-  Button,
-} from "react-native-paper";
-import { Icon } from "@ui-kitten/components";
+import { Title, Caption, Searchbar } from "react-native-paper";
+import { Icon, Card, Text, Layout } from "@ui-kitten/components";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
@@ -115,71 +104,77 @@ function AppSelectShop(props) {
   };
 
   return (
-    <Provider>
-      <View style={styles.container}>
-        <StatusBar
-          backgroundColor={AppColors.primary}
-          barStyle="light-content"
-        />
-        <View style={styles.header}>
-          <Text style={styles.text}>Select the Shop</Text>
-        </View>
-        <Searchbar
-          style={{
-            marginTop: "1%",
-            marginBottom: "5%",
-            borderRadius: 10,
-            marginLeft: "6%",
-            marginRight: "6%",
-          }}
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction("")}
-          placeholder="Search"
-          value={search}
-        />
-        <View
-          style={[
-            styles.footer,
-            {
-              backgroundColor: AppColors.background,
-            },
-          ]}
-        >
-          <View>
-            <FlatList
-              data={filteredDataSource}
-              keyExtractor={(shop) => shop.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableHighlight
-                  onPress={(values) => {
-                    createInvoice(),
-                      props.navigation.navigate("AddInvoiceScreen", {
-                        invoice: {
-                          name: item.name,
-                          category: item.category,
-                          docID: invoiceId,
-                        },
-                      });
-                  }}
-                >
-                  <View style={styles.card}>
-                    <Icon
-                      style={{ width: 32, height: 32 }}
-                      fill={AppColors.primary}
-                      name="home-outline"
-                    />
-                    <Title style={styles.title}>{item.name}</Title>
-                    <Caption style={{ textTransform: "uppercase" }}>
-                      Price category: {item.category}
-                    </Caption>
-                  </View>
-                </TouchableHighlight>
-              )}
-            />
-          </View>
-        </View>
+    <View style={styles.container}>
+      <StatusBar backgroundColor={AppColors.primary} barStyle="light-content" />
+      <View style={styles.header}>
+        <Text style={styles.text}>Select the Shop</Text>
       </View>
-    </Provider>
+      <Searchbar
+        style={{
+          marginTop: "1%",
+          marginBottom: "5%",
+          borderRadius: 10,
+          marginLeft: "6%",
+          marginRight: "6%",
+        }}
+        onChangeText={(text) => searchFilterFunction(text)}
+        onClear={(text) => searchFilterFunction("")}
+        placeholder="Search"
+        value={search}
+      />
+      <Layout style={styles.footer}>
+        <View>
+          <FlatList
+            data={filteredDataSource}
+            keyExtractor={(shop) => shop.id.toString()}
+            renderItem={({ item }) => (
+              <Card
+                status="primary"
+                style={{
+                  marginVertical: "2%",
+                  marginHorizontal: "15%",
+                }}
+                onPress={(values) => {
+                  createInvoice(),
+                    props.navigation.navigate("AddInvoiceScreen", {
+                      invoice: {
+                        name: item.name,
+                        category: item.category,
+                        docID: invoiceId,
+                      },
+                    });
+                }}
+              >
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Icon
+                    style={{ width: 30, height: 30 }}
+                    fill={AppColors.primary}
+                    name="home-outline"
+                  />
+                  <Text
+                    category="h6"
+                    style={{ fontWeight: "bold", margin: "2%" }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text category="label">
+                    Price Category :{" "}
+                    <Text
+                      category="label"
+                      style={{ textTransform: "uppercase" }}
+                    >
+                      {item.category}
+                    </Text>
+                  </Text>
+                </View>
+              </Card>
+            )}
+          />
+        </View>
+      </Layout>
+    </View>
   );
 }
 
@@ -198,23 +193,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  card: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: "3%",
-    paddingHorizontal: "5%",
-    borderColor: AppColors.primary,
-    borderStyle: "solid",
-    borderWidth: 2,
-    backgroundColor: AppColors.background,
-    margin: "1%",
-    borderRadius: 10,
-    width: "60%",
-    alignSelf: "center",
-  },
+
   footer: {
     flex: 4,
-    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: "5%",

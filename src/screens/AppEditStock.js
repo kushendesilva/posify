@@ -2,20 +2,27 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   Appbar,
-  TextInput,
-  Button,
   Portal,
   Dialog,
   Provider,
-  Paragraph,
 } from "react-native-paper";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
-
+import Screen from "../components/Screen";
 import AppRenderIf from "../configs/AppRenderIf";
+import { Icon, Button, Input, Text } from "@ui-kitten/components";
 
 function AppEditStock({ navigation, route }) {
+  const EditIcon = (props) => <Icon {...props} name="edit-2-outline" />;
+  const CancelIcon = (props) => <Icon {...props} name="slash-outline" />;
+  const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+  const DelIcon = (props) => <Icon {...props} name="trash-2-outline" />;
+  const CheckIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-outline" />
+  );
+
   const { stockItem } = route.params;
+
   const [itemName, setItemName] = React.useState(stockItem.itemName);
   const [stockPrice, setStockPrice] = React.useState(stockItem.stockPrice);
   const [unitPriceA, setUnitPriceA] = React.useState(stockItem.unitPriceA);
@@ -90,7 +97,7 @@ function AppEditStock({ navigation, route }) {
 
   return (
     <Provider>
-      <View style={styles.screen}>
+      <Screen>
         <Appbar style={{ backgroundColor: AppColors.primary }}>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content
@@ -99,70 +106,64 @@ function AppEditStock({ navigation, route }) {
           />
         </Appbar>
         <View style={styles.containers}>
-          <TextInput
+          <Input
             label="Item Name"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setItemName(text)}
             value={itemName}
             disabled={visibility}
-            left={<TextInput.Icon name="package-variant" />}
           />
-          <TextInput
+          <Input
             label="Wholesale Price"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setStockPrice(text)}
             value={stockPrice}
             keyboardType="number-pad"
             disabled={visibility}
-            left={<TextInput.Icon name="cash" />}
           />
-          <TextInput
+          <Input
             label="Unit Price - Category A"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setUnitPriceA(text)}
             value={unitPriceA}
             keyboardType="number-pad"
             disabled={visibility}
-            left={<TextInput.Icon name="alpha-a-box-outline" />}
           />
-          <TextInput
+          <Input
             label="Unit Price - Category B"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setUnitPriceB(text)}
             value={unitPriceB}
             keyboardType="number-pad"
             disabled={visibility}
-            left={<TextInput.Icon name="alpha-b-box-outline" />}
           />
-          <TextInput
+          <Input
             label="Unit Price - Category C"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setUnitPriceC(text)}
             value={unitPriceC}
             keyboardType="number-pad"
             disabled={visibility}
-            left={<TextInput.Icon name="alpha-c-box-outline" />}
           />
-          <TextInput
+          <Input
             label="Stock"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            mode="outlined"
+            style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+            size="large"
+            status="primary"
             onChangeText={(text) => setStock(text)}
             value={stock.toString()}
             keyboardType="number-pad"
             disabled={visibility}
-            left={<TextInput.Icon name="numeric-9-plus-box-multiple-outline" />}
           />
           {AppRenderIf(
             visibility,
@@ -174,21 +175,20 @@ function AppEditStock({ navigation, route }) {
               }}
             >
               <Button
-                color={AppColors.orange}
-                mode="contained"
-                style={{ padding: "3%" }}
-                icon="square-edit-outline"
+                accessoryRight={EditIcon}
+                status="warning"
+                size="giant"
                 onPress={() => {
                   setVisibility(!visibility);
                 }}
               >
                 Edit
               </Button>
+
               <Button
-                color={AppColors.red}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="trash-can-outline"
+                accessoryRight={DelIcon}
+                status="danger"
+                size="giant"
                 onPress={showConfirmation}
               >
                 Delete
@@ -205,10 +205,9 @@ function AppEditStock({ navigation, route }) {
               }}
             >
               <Button
-                color={AppColors.red}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="block-helper"
+                accessoryRight={CancelIcon}
+                status="danger"
+                size="giant"
                 onPress={() => {
                   setVisibility(!visibility);
                 }}
@@ -216,10 +215,9 @@ function AppEditStock({ navigation, route }) {
                 Cancel
               </Button>
               <Button
-                color={AppColors.secondaryVariant}
-                style={{ padding: "3%" }}
-                mode="contained"
-                icon="content-save"
+                accessoryRight={SaveIcon}
+                status="success"
+                size="giant"
                 onPress={() => {
                   onEditButtonPress();
                 }}
@@ -231,21 +229,25 @@ function AppEditStock({ navigation, route }) {
         </View>
         <Portal>
           <Dialog visible={visible} onDismiss={hideConfirmation}>
-            <Dialog.Title>Confirmation</Dialog.Title>
+            <Dialog.Title>
+              <Text category="h6" style={{ fontWeight: "bold" }}>
+                Confirmation
+              </Text>
+            </Dialog.Title>
             <Dialog.Content>
-              <Paragraph>Remove Item {stockItem.itemName}.</Paragraph>
+              <Text category="label">Remove Item {stockItem.itemName}.</Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
               <Button
-                mode="contained"
-                color={AppColors.red}
+                accessoryRight={CancelIcon}
+                status="danger"
                 onPress={hideConfirmation}
               >
                 Cancel
               </Button>
               <Button
-                mode="contained"
-                color={AppColors.secondaryVariant}
+                accessoryRight={CheckIcon}
+                status="success"
                 onPress={() => {
                   onDeleteButtonPress();
                 }}
@@ -255,7 +257,7 @@ function AppEditStock({ navigation, route }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-      </View>
+      </Screen>
     </Provider>
   );
 }

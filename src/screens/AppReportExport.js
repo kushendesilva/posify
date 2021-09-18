@@ -1,9 +1,8 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Title } from "react-native-paper";
-
+import { View } from "react-native";
+import { Text, Card } from "@ui-kitten/components";
+import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
-import AppColors from "../configs/AppColors";
 
 function AppReportExport({ navigation, route }) {
   const { selectedDate } = route.params;
@@ -46,27 +45,22 @@ function AppReportExport({ navigation, route }) {
     );
   }, []);
   return (
-    <View style={styles.screen}>
-      <View
+    <Screen>
+      <Card
+        status="primary"
         style={{
-          borderColor: AppColors.primary,
-          borderWidth: 2,
-          borderStyle: "solid",
-          borderRadius: 10,
-          alignSelf: "center",
-          padding: "2%",
-          backgroundColor: AppColors.background,
-          marginTop: "2%",
+          marginVertical: "2%",
+          marginHorizontal: "15%",
         }}
       >
-        <Title
+        <Text
           style={{
             textAlign: "center",
             fontSize: 16,
           }}
         >
           Date:{" "}
-          <Title
+          <Text
             style={{
               textAlign: "center",
               fontWeight: "bold",
@@ -74,16 +68,17 @@ function AppReportExport({ navigation, route }) {
             }}
           >
             {getDate()}
-          </Title>
-        </Title>
+          </Text>
+        </Text>
         <View
           style={{
+            marginTop: "5%",
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Title
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -91,7 +86,7 @@ function AppReportExport({ navigation, route }) {
             }}
           >
             Incomes:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -99,9 +94,9 @@ function AppReportExport({ navigation, route }) {
               }}
             >
               Rs.{totalPrice}
-            </Title>
-          </Title>
-          <Title
+            </Text>
+          </Text>
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -109,7 +104,7 @@ function AppReportExport({ navigation, route }) {
             }}
           >
             Expenses:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -117,9 +112,9 @@ function AppReportExport({ navigation, route }) {
               }}
             >
               Rs.{totalStock}
-            </Title>
-          </Title>
-          <Title
+            </Text>
+          </Text>
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -127,7 +122,7 @@ function AppReportExport({ navigation, route }) {
             }}
           >
             Profit:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -135,16 +130,12 @@ function AppReportExport({ navigation, route }) {
               }}
             >
               Rs.{totalPrice - totalStock}
-            </Title>
-          </Title>
+            </Text>
+          </Text>
         </View>
-      </View>
-    </View>
+      </Card>
+    </Screen>
   );
 }
 
 export default AppReportExport;
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, justifyContent: "center" },
-});

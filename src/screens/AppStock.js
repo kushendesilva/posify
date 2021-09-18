@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, StatusBar, FlatList, StyleSheet } from "react-native";
-import { Icon, Card, useTheme, Button } from "@ui-kitten/components";
-import { Title, Chip, Searchbar, Provider, Caption } from "react-native-paper";
+import { Icon, Card, useTheme, Button, Text } from "@ui-kitten/components";
+import { Chip, Searchbar, Provider, Caption } from "react-native-paper";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
+import Screen from "../components/Screen";
 import AppRenderIf from "../configs/AppRenderIf";
 
 function AppStock(props) {
@@ -79,7 +80,7 @@ function AppStock(props) {
 
   return (
     <Provider>
-      <View style={styles.screen}>
+      <Screen>
         <StatusBar
           backgroundColor={AppColors.primary}
           barStyle="light-content"
@@ -139,7 +140,7 @@ function AppStock(props) {
                         name="cube-outline"
                       />
 
-                      <Title style={styles.title}>{item.itemName}</Title>
+                      <Text style={styles.Text}>{item.itemName}</Text>
                       <Icon
                         style={{ width: 30, height: 30 }}
                         fill={theme["color-danger-default"]}
@@ -233,7 +234,7 @@ function AppStock(props) {
                         fill={theme["color-primary-default"]}
                         name="cube-outline"
                       />
-                      <Title style={styles.title}>{item.itemName}</Title>
+                      <Text style={styles.Text}>{item.itemName}</Text>
 
                       <Icon
                         style={{ width: 30, height: 30 }}
@@ -321,7 +322,7 @@ function AppStock(props) {
           accessoryLeft={NewIcon}
           onPress={() => props.navigation.navigate("AddStockScreen")}
         />
-      </View>
+      </Screen>
     </Provider>
   );
 }
@@ -329,8 +330,7 @@ function AppStock(props) {
 export default AppStock;
 
 const styles = StyleSheet.create({
-  title: { fontSize: 16, marginHorizontal: "2%" },
-  screen: { flex: 1 },
+  Text: { fontSize: 16, marginHorizontal: "2%" },
   fab: {
     position: "absolute",
     margin: 16,

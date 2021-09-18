@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import { Title, TextInput } from "react-native-paper";
-import { Input, Button, Icon } from "@ui-kitten/components";
-import AppColors from "../configs/AppColors";
+import { View } from "react-native";
+import { Input, Button, Icon, Text, Card } from "@ui-kitten/components";
+import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
 
 function AppReport(props) {
@@ -54,27 +53,22 @@ function AppReport(props) {
   }, []);
 
   return (
-    <View style={styles.screen}>
-      <View
+    <Screen>
+      <Card
+        status="primary"
         style={{
-          borderColor: AppColors.primary,
-          borderWidth: 2,
-          borderStyle: "solid",
-          borderRadius: 10,
-          alignSelf: "center",
-          padding: "2%",
-          backgroundColor: AppColors.background,
-          marginTop: "2%",
+          marginVertical: "2%",
+          marginHorizontal: "15%",
         }}
       >
-        <Title
+        <Text
           style={{
             textAlign: "center",
             fontSize: 16,
           }}
         >
           Date:{" "}
-          <Title
+          <Text
             style={{
               textAlign: "center",
               fontWeight: "bold",
@@ -82,8 +76,8 @@ function AppReport(props) {
             }}
           >
             {getCurrentDate()}
-          </Title>
-        </Title>
+          </Text>
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -91,7 +85,7 @@ function AppReport(props) {
             alignItems: "center",
           }}
         >
-          <Title
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -99,7 +93,7 @@ function AppReport(props) {
             }}
           >
             Incomes:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -107,9 +101,9 @@ function AppReport(props) {
               }}
             >
               Rs.{totalPrice}
-            </Title>
-          </Title>
-          <Title
+            </Text>
+          </Text>
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -117,7 +111,7 @@ function AppReport(props) {
             }}
           >
             Expenses:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -125,9 +119,9 @@ function AppReport(props) {
               }}
             >
               Rs.{totalStock}
-            </Title>
-          </Title>
-          <Title
+            </Text>
+          </Text>
+          <Text
             style={{
               textAlign: "center",
               fontSize: 16,
@@ -135,7 +129,7 @@ function AppReport(props) {
             }}
           >
             Profit:{" "}
-            <Title
+            <Text
               style={{
                 textAlign: "center",
                 fontWeight: "bold",
@@ -143,10 +137,10 @@ function AppReport(props) {
               }}
             >
               Rs.{totalPrice - totalStock}
-            </Title>
-          </Title>
+            </Text>
+          </Text>
         </View>
-      </View>
+      </Card>
       <View style={{ marginHorizontal: "10%", marginTop: "5%" }}>
         <Input
           style={{ marginHorizontal: "2%", marginBottom: "1%" }}
@@ -198,12 +192,8 @@ function AppReport(props) {
           Submit
         </Button>
       </View>
-    </View>
+    </Screen>
   );
 }
 
 export default AppReport;
-
-const styles = StyleSheet.create({
-  screen: { flex: 1 },
-});

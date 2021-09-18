@@ -8,11 +8,17 @@ import {
 } from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
-import { TabBar, Tab, Icon, Card, Button, Text } from "@ui-kitten/components";
+import {
+  TabBar,
+  Tab,
+  Icon,
+  Card,
+  Button,
+  Text,
+  useTheme,
+} from "@ui-kitten/components";
 import {
   Avatar,
-  Title,
-  Caption,
   Provider,
   Portal,
   Dialog,
@@ -24,6 +30,13 @@ import AppColors from "../configs/AppColors";
 import { ThemeContext } from "../configs/theme";
 
 function AppHome({ navigation }) {
+  const theme = useTheme();
+
+  const CancelIcon = (props) => <Icon {...props} name="slash-outline" />;
+  const CheckIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-outline" />
+  );
+
   const themeContext = React.useContext(ThemeContext);
 
   const [loading, setLoading] = React.useState(true);
@@ -122,7 +135,6 @@ function AppHome({ navigation }) {
                   />
                   <ExtendedButton title="Requests" tabIcon={ReqIcon} />
                   <Text
-                    status="primary"
                     category="h4"
                     style={{ fontWeight: "bold", textAlign: "center" }}
                   >
@@ -136,7 +148,8 @@ function AppHome({ navigation }) {
                 <>
                   {AppRenderIf(
                     null == item.shopName,
-                    <TouchableHighlight
+                    <Card
+                      style={{ margin: "2%" }}
                       onPress={(values) => {
                         navigation.navigate("AppDelInvoice", {
                           invoice: {
@@ -159,20 +172,25 @@ function AppHome({ navigation }) {
                               justifyContent: "center",
                             }}
                           >
-                            <Avatar.Icon size={40} icon="file-document" />
-                            <Title style={{ fontSize: 12 }}>
+                            <Icon
+                              style={{ width: 30, height: 30, margin: "2%" }}
+                              fill={theme["color-primary-default"]}
+                              name="file-remove-outline"
+                            />
+                            <Text style={{ fontSize: 12 }}>
                               {item.invoiceID}
-                            </Title>
+                            </Text>
                           </View>
                         </View>
-                        <Caption
+                        <Text
+                          category="label"
                           style={{
                             textAlign: "center",
                           }}
                         >
                           No Data Found. Please Remove This Record
-                        </Caption>
-                        <Caption
+                        </Text>
+                        <Text
                           style={{
                             fontSize: 10,
                             color: AppColors.red,
@@ -181,9 +199,9 @@ function AppHome({ navigation }) {
                         >
                           (Confirm Whether this is an Invoice in the process of
                           generating)
-                        </Caption>
+                        </Text>
                       </View>
-                    </TouchableHighlight>
+                    </Card>
                   )}
                   {AppRenderIf(
                     null != item.shopName,
@@ -223,26 +241,22 @@ function AppHome({ navigation }) {
                           }}
                         >
                           <Icon
-                            style={{ width: 32, height: 32 }}
-                            fill={AppColors.primary}
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
                             name="file-text-outline"
                           />
-                          <Title style={{ fontSize: 12 }}>
-                            {item.invoiceID}
-                          </Title>
+                          <Text style={{ fontSize: 12 }}>{item.invoiceID}</Text>
                         </View>
 
                         <View style={{ flexDirection: "column" }}>
-                          <Title style={styles.title}>{item.shopName}</Title>
+                          <Text style={styles.title}>{item.shopName}</Text>
                           <View
                             style={{
                               flexDirection: "row",
                               justifyContent: "space-between",
                             }}
                           >
-                            <Caption style={styles.caption}>
-                              {item.date}
-                            </Caption>
+                            <Text category="label">{item.date}</Text>
                           </View>
                         </View>
                       </View>
@@ -258,13 +272,18 @@ function AppHome({ navigation }) {
                   <Paragraph>Confirmation</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                  <Button onPress={hideDialog} status="danger">
+                  <Button
+                    accessoryRight={CancelIcon}
+                    onPress={hideDialog}
+                    status="danger"
+                  >
                     Cancel
                   </Button>
 
                   <Button
+                    accessoryRight={CheckIcon}
                     onPress={() => {
-                      hideDialog(), navigation.navigate("AddInvoiceScreens");
+                      hideDialog(), navigation.navigate("SelectShopScreen");
                     }}
                     status="success"
                   >
@@ -342,12 +361,21 @@ function AppHome({ navigation }) {
 
             <Portal>
               <Dialog visible={visible} onDismiss={closeApp}>
-                <Dialog.Title>Notice</Dialog.Title>
+                <Dialog.Title>
+                  <Text category="h6" style={{ fontWeight: "bold" }}>
+                    Notice
+                  </Text>
+                </Dialog.Title>
                 <Dialog.Content>
-                  <Paragraph>Logging Out Successful!</Paragraph>
+                  <Text category="label">Logging Out Successful!</Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={(hideDialog, closeApp)}>Okay</Button>
+                  <Button
+                    accessoryRight={CheckIcon}
+                    onPress={(hideDialog, closeApp)}
+                  >
+                    Okay
+                  </Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -368,10 +396,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   screen: { flex: 1 },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-  },
   row: {
     marginTop: 20,
     flexDirection: "row",

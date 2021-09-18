@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Dimensions, StatusBar } from "react-native";
+import { StyleSheet, View, Dimensions, StatusBar } from "react-native";
 import { firebase } from "../configs/Database";
 import {
-  TextInput,
-  Button,
   Dialog,
   Portal,
   Paragraph,
   Provider,
   Snackbar,
 } from "react-native-paper";
+import { Icon, Button, Input, Text, Layout } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 
 function AppAddEmployee(props) {
+  const DoneIcon = (props) => (
+    <Icon {...props} name="checkmark-circle-2-outline" />
+  );
+
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -73,61 +76,53 @@ function AppAddEmployee(props) {
         <View style={styles.header}>
           <Text style={styles.text}>Add New Employee Details</Text>
         </View>
-        <View
-          style={[
-            styles.footer,
-            {
-              backgroundColor: AppColors.background,
-            },
-          ]}
-        >
+        <Layout style={styles.footer}>
           <View style={styles.innerFooter}>
-            <TextInput
+            <Input
               placeholder="Full Name"
+              label="Full Name"
               onChangeText={(text) => setFullName(text)}
               value={fullName}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-              mode="outlined"
-              left={<TextInput.Icon name="account" />}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
             />
-            <TextInput
+            <Input
               placeholder="Email"
+              label="Email"
               onChangeText={(text) => setEmail(text)}
               value={email}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-              mode="outlined"
-              left={<TextInput.Icon name="email" />}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
             />
-            <TextInput
+            <Input
               secureTextEntry
               placeholder="Password"
+              label="Password"
               onChangeText={(text) => setPassword(text)}
               value={password}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-              mode="outlined"
-              left={<TextInput.Icon name="lock" />}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
             />
-            <TextInput
-              secureTextEntry
+            <Input
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
               placeholder="Confirm Password"
+              label="Confirm Password"
               onChangeText={(text) => setConfirmPassword(text)}
               value={confirmPassword}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-              mode="outlined"
-              left={<TextInput.Icon name="lock-check" />}
+              secureTextEntry
             />
 
             <Button
-              mode="contained"
-              icon="check-circle"
-              style={styles.button}
+              size="giant"
+              status="primary"
+              style={{ margin: "2%" }}
+              accessoryRight={DoneIcon}
               onPress={showDialog}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
             >
               Submit
             </Button>
@@ -173,7 +168,7 @@ function AppAddEmployee(props) {
               Successful
             </Snackbar>
           </View>
-        </View>
+        </Layout>
       </View>
     </Provider>
   );
@@ -196,7 +191,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 4,
-    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: "5%",

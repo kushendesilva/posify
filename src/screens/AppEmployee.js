@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StatusBar, FlatList, StyleSheet } from "react-native";
-import { Avatar, Title, Caption, FAB, Provider } from "react-native-paper";
 import { firebase } from "../configs/Database";
-
-import AppColors from "../configs/AppColors";
+import { Icon, Card, useTheme, Button, Text } from "@ui-kitten/components";
+import Screen from "../components/Screen";
 import AppRenderIf from "../configs/AppRenderIf";
 
 function AppEmployee(props) {
+  const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
+
+  const theme = useTheme();
   const [users, setUsers] = useState([]);
 
   const userRef = firebase.firestore().collection("users");
@@ -29,62 +31,62 @@ function AppEmployee(props) {
   }, []);
 
   return (
-    <Provider>
-      <View style={styles.screen}>
-        <StatusBar
-          backgroundColor={AppColors.primary}
-          barStyle="light-content"
-        />
-        <FlatList
-          data={users}
-          keyExtractor={(employee) => employee.id.toString()}
-          renderItem={({ item }) => (
-            <View>
-              {AppRenderIf(
-                item.fullName != "Admin",
-                <View style={styles.card}>
-                  <Avatar.Icon size={50} icon="account" />
-                  <Title style={styles.title}>{item.fullName}</Title>
-                  <Caption>{item.email}</Caption>
+    <Screen>
+      <StatusBar
+        backgroundColor={theme["color-primary-default"]}
+        barStyle="light-content"
+      />
+      <FlatList
+        data={users}
+        keyExtractor={(employee) => employee.id.toString()}
+        renderItem={({ item }) => (
+          <>
+            {AppRenderIf(
+              item.fullName != "Admin",
+              <Card
+                status="primary"
+                style={{
+                  marginVertical: "2%",
+                  marginHorizontal: "15%",
+                }}
+              >
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Icon
+                    style={{ width: 30, height: 30, margin: "5%" }}
+                    fill={theme["color-primary-default"]}
+                    name="person-outline"
+                  />
+                  <Text category="h6" style={{ fontWeight: "bold" }}>
+                    {item.fullName}
+                  </Text>
+                  <Text category="label">{item.email}</Text>
                 </View>
-              )}
-            </View>
-          )}
-        />
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => props.navigation.navigate("AddEmployeeScreen")}
-        />
-      </View>
-    </Provider>
+              </Card>
+            )}
+          </>
+        )}
+      />
+      <Button
+        size="large"
+        style={styles.fab}
+        status="primary"
+        accessoryLeft={NewIcon}
+        onPress={() => props.navigation.navigate("AddEmployeeScreen")}
+      />
+    </Screen>
   );
 }
 
 export default AppEmployee;
 
 const styles = StyleSheet.create({
-  card: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: "3%",
-    paddingHorizontal: "5%",
-    borderColor: AppColors.primary,
-    borderStyle: "solid",
-    borderWidth: 2,
-    backgroundColor: AppColors.background,
-    margin: "2%",
-    width: "75%",
-    alignSelf: "center",
-    borderRadius: 10,
-  },
-  title: { fontSize: 16 },
-  screen: { flex: 1, justifyContent: "center" },
   fab: {
     position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: AppColors.secondary,
+    borderRadius: 25,
   },
 });

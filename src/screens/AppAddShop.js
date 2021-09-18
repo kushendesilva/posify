@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Dimensions, StatusBar } from "react-native";
-import { Icon, Button, Input } from "@ui-kitten/components";
+import { StyleSheet, View, Dimensions, StatusBar } from "react-native";
+import { Icon, Button, Input, Text, Layout } from "@ui-kitten/components";
 import {
-  Caption,
   ToggleButton,
   Dialog,
   Portal,
@@ -11,7 +10,6 @@ import {
   Snackbar,
 } from "react-native-paper";
 import { firebase } from "../configs/Database";
-
 import AppColors from "../configs/AppColors";
 
 function AppAddShop(props) {
@@ -66,14 +64,7 @@ function AppAddShop(props) {
         <View style={styles.header}>
           <Text style={styles.text}>Add New Shop Details</Text>
         </View>
-        <View
-          style={[
-            styles.footer,
-            {
-              backgroundColor: AppColors.background,
-            },
-          ]}
-        >
+        <Layout style={[styles.footer]}>
           <View style={styles.innerFooter}>
             <Input
               style={{ marginHorizontal: "2%", marginVertical: "1%" }}
@@ -83,7 +74,6 @@ function AppAddShop(props) {
               label="Shop Name"
               onChangeText={(text) => setEntityText(text)}
               value={entityText}
-              keyboardType="number-pad"
             />
 
             <View
@@ -91,9 +81,10 @@ function AppAddShop(props) {
                 justifyContent: "center",
                 alignItems: "center",
                 flexDirection: "row",
+                marginVertical: "5%",
               }}
             >
-              <Caption style={{ fontSize: 16 }}>Price Category </Caption>
+              <Text category="label">Price Category : </Text>
               <ToggleButton.Row
                 onValueChange={(value) => setValue(value)}
                 value={value}
@@ -153,7 +144,7 @@ function AppAddShop(props) {
               Successful
             </Snackbar>
           </View>
-        </View>
+        </Layout>
       </View>
     </Provider>
   );
@@ -176,7 +167,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 4,
-    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: "5%",
