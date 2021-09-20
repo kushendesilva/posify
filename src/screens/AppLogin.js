@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  Text,
   ScrollView,
   Dimensions,
   StatusBar,
   Image,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Icon, Button, Input } from "@ui-kitten/components";
+import { Snackbar } from "react-native-paper";
+import { Icon, Button, Input, Modal, Card, Text } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 
 function AppLogin(props) {
-  const LoginIcon = (props) => <Icon {...props} name="log-in-outline" />;
+  const LoginIcon = (props) => <Icon {...props} name="chevron-right-outline" />;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -28,6 +28,26 @@ function AppLogin(props) {
       <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
     </TouchableWithoutFeedback>
   );
+
+  const [forgetEmail, setForgetEmail] = useState("");
+
+  const [visible, setVisible] = React.useState(false);
+  const showPopUp = () => setVisible(true);
+  const hidePopUp = () => setVisible(false);
+
+  const [snackVisible, setSnackVisible] = React.useState(false);
+  const onToggleSnackBar = () => setSnackVisible(!snackVisible);
+  const onDismissSnackBar = () => setSnackVisible(false);
+
+  const onForgetPress = () => {
+    firebase
+      .auth()
+      .sendPasswordResetEmail(forgetEmail.toLowerCase())
+      .then((response) => {
+        hidePopUp();
+        onToggleSnackBar();
+      });
+  };
 
   const onLoginPress = () => {
     firebase
@@ -106,10 +126,56 @@ function AppLogin(props) {
             >
               Login
             </Button>
-            <Button appearance="ghost">Forgot Password?</Button>
+            <Button appearance="ghost" onPress={showPopUp}>
+              Forgot Password?
+            </Button>
           </ScrollView>
         </View>
       </View>
+      <Snackbar
+        duration={500}
+        visible={snackVisible}
+        onDismiss={onDismissSnackBar}
+      >
+        Email Sent.
+      </Snackbar>
+      <Modal
+        visible={visible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => setVisible(false)}
+      >
+        <Card disabled={true}>
+          <Text
+            status="primary"
+            style={{
+              textAlign: "center",
+              margin: "5%",
+              paddingHorizontal: "15%",
+              fontWeight: "bold",
+            }}
+            category="h6"
+          >
+            Forgot Password?
+          </Text>
+          <Input
+            style={{ margin: "5%" }}
+            size="large"
+            status="primary"
+            value={forgetEmail}
+            placeholder="Your Email"
+            onChangeText={(nextValue) => setForgetEmail(nextValue)}
+          />
+          <Button
+            size="large"
+            style={{ margin: "5%" }}
+            onPress={() => {
+              onForgetPress();
+            }}
+          >
+            Send Email
+          </Button>
+        </Card>
+      </Modal>
     </View>
   );
 }
@@ -152,5 +218,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     alignSelf: "center",
+  },
+  backdrop: {
+    backgroundColor: AppColors.background,
   },
 });

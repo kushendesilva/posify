@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  FlatList,
-  TouchableHighlight,
-  StyleSheet,
-  BackHandler,
-} from "react-native";
+import { View, FlatList, StyleSheet, BackHandler } from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
 import {
@@ -17,13 +11,7 @@ import {
   Text,
   useTheme,
 } from "@ui-kitten/components";
-import {
-  Avatar,
-  Provider,
-  Portal,
-  Dialog,
-  Paragraph,
-} from "react-native-paper";
+import { Provider, Portal, Dialog, Paragraph } from "react-native-paper";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
@@ -82,6 +70,7 @@ function AppHome({ navigation }) {
   const ReportsIcon = (props) => <Icon {...props} name="archive-outline" />;
   const LogOutIcon = (props) => <Icon {...props} name="log-out-outline" />;
   const DarkIcon = (props) => <Icon {...props} name="moon-outline" />;
+  const LightIcon = (props) => <Icon {...props} name="sun-outline" />;
 
   const [visible, setVisible] = React.useState(false);
 
@@ -335,11 +324,22 @@ function AppHome({ navigation }) {
               tabIcon={ReportsIcon}
               onPress={() => navigation.navigate("ReportScreen")}
             />
-            <ExtendedButton
-              title="Dark Theme"
-              tabIcon={DarkIcon}
-              onPress={themeContext.toggleTheme}
-            />
+            {AppRenderIf(
+              themeContext.theme == "light",
+              <ExtendedButton
+                title="Dark Theme"
+                tabIcon={DarkIcon}
+                onPress={themeContext.toggleTheme}
+              />
+            )}
+            {AppRenderIf(
+              themeContext.theme != "light",
+              <ExtendedButton
+                title="Light Theme"
+                tabIcon={LightIcon}
+                onPress={themeContext.toggleTheme}
+              />
+            )}
 
             <ExtendedButton
               title="Log Out"
