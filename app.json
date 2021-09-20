@@ -3,13 +3,13 @@
     "name": "Posify",
     "slug": "Posify",
     "owner": "kushenthimira",
-    "version": "test-2.4.0",
+    "version": "test-2.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#3366FF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +23,7 @@
       "package": "com.cipher.posify",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#3366FF"
       }
     },
     "web": {
