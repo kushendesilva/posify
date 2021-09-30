@@ -16,7 +16,7 @@ import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppAddInvoice({ navigation, route }) {
+function AppAddRequests({ navigation, route }) {
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -25,7 +25,7 @@ function AppAddInvoice({ navigation, route }) {
 
   const AddIcon = (props) => <Icon {...props} name="plus-outline" />;
 
-  const { invoice } = route.params;
+  const { user, requestId } = route.params;
 
   const stockRef = firebase.firestore().collection("stockItems");
   const updateStock = () => {
@@ -64,14 +64,12 @@ function AppAddInvoice({ navigation, route }) {
 
   const invoiceRef = firebase
     .firestore()
-    .collection("invoices")
-    .doc(invoice.docID)
+    .collection("requests")
+    .doc(requestId)
     .collection("invItems");
 
   const createInvoice = () => {
     {
-      //      const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-      //    const invoiceid = Date.now();
       const data = {
         itemName: itemName,
         quantity: parseInt(quantity),
@@ -131,17 +129,9 @@ function AppAddInvoice({ navigation, route }) {
     <View>
       <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="New Invoice" subtitle={invoice.name} />
+        <Appbar.Content title="New Request" subtitle={user.name} />
         <Appbar.Action
-          onPress={(values) =>
-            navigation.navigate("AddReturnScreen", {
-              shop: {
-                name: invoice.name,
-                payMethod: value,
-                docID: invoice.docID,
-              },
-            })
-          }
+          onPress={(values) => navigation.navigate("AppHome")}
           icon="arrow-collapse-right"
         />
       </Appbar>
@@ -219,21 +209,21 @@ function AppAddInvoice({ navigation, route }) {
                   <DataTable.Row>
                     {/* <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell> */}
                     {AppRenderIf(
-                      invoice.category == "a",
+                      user.category == "a",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
                         Unit Price: Rs.
                         {item.unitPriceA}
                       </DataTable.Cell>
                     )}
                     {AppRenderIf(
-                      invoice.category == "b",
+                      user.category == "b",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
                         Unit Price: Rs.
                         {item.unitPriceB}
                       </DataTable.Cell>
                     )}
                     {AppRenderIf(
-                      invoice.category == "c",
+                      user.category == "c",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
                         Unit Price: Rs.
                         {item.unitPriceC}
@@ -243,7 +233,7 @@ function AppAddInvoice({ navigation, route }) {
                       style={{ justifyContent: "center", alignItems: "center" }}
                     >
                       {AppRenderIf(
-                        invoice.category == "a",
+                        user.category == "a",
                         <TextInput
                           placeholder={"Quantity: " + item.stock}
                           mode="outlined"
@@ -266,7 +256,7 @@ function AppAddInvoice({ navigation, route }) {
                         ></TextInput>
                       )}
                       {AppRenderIf(
-                        invoice.category == "b",
+                        user.category == "b",
                         <TextInput
                           placeholder={"Quantity: " + item.stock}
                           mode="outlined"
@@ -289,7 +279,7 @@ function AppAddInvoice({ navigation, route }) {
                         ></TextInput>
                       )}
                       {AppRenderIf(
-                        invoice.category == "c",
+                        user.category == "c",
                         <TextInput
                           placeholder={"Quantity: " + item.stock}
                           mode="outlined"
@@ -337,7 +327,7 @@ function AppAddInvoice({ navigation, route }) {
   );
 }
 
-export default AppAddInvoice;
+export default AppAddRequests;
 
 const styles = StyleSheet.create({
   card: {

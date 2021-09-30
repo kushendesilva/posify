@@ -20,6 +20,7 @@ import AppReport from "./src/screens/AppReport";
 import AppReportExport from "./src/screens/AppReportExport";
 import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
+import AppAddRequests from "./src/screens/AppAddRequests";
 import AppAddReturn from "./src/screens/AppAddReturn";
 import AppAddShop from "./src/screens/AppAddShop";
 import AppAddEmployee from "./src/screens/AppAddEmployee";
@@ -118,6 +119,14 @@ export default () => {
                     component={AppProfile}
                     options={{
                       title: "Profile",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AddRequestsScreen"
+                    component={AppAddRequests}
+                    options={{
+                      title: "New Request",
+                      headerShown: false,
                     }}
                   />
                   <MainStack.Screen

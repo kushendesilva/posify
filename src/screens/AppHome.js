@@ -11,7 +11,13 @@ import {
   Text,
   useTheme,
 } from "@ui-kitten/components";
-import { Provider, Portal, Dialog, Paragraph } from "react-native-paper";
+import {
+  Provider,
+  Portal,
+  Dialog,
+  Paragraph,
+  ToggleButton,
+} from "react-native-paper";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
@@ -29,6 +35,8 @@ function AppHome({ navigation }) {
 
   const [loading, setLoading] = React.useState(true);
   const [user, setUser] = React.useState(null);
+
+  const [value, setValue] = React.useState("cash");
 
   React.useEffect(() => {
     const usersRef = firebase.firestore().collection("users");
@@ -60,7 +68,8 @@ function AppHome({ navigation }) {
   const SettingsIcon = (props) => <Icon {...props} name="settings-2-outline" />;
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
   const NewInvIcon = (props) => <Icon {...props} name="file-add-outline" />;
-  const ReqIcon = (props) => <Icon {...props} name="flip-2-outline" />;
+  const ReqIcon = (props) => <Icon {...props} name="folder-outline" />;
+  const ReqAddIcon = (props) => <Icon {...props} name="folder-add-outline" />;
   const StockIcon = (props) => <Icon {...props} name="layers-outline" />;
   const SuppliersIcon = (props) => <Icon {...props} name="car-outline" />;
   const StoresIcon = (props) => (
@@ -77,6 +86,12 @@ function AppHome({ navigation }) {
   const showDialog = () => setVisible(true);
 
   const hideDialog = () => setVisible(false);
+
+  const [reqVisible, setReqVisible] = React.useState(false);
+
+  const showReqDialog = () => setReqVisible(true);
+
+  const hideReqDialog = () => setReqVisible(false);
 
   const [Invoices, setInvoices] = React.useState([]);
 
@@ -98,6 +113,32 @@ function AppHome({ navigation }) {
       }
     );
   }, []);
+
+  const requestId = Date.now().toString();
+  const getCurrentDate = () => {
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    return date + "/" + month + "/" + year;
+  };
+  const requestRef = firebase.firestore().collection("requests");
+  const createRequest = () => {
+    {
+      const data = {
+        requestID: requestId,
+        date: getCurrentDate(),
+        shopName: user.name,
+        payMethod: value,
+      };
+      requestRef
+        .doc(requestId)
+        .set(data)
+        .then((_doc) => {})
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
 
   return (
     <Screen>
@@ -123,6 +164,11 @@ function AppHome({ navigation }) {
                     onPress={showDialog}
                   />
                   <ExtendedButton title="Requests" tabIcon={ReqIcon} />
+                  <ExtendedButton
+                    title="New Request"
+                    tabIcon={ReqAddIcon}
+                    onPress={showReqDialog}
+                  />
                   <Text
                     category="h4"
                     style={{ fontWeight: "bold", textAlign: "center" }}
@@ -273,6 +319,60 @@ function AppHome({ navigation }) {
                     accessoryRight={CheckIcon}
                     onPress={() => {
                       hideDialog(), navigation.navigate("SelectShopScreen");
+                    }}
+                    status="success"
+                  >
+                    Confirm
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+            <Portal>
+              <Dialog visible={reqVisible} onDismiss={hideReqDialog}>
+                <Dialog.Content>
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Text
+                      style={{ fontWeight: "bold", margin: "5%" }}
+                      category="h6"
+                    >
+                      Choose Your Payment Method
+                    </Text>
+                    <ToggleButton.Row
+                      onValueChange={(value) => setValue(value)}
+                      value={value}
+                    >
+                      <ToggleButton icon="cash" value="cash"></ToggleButton>
+                      <ToggleButton
+                        icon="credit-card"
+                        value="card"
+                      ></ToggleButton>
+                      <ToggleButton
+                        icon="card-text-outline"
+                        value="cheque"
+                      ></ToggleButton>
+                    </ToggleButton.Row>
+                  </View>
+                </Dialog.Content>
+                <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+                  <Button
+                    accessoryRight={CancelIcon}
+                    onPress={hideReqDialog}
+                    status="danger"
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    accessoryRight={CheckIcon}
+                    onPress={() => {
+                      hideReqDialog();
+                      createRequest();
+                      navigation.navigate("AddRequestsScreen", {
+                        user: user,
+                        requestId: requestId,
+                      });
                     }}
                     status="success"
                   >

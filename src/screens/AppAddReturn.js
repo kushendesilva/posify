@@ -8,16 +8,15 @@ import {
   Appbar,
   Divider,
   DataTable,
-  Button,
   Searchbar,
 } from "react-native-paper";
+import { Button, Icon } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 
-const totalPrice = 10000;
-
 function AppAddReturns({ navigation, route }) {
   const [StockItems, setStockItems] = React.useState([]);
+  const AddIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const stockRef = firebase.firestore().collection("stockItems");
 
@@ -222,7 +221,7 @@ function AppAddReturns({ navigation, route }) {
           onPress={(values) => {
             onToggleSnackBar();
             addReturns();
-            navigation.navigate("HomeScreen");
+            navigation.navigate("AppHome");
           }}
           icon="arrow-collapse-right"
         />
@@ -321,10 +320,9 @@ function AppAddReturns({ navigation, route }) {
                 </DataTable.Cell>
                 <DataTable.Cell style={{ justifyContent: "center" }}>
                   <Button
-                    mode="contained"
-                    icon="plus-circle"
-                    // color={Colors.red500}
-                    size={20}
+                    status="primary"
+                    size="small"
+                    accessoryRight={AddIcon}
                     onPress={() => {
                       createInvoice();
                       onToggleReSnackBar();
