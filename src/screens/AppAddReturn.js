@@ -12,6 +12,7 @@ import {
 } from "react-native-paper";
 import { Button, Icon } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
+import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
 
 function AppAddReturns({ navigation, route }) {
@@ -213,7 +214,7 @@ function AppAddReturns({ navigation, route }) {
   };
 
   return (
-    <View>
+    <Screen>
       <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
         <Appbar.Content title="Returns" subtitle={shop.name} />
@@ -351,7 +352,7 @@ function AppAddReturns({ navigation, route }) {
       >
         Successful
       </Snackbar>
-    </View>
+    </Screen>
   );
 }
 

@@ -14,6 +14,7 @@ import {
 import { Button, Icon } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
+import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
 
 function AppAddInvoice({ navigation, route }) {
@@ -128,7 +129,7 @@ function AppAddInvoice({ navigation, route }) {
   };
 
   return (
-    <View>
+    <Screen>
       <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
         <Appbar.Content title="New Invoice" subtitle={invoice.name} />
@@ -333,7 +334,7 @@ function AppAddInvoice({ navigation, route }) {
           )}
         />
       </DataTable>
-    </View>
+    </Screen>
   );
 }
 

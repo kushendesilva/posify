@@ -11,7 +11,7 @@ import {
 import { Icon, Button, Input, Text, Layout } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 
-function AppAddEmployee(props) {
+function AppAddSuppliers(props) {
   const DoneIcon = (props) => (
     <Icon {...props} name="checkmark-circle-2-outline" />
   );
@@ -48,7 +48,7 @@ function AppAddEmployee(props) {
           id: uid,
           email,
           fullName,
-          type: "employee",
+          type: "supplier",
         };
 
         const usersRef = firebase.firestore().collection("users");
@@ -75,7 +75,7 @@ function AppAddEmployee(props) {
           barStyle="light-content"
         />
         <View style={styles.header}>
-          <Text style={styles.text}>Add New Employee Details</Text>
+          <Text style={styles.text}>Add New Supplier Details</Text>
         </View>
         <Layout style={styles.footer}>
           <View style={styles.innerFooter}>
@@ -175,7 +175,7 @@ function AppAddEmployee(props) {
   );
 }
 
-export default AppAddEmployee;
+export default AppAddSuppliers;
 
 const { height } = Dimensions.get("screen");
 const height_logo = height * 0.15;

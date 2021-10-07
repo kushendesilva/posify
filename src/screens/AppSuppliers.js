@@ -5,7 +5,7 @@ import { Icon, Card, useTheme, Button, Text } from "@ui-kitten/components";
 import Screen from "../components/Screen";
 import AppRenderIf from "../configs/AppRenderIf";
 
-function AppEmployee(props) {
+function AppSuppliers(props) {
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const theme = useTheme();
@@ -42,7 +42,7 @@ function AppEmployee(props) {
         renderItem={({ item }) => (
           <>
             {AppRenderIf(
-              item.type == "employee",
+              item.type == "supplier",
               <Card
                 status="primary"
                 style={{
@@ -73,13 +73,13 @@ function AppEmployee(props) {
         style={styles.fab}
         status="primary"
         accessoryLeft={NewIcon}
-        onPress={() => props.navigation.navigate("AddEmployeeScreen")}
+        onPress={() => props.navigation.navigate("AddSuppliersScreen")}
       />
     </Screen>
   );
 }
 
-export default AppEmployee;
+export default AppSuppliers;
 
 const styles = StyleSheet.create({
   fab: {

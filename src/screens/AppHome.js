@@ -69,7 +69,6 @@ function AppHome({ navigation }) {
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
   const NewInvIcon = (props) => <Icon {...props} name="file-add-outline" />;
   const ReqIcon = (props) => <Icon {...props} name="folder-outline" />;
-  const ReqAddIcon = (props) => <Icon {...props} name="folder-add-outline" />;
   const StockIcon = (props) => <Icon {...props} name="layers-outline" />;
   const SuppliersIcon = (props) => <Icon {...props} name="car-outline" />;
   const StoresIcon = (props) => (
@@ -86,12 +85,6 @@ function AppHome({ navigation }) {
   const showDialog = () => setVisible(true);
 
   const hideDialog = () => setVisible(false);
-
-  const [reqVisible, setReqVisible] = React.useState(false);
-
-  const showReqDialog = () => setReqVisible(true);
-
-  const hideReqDialog = () => setReqVisible(false);
 
   const [Invoices, setInvoices] = React.useState([]);
 
@@ -113,32 +106,6 @@ function AppHome({ navigation }) {
       }
     );
   }, []);
-
-  const requestId = Date.now().toString();
-  const getCurrentDate = () => {
-    var date = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
-    return date + "/" + month + "/" + year;
-  };
-  const requestRef = firebase.firestore().collection("requests");
-  const createRequest = () => {
-    {
-      const data = {
-        requestID: requestId,
-        date: getCurrentDate(),
-        shopName: user.name,
-        payMethod: value,
-      };
-      requestRef
-        .doc(requestId)
-        .set(data)
-        .then((_doc) => {})
-        .catch((error) => {
-          alert(error);
-        });
-    }
-  };
 
   return (
     <Screen>
@@ -162,12 +129,6 @@ function AppHome({ navigation }) {
                     title="New Invoice"
                     tabIcon={NewInvIcon}
                     onPress={showDialog}
-                  />
-                  <ExtendedButton title="Requests" tabIcon={ReqIcon} />
-                  <ExtendedButton
-                    title="New Request"
-                    tabIcon={ReqAddIcon}
-                    onPress={showReqDialog}
                   />
                   <Text
                     category="h4"
@@ -302,9 +263,9 @@ function AppHome({ navigation }) {
             />
             <Portal>
               <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>Notice</Dialog.Title>
+                <Dialog.Title>Confirmation</Dialog.Title>
                 <Dialog.Content>
-                  <Paragraph>Confirmation</Paragraph>
+                  <Paragraph>Confirm Creating a New Invoice</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
                   <Button
@@ -327,60 +288,6 @@ function AppHome({ navigation }) {
                 </Dialog.Actions>
               </Dialog>
             </Portal>
-            <Portal>
-              <Dialog visible={reqVisible} onDismiss={hideReqDialog}>
-                <Dialog.Content>
-                  <View
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                  >
-                    <Text
-                      style={{ fontWeight: "bold", margin: "5%" }}
-                      category="h6"
-                    >
-                      Choose Your Payment Method
-                    </Text>
-                    <ToggleButton.Row
-                      onValueChange={(value) => setValue(value)}
-                      value={value}
-                    >
-                      <ToggleButton icon="cash" value="cash"></ToggleButton>
-                      <ToggleButton
-                        icon="credit-card"
-                        value="card"
-                      ></ToggleButton>
-                      <ToggleButton
-                        icon="card-text-outline"
-                        value="cheque"
-                      ></ToggleButton>
-                    </ToggleButton.Row>
-                  </View>
-                </Dialog.Content>
-                <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                  <Button
-                    accessoryRight={CancelIcon}
-                    onPress={hideReqDialog}
-                    status="danger"
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    accessoryRight={CheckIcon}
-                    onPress={() => {
-                      hideReqDialog();
-                      createRequest();
-                      navigation.navigate("AddRequestsScreen", {
-                        user: user,
-                        requestId: requestId,
-                      });
-                    }}
-                    status="success"
-                  >
-                    Confirm
-                  </Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
           </View>
         </Provider>
       )}
@@ -393,7 +300,11 @@ function AppHome({ navigation }) {
             tabIcon={StockIcon}
             onPress={() => navigation.navigate("StockScreen")}
           />
-          <ExtendedButton title="Suppliers" tabIcon={SuppliersIcon} />
+          <ExtendedButton
+            title="Suppliers"
+            tabIcon={SuppliersIcon}
+            onPress={() => navigation.navigate("SuppliersScreen")}
+          />
           <ExtendedButton
             title="Stores"
             tabIcon={StoresIcon}
@@ -403,6 +314,15 @@ function AppHome({ navigation }) {
             title="Employees"
             tabIcon={EmployeesIcon}
             onPress={() => navigation.navigate("EmployeeScreen")}
+          />
+          <ExtendedButton
+            title="Requests"
+            tabIcon={ReqIcon}
+            onPress={() =>
+              navigation.navigate("RequestsScreen", {
+                user: user,
+              })
+            }
           />
         </>
       )}
@@ -471,6 +391,7 @@ function AppHome({ navigation }) {
                 </Dialog.Content>
                 <Dialog.Actions>
                   <Button
+                    status="success"
                     accessoryRight={CheckIcon}
                     onPress={(hideDialog, closeApp)}
                   >

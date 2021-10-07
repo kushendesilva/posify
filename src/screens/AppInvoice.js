@@ -9,10 +9,10 @@ import {
   Divider,
   Portal,
   Provider,
-  Button,
   Paragraph,
   Dialog,
 } from "react-native-paper";
+import { Button } from "@ui-kitten/components";
 import * as Print from "expo-print";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
@@ -255,16 +255,11 @@ function AppInvoice({ route, navigation }) {
               <Paragraph>Delete {invoice.docID} invoice data.</Paragraph>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                mode="contained"
-                color={AppColors.red}
-                onPress={hideConfirmation}
-              >
+              <Button status="danger" onPress={hideConfirmation}>
                 Cancel
               </Button>
               <Button
-                mode="contained"
-                color={AppColors.secondaryVariant}
+                status="success"
                 onPress={() => {
                   onDeleteButtonPress();
                 }}

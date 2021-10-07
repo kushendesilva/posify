@@ -131,7 +131,7 @@ function AppAddRequests({ navigation, route }) {
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
         <Appbar.Content title="New Request" subtitle={user.name} />
         <Appbar.Action
-          onPress={(values) => navigation.navigate("AppHome")}
+          onPress={(values) => navigation.navigate("RequestsScreen")}
           icon="arrow-collapse-right"
         />
       </Appbar>
