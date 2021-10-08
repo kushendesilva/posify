@@ -56,7 +56,7 @@ function AppSuppliers(props) {
                   <Icon
                     style={{ width: 30, height: 30, margin: "5%" }}
                     fill={theme["color-primary-default"]}
-                    name="person-outline"
+                    name="car-outline"
                   />
                   <Text category="h6" style={{ fontWeight: "bold" }}>
                     {item.fullName}

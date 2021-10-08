@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { View, StatusBar, FlatList, StyleSheet } from "react-native";
+import { firebase } from "../configs/Database";
 import { Icon, Card, useTheme, Button, Text } from "@ui-kitten/components";
 import Screen from "../components/Screen";
-import { firebase } from "../configs/Database";
-
-import AppColors from "../configs/AppColors";
+import AppRenderIf from "../configs/AppRenderIf";
 
 function AppShop(props) {
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const theme = useTheme();
+  const [users, setUsers] = useState([]);
 
-  const [shops, setShops] = useState([]);
-
-  const shopRef = firebase.firestore().collection("shops");
+  const userRef = firebase.firestore().collection("users");
 
   useEffect(() => {
-    shopRef.onSnapshot(
+    userRef.onSnapshot(
       (querySnapshot) => {
-        const newShops = [];
+        const newUsers = [];
         querySnapshot.forEach((doc) => {
-          const shop = doc.data();
-          shop.id = doc.id;
-          newShops.push(shop);
+          const user = doc.data();
+          user.id = doc.id;
+          newUsers.push(user);
         });
-        setShops(newShops);
+        setUsers(newUsers);
       },
       (error) => {
         console.log(error);
@@ -34,44 +32,45 @@ function AppShop(props) {
 
   return (
     <Screen>
-      <StatusBar backgroundColor={AppColors.primary} barStyle="light-content" />
+      <StatusBar
+        backgroundColor={theme["color-primary-default"]}
+        barStyle="light-content"
+      />
       <FlatList
-        data={shops}
-        keyExtractor={(shop) => shop.id}
+        data={users}
+        keyExtractor={(employee) => employee.id.toString()}
         renderItem={({ item }) => (
-          <Card
-            status="primary"
-            style={{
-              marginVertical: "2%",
-              marginHorizontal: "15%",
-            }}
-            onPress={(values) =>
-              props.navigation.navigate("EditShopScreen", {
-                shop: {
-                  id: item.id,
-                  name: item.name,
-                  category: item.category,
-                },
-              })
-            }
-          >
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Icon
-                style={{ width: 30, height: 30, margin: "2%" }}
-                fill={theme["color-primary-default"]}
-                name="shopping-cart-outline"
-              />
-              <Text category="h6" style={{ fontWeight: "bold", margin: "2%" }}>
-                {item.name}
-              </Text>
-              <Text category="label">
-                Price Category :{" "}
-                <Text category="label" style={{ textTransform: "uppercase" }}>
-                  {item.category}
-                </Text>
-              </Text>
-            </View>
-          </Card>
+          <>
+            {AppRenderIf(
+              item.type == "store",
+              <Card
+                status="primary"
+                style={{
+                  marginVertical: "2%",
+                  marginHorizontal: "15%",
+                }}
+              >
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Icon
+                    style={{ width: 30, height: 30, margin: "5%" }}
+                    fill={theme["color-primary-default"]}
+                    name="shopping-cart-outline"
+                  />
+                  <Text category="h6" style={{ fontWeight: "bold" }}>
+                    {item.fullName}
+                  </Text>
+                  <Text
+                    category="label"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    Price Category: {item.category}
+                  </Text>
+                </View>
+              </Card>
+            )}
+          </>
         )}
       />
       <Button

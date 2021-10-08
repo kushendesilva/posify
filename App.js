@@ -12,6 +12,7 @@ import AppColors from "./src/configs/AppColors";
 
 import AppLogin from "./src/screens/AppLogin";
 import AppHome from "./src/screens/AppHome";
+import AppHelp from "./src/screens/AppHelp";
 import AppShop from "./src/screens/AppShop";
 import AppStock from "./src/screens/AppStock";
 import AppEmployee from "./src/screens/AppEmployee";
@@ -97,6 +98,13 @@ export default () => {
                     options={{
                       title: "Home",
                       headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppHelp"
+                    component={AppHelp}
+                    options={{
+                      title: "Help",
                     }}
                   />
                   <MainStack.Screen

@@ -134,16 +134,11 @@ function AppAddSuppliers(props) {
                   <Paragraph>Confirmation</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                  <Button
-                    mode="contained"
-                    color={AppColors.red}
-                    onPress={hideDialog}
-                  >
+                  <Button status="danger" onPress={hideDialog}>
                     Cancel
                   </Button>
                   <Button
-                    mode="contained"
-                    color={AppColors.secondaryVariant}
+                    status="success"
                     onPress={() => {
                       hideDialog();
                       onToggleSnackBar();

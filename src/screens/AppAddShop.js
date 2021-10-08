@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Dimensions, StatusBar } from "react-native";
-import { Icon, Button, Input, Text, Layout } from "@ui-kitten/components";
+import { firebase } from "../configs/Database";
 import {
-  ToggleButton,
   Dialog,
   Portal,
   Paragraph,
   Provider,
   Snackbar,
+  ToggleButton,
 } from "react-native-paper";
-import { firebase } from "../configs/Database";
+import { Icon, Button, Input, Text, Layout } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 
 function AppAddShop(props) {
   const DoneIcon = (props) => (
     <Icon {...props} name="checkmark-circle-2-outline" />
   );
+
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -28,30 +29,45 @@ function AppAddShop(props) {
 
   const hideDialog = () => setVisible(false);
 
-  const [value, setValue] = useState("");
-
-  const [entityText, setEntityText] = useState("");
-
-  const entityRef = firebase.firestore().collection("shops");
-
-  const onAddButtonPress = () => {
-    if (entityText && entityText.length > 0) {
-      //const key = Date.now();
-      const data = {
-        name: entityText,
-        category: value,
-        //id: key,
-      };
-      entityRef
-        .add(data)
-        .then((_doc) => {
-          setEntityText("");
-          props.navigation.goBack();
-        })
-        .catch((error) => {
-          alert(error);
-        });
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [category, setCategory] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const onRegisterPress = () => {
+    if (password !== confirmPassword) {
+      alert("Passwords don't match.");
+      return;
     }
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => {
+        const uid = response.user.uid;
+        //const itemID = response.doc.id;
+        const data = {
+          id: uid,
+          email,
+          fullName,
+          type: "store",
+          category,
+        };
+
+        const usersRef = firebase.firestore().collection("users");
+        usersRef
+          .doc(uid)
+          .set(data)
+          .then(() => {
+            props.navigation.goBack();
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
 
   return (
@@ -62,20 +78,49 @@ function AppAddShop(props) {
           barStyle="light-content"
         />
         <View style={styles.header}>
-          <Text style={styles.text}>Add New Shop Details</Text>
+          <Text style={styles.text}>Add New Store Details</Text>
         </View>
-        <Layout style={[styles.footer]}>
+        <Layout style={styles.footer}>
           <View style={styles.innerFooter}>
+            <Input
+              placeholder="Full Name"
+              label="Full Name"
+              onChangeText={(text) => setFullName(text)}
+              value={fullName}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
+            />
+            <Input
+              placeholder="Email"
+              label="Email"
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
+            />
+
+            <Input
+              secureTextEntry
+              placeholder="Password"
+              label="Password"
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
+            />
             <Input
               style={{ marginHorizontal: "2%", marginVertical: "1%" }}
               size="large"
               status="primary"
-              placeholder="Shop Name"
-              label="Shop Name"
-              onChangeText={(text) => setEntityText(text)}
-              value={entityText}
+              placeholder="Confirm Password"
+              label="Confirm Password"
+              onChangeText={(text) => setConfirmPassword(text)}
+              value={confirmPassword}
+              secureTextEntry
             />
-
             <View
               style={{
                 justifyContent: "center",
@@ -86,8 +131,8 @@ function AppAddShop(props) {
             >
               <Text category="label">Price Category : </Text>
               <ToggleButton.Row
-                onValueChange={(value) => setValue(value)}
-                value={value}
+                onValueChange={(value) => setCategory(value)}
+                value={category}
               >
                 <ToggleButton icon="alpha-a" value="a"></ToggleButton>
                 <ToggleButton icon="alpha-b" value="b"></ToggleButton>
@@ -110,11 +155,7 @@ function AppAddShop(props) {
                   <Paragraph>Confirmation</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                  <Button
-                    mode="contained"
-                    color={AppColors.red}
-                    onPress={hideDialog}
-                  >
+                  <Button status="danger" onPress={hideDialog}>
                     Cancel
                   </Button>
                   <Button
@@ -122,7 +163,7 @@ function AppAddShop(props) {
                     onPress={() => {
                       hideDialog();
                       onToggleSnackBar();
-                      onAddButtonPress();
+                      onRegisterPress();
                     }}
                   >
                     Confirm

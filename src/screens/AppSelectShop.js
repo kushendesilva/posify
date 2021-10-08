@@ -5,24 +5,22 @@ import {
   Dimensions,
   StatusBar,
   FlatList,
-  TouchableHighlight,
 } from "react-native";
-import { Title, Caption, Searchbar } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
 import { Icon, Card, Text, Layout } from "@ui-kitten/components";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
 
 function AppSelectShop(props) {
-  const [visible, setVisible] = React.useState(false);
-
-  const showDialog = () => setVisible(true);
-
-  const hideDialog = () => setVisible(false);
   const [shops, setShops] = useState([]);
+
   const invoiceId = Date.now().toString();
 
-  const shopRef = firebase.firestore().collection("shops");
+  const shopRef = firebase
+    .firestore()
+    .collection("users")
+    .where("type", "==", "store");
 
   useEffect(() => {
     shopRef.onSnapshot(
@@ -60,13 +58,12 @@ function AppSelectShop(props) {
   };
 
   //search
-  const shopeRef = firebase.firestore().collection("shops");
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   React.useEffect(() => {
-    shopeRef.onSnapshot(
+    shopRef.onSnapshot(
       (querySnapshot) => {
         const newStock = [];
         querySnapshot.forEach((doc) => {
@@ -89,7 +86,9 @@ function AppSelectShop(props) {
       // Filter the masterDataSource
       // Update FilteredDataSource
       const newData = masterDataSource.filter(function (item) {
-        const itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
+        const itemData = item.fullName
+          ? item.fullName.toUpperCase()
+          : "".toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -138,7 +137,7 @@ function AppSelectShop(props) {
                   createInvoice(),
                     props.navigation.navigate("AddInvoiceScreen", {
                       invoice: {
-                        name: item.name,
+                        name: item.fullName,
                         category: item.category,
                         docID: invoiceId,
                       },
@@ -157,7 +156,7 @@ function AppSelectShop(props) {
                     category="h6"
                     style={{ fontWeight: "bold", margin: "2%" }}
                   >
-                    {item.name}
+                    {item.fullName}
                   </Text>
                   <Text category="label">
                     Price Category :{" "}

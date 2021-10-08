@@ -11,13 +11,7 @@ import {
   Text,
   useTheme,
 } from "@ui-kitten/components";
-import {
-  Provider,
-  Portal,
-  Dialog,
-  Paragraph,
-  ToggleButton,
-} from "react-native-paper";
+import { Provider, Portal, Dialog, Paragraph } from "react-native-paper";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
@@ -35,8 +29,6 @@ function AppHome({ navigation }) {
 
   const [loading, setLoading] = React.useState(true);
   const [user, setUser] = React.useState(null);
-
-  const [value, setValue] = React.useState("cash");
 
   React.useEffect(() => {
     const usersRef = firebase.firestore().collection("users");
@@ -68,7 +60,7 @@ function AppHome({ navigation }) {
   const SettingsIcon = (props) => <Icon {...props} name="settings-2-outline" />;
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
   const NewInvIcon = (props) => <Icon {...props} name="file-add-outline" />;
-  const ReqIcon = (props) => <Icon {...props} name="folder-outline" />;
+  const ReqIcon = (props) => <Icon {...props} name="repeat-outline" />;
   const StockIcon = (props) => <Icon {...props} name="layers-outline" />;
   const SuppliersIcon = (props) => <Icon {...props} name="car-outline" />;
   const StoresIcon = (props) => (
@@ -76,6 +68,9 @@ function AppHome({ navigation }) {
   );
   const EmployeesIcon = (props) => <Icon {...props} name="people-outline" />;
   const ReportsIcon = (props) => <Icon {...props} name="archive-outline" />;
+  const HelpIcon = (props) => (
+    <Icon {...props} name="question-mark-circle-outline" />
+  );
   const LogOutIcon = (props) => <Icon {...props} name="log-out-outline" />;
   const DarkIcon = (props) => <Icon {...props} name="moon-outline" />;
   const LightIcon = (props) => <Icon {...props} name="sun-outline" />;
@@ -301,6 +296,15 @@ function AppHome({ navigation }) {
             onPress={() => navigation.navigate("StockScreen")}
           />
           <ExtendedButton
+            title="Requests"
+            tabIcon={ReqIcon}
+            onPress={() =>
+              navigation.navigate("RequestsScreen", {
+                user: user,
+              })
+            }
+          />
+          <ExtendedButton
             title="Suppliers"
             tabIcon={SuppliersIcon}
             onPress={() => navigation.navigate("SuppliersScreen")}
@@ -314,15 +318,6 @@ function AppHome({ navigation }) {
             title="Employees"
             tabIcon={EmployeesIcon}
             onPress={() => navigation.navigate("EmployeeScreen")}
-          />
-          <ExtendedButton
-            title="Requests"
-            tabIcon={ReqIcon}
-            onPress={() =>
-              navigation.navigate("RequestsScreen", {
-                user: user,
-              })
-            }
           />
         </>
       )}
@@ -360,6 +355,12 @@ function AppHome({ navigation }) {
                 onPress={themeContext.toggleTheme}
               />
             )}
+
+            <ExtendedButton
+              title="Help"
+              tabIcon={HelpIcon}
+              onPress={() => navigation.navigate("AppHelp")}
+            />
 
             <ExtendedButton
               title="Log Out"
