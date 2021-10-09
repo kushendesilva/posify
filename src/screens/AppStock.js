@@ -8,8 +8,9 @@ import Screen from "../components/Screen";
 import AppRenderIf from "../configs/AppRenderIf";
 
 function AppStock(props) {
-  const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
   const theme = useTheme();
+
+  const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const [StockItems, setStockItems] = useState([]);
 

@@ -31,6 +31,7 @@ import AppAddEmployee from "./src/screens/AppAddEmployee";
 import AppAddSuppliers from "./src/screens/AppAddSuppliers";
 import AppAddStock from "./src/screens/AppAddStock";
 import AppEditStock from "./src/screens/AppEditStock";
+import AppInvoices from "./src/screens/AppInvoices";
 import AppInvoice from "./src/screens/AppInvoice";
 import AppDelInvoice from "./src/screens/AppDelInvoice";
 
@@ -104,6 +105,13 @@ export default () => {
                     component={AppHelp}
                     options={{
                       title: "Help",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="InvoicesScreen"
+                    component={AppInvoices}
+                    options={{
+                      title: "Invoices",
                     }}
                   />
                   <MainStack.Screen

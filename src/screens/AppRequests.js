@@ -16,6 +16,7 @@ function AppRequests({ navigation, route }) {
     <Icon {...props} name="checkmark-circle-outline" />
   );
   const ReqAddIcon = (props) => <Icon {...props} name="plus-circle-outline" />;
+  const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const [reqVisible, setReqVisible] = React.useState(false);
 
@@ -75,25 +76,10 @@ function AppRequests({ navigation, route }) {
   }, []);
 
   return (
-    <Screen>
-      <Provider>
+    <Provider>
+      <Screen>
         <View style={styles.screen}>
           <FlatList
-            ListHeaderComponent={() => (
-              <>
-                <ExtendedButton
-                  title="New Request"
-                  tabIcon={ReqAddIcon}
-                  onPress={showReqDialog}
-                />
-                <Text
-                  category="h4"
-                  style={{ fontWeight: "bold", textAlign: "center" }}
-                >
-                  Requests
-                </Text>
-              </>
-            )}
             data={requests.sort((a, b) =>
               a.requestID.localeCompare(b.requestID)
             )}
@@ -398,8 +384,15 @@ function AppRequests({ navigation, route }) {
             </Dialog>
           </Portal>
         </View>
-      </Provider>
-    </Screen>
+        <Button
+          size="large"
+          style={styles.fab}
+          status="primary"
+          accessoryLeft={NewIcon}
+          onPress={showReqDialog}
+        />
+      </Screen>
+    </Provider>
   );
 }
 
@@ -426,6 +419,13 @@ const styles = StyleSheet.create({
   paragraph: {
     fontWeight: "bold",
     marginRight: 3,
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    borderRadius: 25,
   },
 });
 
