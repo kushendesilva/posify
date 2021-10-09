@@ -133,7 +133,9 @@ function AppHome({ navigation }) {
                   </Text>
                 </>
               )}
-              data={Invoices}
+              data={Invoices.sort((a, b) =>
+                a.invoiceID.localeCompare(b.invoiceID)
+              )}
               keyExtractor={(invoice) => invoice.id}
               renderItem={({ item }) => (
                 <>

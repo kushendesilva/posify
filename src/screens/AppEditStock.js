@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import {
-  Appbar,
-  Portal,
-  Dialog,
-  Provider,
-} from "react-native-paper";
+import { Appbar, Portal, Dialog, Provider } from "react-native-paper";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 import Screen from "../components/Screen";
@@ -42,38 +37,23 @@ function AppEditStock({ navigation, route }) {
     .doc(stockItem.id);
 
   const onEditButtonPress = () => {
-    if (
-      itemName &&
-      itemName.length > 0 &&
-      stockPrice &&
-      stockPrice.length > 0 &&
-      unitPriceA &&
-      unitPriceA.length > 0 &&
-      unitPriceB &&
-      unitPriceB.length > 0 &&
-      unitPriceC &&
-      unitPriceC.length > 0 &&
-      stock &&
-      stock.length > 0
-    ) {
-      const data = {
-        itemName: itemName,
-        stock: stock,
-        stockPrice: stockPrice,
-        unitPriceA: unitPriceA,
-        unitPriceB: unitPriceB,
-        unitPriceC: unitPriceC,
-      };
-      entityRef
-        .set(data)
-        .then((_doc) => {
-          setItemName("");
-          navigation.goBack();
-        })
-        .catch((error) => {
-          alert(error);
-        });
-    }
+    const data = {
+      itemName: itemName,
+      stock: stock,
+      stockPrice: stockPrice,
+      unitPriceA: unitPriceA,
+      unitPriceB: unitPriceB,
+      unitPriceC: unitPriceC,
+    };
+    entityRef
+      .update(data)
+      .then((_doc) => {
+        setItemName("");
+        navigation.goBack();
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
 
   const onDeleteButtonPress = () => {
@@ -218,9 +198,7 @@ function AppEditStock({ navigation, route }) {
                 accessoryRight={SaveIcon}
                 status="success"
                 size="giant"
-                onPress={() => {
-                  onEditButtonPress();
-                }}
+                onPress={onEditButtonPress}
               >
                 Update
               </Button>

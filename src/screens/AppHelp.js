@@ -35,13 +35,17 @@ function AppHelp(props) {
           <Button accessoryLeft={TwitterIcon} onPress={handleTwitterPress} />
           <Button accessoryLeft={GoogleIcon} onPress={handleGooglePress} />
         </ButtonGroup>
-        <Text category="label">Contact Us via Social Media</Text>
+        <Text category="label" style={{ textAlign: "center" }}>
+          Contact Us via Social Media
+        </Text>
       </Card>
-      <Card status="basic" style={{ margin: "2%" }}>
+      <Card status="basic" style={{ margin: "2%" }} onPress={handleGHPress}>
         <ButtonGroup style={{ alignSelf: "center" }} appearance="ghost">
           <Button accessoryLeft={GithubIcon} onPress={handleGHPress} />
         </ButtonGroup>
-        <Text category="label">Visit our GitHub page for Release Details</Text>
+        <Text style={{ textAlign: "center" }} category="label">
+          Visit our GitHub page for Release Details
+        </Text>
       </Card>
     </Layout>
   );

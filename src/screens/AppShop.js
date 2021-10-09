@@ -11,7 +11,10 @@ function AppShop(props) {
   const theme = useTheme();
   const [users, setUsers] = useState([]);
 
-  const userRef = firebase.firestore().collection("users");
+  const userRef = firebase
+    .firestore()
+    .collection("users")
+    .where("type", "==", "store");
 
   useEffect(() => {
     userRef.onSnapshot(
@@ -40,37 +43,27 @@ function AppShop(props) {
         data={users}
         keyExtractor={(employee) => employee.id.toString()}
         renderItem={({ item }) => (
-          <>
-            {AppRenderIf(
-              item.type == "store",
-              <Card
-                status="primary"
-                style={{
-                  marginVertical: "2%",
-                  marginHorizontal: "15%",
-                }}
-              >
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Icon
-                    style={{ width: 30, height: 30, margin: "5%" }}
-                    fill={theme["color-primary-default"]}
-                    name="shopping-cart-outline"
-                  />
-                  <Text category="h6" style={{ fontWeight: "bold" }}>
-                    {item.fullName}
-                  </Text>
-                  <Text
-                    category="label"
-                    style={{ textTransform: "capitalize" }}
-                  >
-                    Price Category: {item.category}
-                  </Text>
-                </View>
-              </Card>
-            )}
-          </>
+          <Card
+            status="primary"
+            style={{
+              marginVertical: "2%",
+              marginHorizontal: "15%",
+            }}
+          >
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Icon
+                style={{ width: 30, height: 30, margin: "5%" }}
+                fill={theme["color-primary-default"]}
+                name="shopping-cart-outline"
+              />
+              <Text category="h6" style={{ fontWeight: "bold" }}>
+                {item.fullName}
+              </Text>
+              <Text category="label" style={{ textTransform: "capitalize" }}>
+                Price Category: {item.category}
+              </Text>
+            </View>
+          </Card>
         )}
       />
       <Button

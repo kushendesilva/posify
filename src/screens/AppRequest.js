@@ -2,7 +2,6 @@ import React from "react";
 import { View, FlatList, ScrollView } from "react-native";
 import {
   DataTable,
-  Text,
   Title,
   Appbar,
   Caption,
@@ -12,13 +11,23 @@ import {
   Paragraph,
   Dialog,
 } from "react-native-paper";
-import { Button } from "@ui-kitten/components";
+import { CheckBox, Text, Button } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 function AppRequest({ route, navigation }) {
-  const { request } = route.params;
+  const { request, user } = route.params;
+
+  const [preparingChecked, setPreparingChecked] = React.useState(
+    request.preparing
+  );
+  const [preparedChecked, setPreparedChecked] = React.useState(
+    request.prepared
+  );
+  const [unavailableChecked, setUnavailableChecked] = React.useState(
+    request.unavailable
+  );
 
   const [visible, setVisible] = React.useState(false);
 
@@ -41,6 +50,27 @@ function AppRequest({ route, navigation }) {
           // An error happened.
         }
       );
+  };
+
+  const requestRef = firebase
+    .firestore()
+    .collection("requests")
+    .doc(request.docID);
+
+  const onChecked = () => {
+    const data = {
+      preparing: preparingChecked,
+      prepared: preparedChecked,
+      unavailable: unavailableChecked,
+    };
+    requestRef
+      .update(data)
+      .then((_doc) => {
+        navigation.goBack();
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
 
   const [RequestItem, setRequestItems] = React.useState([]);
@@ -70,11 +100,113 @@ function AppRequest({ route, navigation }) {
 
   return (
     <Provider>
-      <ScrollView>
-        <Appbar style={{ backgroundColor: AppColors.primary }}>
+      <ScrollView style={{ backgroundColor: AppColors.background }}>
+        <Appbar
+          style={{
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+          }}
+        >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title="Request" subtitle={request.docID} />
-          <Appbar.Action icon="trash-can-outline" onPress={showConfirmation} />
+          {AppRenderIf(
+            unavailableChecked != true && preparingChecked != true,
+            <Appbar.Content title="Request" subtitle={request.docID} />
+          )}
+          {AppRenderIf(
+            unavailableChecked == true,
+            <Appbar.Content title="Request" subtitle="Unavailable" />
+          )}
+          {AppRenderIf(
+            preparingChecked == true && preparedChecked != true,
+            <Appbar.Content title="Request" subtitle="Preparing" />
+          )}
+          {AppRenderIf(
+            preparedChecked == true && unavailableChecked != true,
+            <Appbar.Content title="Request" subtitle="Prepared" />
+          )}
+
+          {AppRenderIf(
+            unavailableChecked != true && preparingChecked != true,
+            <View
+              style={{
+                borderRadius: 4,
+                margin: 2,
+                padding: 6,
+                backgroundColor: AppColors.yellow,
+              }}
+            >
+              <CheckBox
+                style={{ margin: 2 }}
+                status="control"
+                checked={preparingChecked}
+                onChange={(nextChecked) => setPreparingChecked(nextChecked)}
+              >
+                Preparing
+              </CheckBox>
+            </View>
+          )}
+
+          {AppRenderIf(
+            preparingChecked == true && preparedChecked != true,
+            <View
+              style={{
+                borderRadius: 4,
+                margin: 2,
+                padding: 6,
+                backgroundColor: AppColors.green,
+              }}
+            >
+              <CheckBox
+                style={{ margin: 2 }}
+                status="control"
+                checked={preparedChecked}
+                onChange={(nextChecked) => setPreparedChecked(nextChecked)}
+              >
+                Prepared
+              </CheckBox>
+            </View>
+          )}
+
+          {AppRenderIf(
+            unavailableChecked != true && preparingChecked != true,
+            <View
+              style={{
+                borderRadius: 4,
+                margin: 2,
+                padding: 6,
+                backgroundColor: AppColors.red,
+              }}
+            >
+              <CheckBox
+                style={{ margin: 2 }}
+                status="control"
+                checked={unavailableChecked}
+                onChange={(nextChecked) => setUnavailableChecked(nextChecked)}
+              >
+                Unavailable
+              </CheckBox>
+            </View>
+          )}
+
+          {AppRenderIf(
+            user.type == "store",
+            <Appbar.Action
+              icon="trash-can-outline"
+              onPress={showConfirmation}
+            />
+          )}
+          {AppRenderIf(
+            preparingChecked == true || unavailableChecked == true,
+            <Appbar.Action
+              icon="refresh"
+              onPress={() => {
+                setPreparingChecked(false);
+                setPreparedChecked(false);
+                setUnavailableChecked(false);
+              }}
+            />
+          )}
+          <Appbar.Action icon="check-all" onPress={onChecked} />
         </Appbar>
         <View style={{ paddingBottom: "5%" }}>
           <View

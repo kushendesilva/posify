@@ -11,7 +11,10 @@ function AppSuppliers(props) {
   const theme = useTheme();
   const [users, setUsers] = useState([]);
 
-  const userRef = firebase.firestore().collection("users");
+  const userRef = firebase
+    .firestore()
+    .collection("users")
+    .where("type", "==", "supplier");
 
   useEffect(() => {
     userRef.onSnapshot(
@@ -40,32 +43,25 @@ function AppSuppliers(props) {
         data={users}
         keyExtractor={(employee) => employee.id.toString()}
         renderItem={({ item }) => (
-          <>
-            {AppRenderIf(
-              item.type == "supplier",
-              <Card
-                status="primary"
-                style={{
-                  marginVertical: "2%",
-                  marginHorizontal: "15%",
-                }}
-              >
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Icon
-                    style={{ width: 30, height: 30, margin: "5%" }}
-                    fill={theme["color-primary-default"]}
-                    name="car-outline"
-                  />
-                  <Text category="h6" style={{ fontWeight: "bold" }}>
-                    {item.fullName}
-                  </Text>
-                  <Text category="label">{item.email}</Text>
-                </View>
-              </Card>
-            )}
-          </>
+          <Card
+            status="primary"
+            style={{
+              marginVertical: "2%",
+              marginHorizontal: "15%",
+            }}
+          >
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Icon
+                style={{ width: 30, height: 30, margin: "5%" }}
+                fill={theme["color-primary-default"]}
+                name="car-outline"
+              />
+              <Text category="h6" style={{ fontWeight: "bold" }}>
+                {item.fullName}
+              </Text>
+              <Text category="label">{item.email}</Text>
+            </View>
+          </Card>
         )}
       />
       <Button

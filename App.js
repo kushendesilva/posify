@@ -30,7 +30,6 @@ import AppAddShop from "./src/screens/AppAddShop";
 import AppAddEmployee from "./src/screens/AppAddEmployee";
 import AppAddSuppliers from "./src/screens/AppAddSuppliers";
 import AppAddStock from "./src/screens/AppAddStock";
-import AppEditShop from "./src/screens/AppEditShop";
 import AppEditStock from "./src/screens/AppEditStock";
 import AppInvoice from "./src/screens/AppInvoice";
 import AppDelInvoice from "./src/screens/AppDelInvoice";
@@ -213,14 +212,6 @@ export default () => {
                     component={AppAddShop}
                     options={{
                       title: "New Shop",
-                    }}
-                  />
-                  <MainStack.Screen
-                    name="EditShopScreen"
-                    component={AppEditShop}
-                    options={{
-                      title: "Edit Shop Details",
-                      headerShown: false,
                     }}
                   />
                   <MainStack.Screen
