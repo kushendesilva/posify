@@ -57,8 +57,8 @@ function AppReport(props) {
       <Card
         status="primary"
         style={{
-          marginVertical: "2%",
-          marginHorizontal: "15%",
+          marginTop: "5%",
+          marginHorizontal: "10%",
         }}
       >
         <Text

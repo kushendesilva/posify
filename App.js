@@ -19,6 +19,7 @@ import AppEmployee from "./src/screens/AppEmployee";
 import AppSuppliers from "./src/screens/AppSuppliers";
 import AppProfile from "./src/screens/AppProfile";
 import AppReport from "./src/screens/AppReport";
+import AppBanners from "./src/screens/AppBanners";
 import AppReportExport from "./src/screens/AppReportExport";
 import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
@@ -220,6 +221,13 @@ export default () => {
                     component={AppAddShop}
                     options={{
                       title: "New Shop",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppBanners"
+                    component={AppBanners}
+                    options={{
+                      title: "Banners",
                     }}
                   />
                   <MainStack.Screen

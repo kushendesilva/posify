@@ -12,6 +12,7 @@ import {
 } from "@ui-kitten/components";
 import { Provider, Portal, Dialog } from "react-native-paper";
 import AppRenderIf from "../configs/AppRenderIf";
+import AppCarousel from "./AppCarousel";
 import { firebase } from "../configs/Database";
 import { ThemeContext } from "../configs/theme";
 import { ScrollView } from "react-native";
@@ -52,8 +53,8 @@ function AppHome({ navigation }) {
   const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
   const SettingsIcon = (props) => <Icon {...props} name="settings-2-outline" />;
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
-
-  const ReportsIcon = (props) => <Icon {...props} name="archive-outline" />;
+  const BannersIcon = (props) => <Icon {...props} name="layout-outline" />;
+  const ReportsIcon = (props) => <Icon {...props} name="pie-chart-outline" />;
   const HelpIcon = (props) => (
     <Icon {...props} name="question-mark-circle-outline" />
   );
@@ -102,6 +103,7 @@ function AppHome({ navigation }) {
             alignItems: "center",
           }}
         >
+          <AppCarousel />
           <View style={{ flexDirection: "row" }}>
             <ExtendedCard
               icon="file-text-outline"
@@ -165,6 +167,11 @@ function AppHome({ navigation }) {
               title="Reports"
               tabIcon={ReportsIcon}
               onPress={() => navigation.navigate("ReportScreen")}
+            />
+            <ExtendedButton
+              title="Banners"
+              tabIcon={BannersIcon}
+              onPress={() => navigation.navigate("AppBanners")}
             />
 
             {AppRenderIf(

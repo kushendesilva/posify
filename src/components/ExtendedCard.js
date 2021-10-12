@@ -8,8 +8,7 @@ function ExtendedCard({ title, onPress, icon }) {
     <Card
       onPress={onPress}
       style={{
-        marginVertical: "4%",
-        marginHorizontal: "2%",
+        margin: "2%",
         flex: 1,
         padding: "2%",
       }}
@@ -21,11 +20,11 @@ function ExtendedCard({ title, onPress, icon }) {
         }}
       >
         <Icon
-          style={{ width: 50, height: 50, margin: "5%" }}
+          style={{ width: 30, height: 30, margin: "5%" }}
           fill={AppColors.primary}
           name={icon}
         />
-        <Text category="h5" style={{ fontWeight: "bold" }}>
+        <Text category="h6" style={{ fontWeight: "bold" }}>
           {title}
         </Text>
       </View>
