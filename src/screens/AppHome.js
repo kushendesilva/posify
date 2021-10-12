@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, BackHandler } from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
+import ExtendedCard from "../components/ExtendedCard";
 import {
   Icon,
   Button,
@@ -15,6 +16,7 @@ import { firebase } from "../configs/Database";
 import { ThemeContext } from "../configs/theme";
 import { ScrollView } from "react-native";
 import Screen from "../components/Screen";
+import { View } from "react-native";
 
 function AppHome({ navigation }) {
   const themeContext = React.useContext(ThemeContext);
@@ -50,13 +52,7 @@ function AppHome({ navigation }) {
   const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
   const SettingsIcon = (props) => <Icon {...props} name="settings-2-outline" />;
   const AccountIcon = (props) => <Icon {...props} name="person-outline" />;
-  const ReqIcon = (props) => <Icon {...props} name="repeat-outline" />;
-  const StockIcon = (props) => <Icon {...props} name="cube-outline" />;
-  const SuppliersIcon = (props) => <Icon {...props} name="car-outline" />;
-  const StoresIcon = (props) => (
-    <Icon {...props} name="shopping-cart-outline" />
-  );
-  const EmployeesIcon = (props) => <Icon {...props} name="people-outline" />;
+
   const ReportsIcon = (props) => <Icon {...props} name="archive-outline" />;
   const HelpIcon = (props) => (
     <Icon {...props} name="question-mark-circle-outline" />
@@ -76,13 +72,13 @@ function AppHome({ navigation }) {
 
   return (
     <Screen>
-      <Layout style={{}}>
+      <Layout>
         {AppRenderIf(
           selectedIndex == 0,
           <Text
             status="primary"
             category="h4"
-            style={{ fontWeight: "bold", textAlign: "center", margin: "2%" }}
+            style={{ fontWeight: "bold", textAlign: "center", margin: "3%" }}
           >
             Home
           </Text>
@@ -92,7 +88,7 @@ function AppHome({ navigation }) {
           <Text
             status="primary"
             category="h4"
-            style={{ fontWeight: "bold", textAlign: "center", margin: "2%" }}
+            style={{ fontWeight: "bold", textAlign: "center", margin: "3%" }}
           >
             Settings
           </Text>
@@ -100,45 +96,56 @@ function AppHome({ navigation }) {
       </Layout>
       {AppRenderIf(
         selectedIndex == 0,
-        <ScrollView>
-          <ExtendedButton
-            title="Invoices"
-            tabIcon={ReqIcon}
-            onPress={() =>
-              navigation.navigate("InvoicesScreen", {
-                user: user,
-              })
-            }
-          />
-          <ExtendedButton
-            title="Requests"
-            tabIcon={ReqIcon}
-            onPress={() =>
-              navigation.navigate("RequestsScreen", {
-                user: user,
-              })
-            }
-          />
-          <ExtendedButton
-            title="Stock"
-            tabIcon={StockIcon}
-            onPress={() => navigation.navigate("StockScreen")}
-          />
-          <ExtendedButton
-            title="Suppliers"
-            tabIcon={SuppliersIcon}
-            onPress={() => navigation.navigate("SuppliersScreen")}
-          />
-          <ExtendedButton
-            title="Stores"
-            tabIcon={StoresIcon}
-            onPress={() => navigation.navigate("ShopScreen")}
-          />
-          <ExtendedButton
-            title="Employees"
-            tabIcon={EmployeesIcon}
-            onPress={() => navigation.navigate("EmployeeScreen")}
-          />
+        <ScrollView
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <ExtendedCard
+              icon="file-text-outline"
+              title="Invoices"
+              onPress={() =>
+                navigation.navigate("InvoicesScreen", {
+                  user: user,
+                })
+              }
+            />
+            <ExtendedCard
+              icon="repeat-outline"
+              title="Requests"
+              onPress={() =>
+                navigation.navigate("RequestsScreen", {
+                  user: user,
+                })
+              }
+            />
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <ExtendedCard
+              icon="cube-outline"
+              title="Stock"
+              onPress={() => navigation.navigate("StockScreen")}
+            />
+            <ExtendedCard
+              icon="car-outline"
+              title="Suppliers"
+              onPress={() => navigation.navigate("SuppliersScreen")}
+            />
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <ExtendedCard
+              icon="shopping-cart-outline"
+              title="Stores"
+              onPress={() => navigation.navigate("ShopScreen")}
+            />
+            <ExtendedCard
+              icon="people-outline"
+              title="Employees"
+              onPress={() => navigation.navigate("EmployeeScreen")}
+            />
+          </View>
         </ScrollView>
       )}
       {AppRenderIf(
@@ -226,7 +233,7 @@ function AppHome({ navigation }) {
         </ScrollView>
       )}
       <BottomNavigation
-        style={{ paddingVertical: "2%" }}
+        style={{ paddingVertical: "2.5%" }}
         selectedIndex={selectedIndex}
         onSelect={(index) => setSelectedIndex(index)}
       >

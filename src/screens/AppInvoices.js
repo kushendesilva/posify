@@ -1,6 +1,5 @@
 import React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
 import { Icon, Card, Button, Text, useTheme } from "@ui-kitten/components";
 import { Provider, Portal, Dialog, Paragraph } from "react-native-paper";
@@ -16,7 +15,6 @@ function AppInvoices({ navigation }) {
     <Icon {...props} name="checkmark-circle-outline" />
   );
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
-  const NewInvIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
   const [visible, setVisible] = React.useState(false);
 
