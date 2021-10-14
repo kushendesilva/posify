@@ -3,7 +3,6 @@ import { View, StatusBar, FlatList, StyleSheet } from "react-native";
 import { firebase } from "../configs/Database";
 import { Icon, Card, useTheme, Button, Text } from "@ui-kitten/components";
 import Screen from "../components/Screen";
-import AppRenderIf from "../configs/AppRenderIf";
 
 function AppShop(props) {
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;

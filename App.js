@@ -11,6 +11,7 @@ import { ThemeContext } from "./src/configs/theme";
 import AppColors from "./src/configs/AppColors";
 
 import AppLogin from "./src/screens/AppLogin";
+import AppSignUp from "./src/screens/AppSignUp";
 import AppHome from "./src/screens/AppHome";
 import AppHelp from "./src/screens/AppHelp";
 import AppShop from "./src/screens/AppShop";
@@ -20,10 +21,12 @@ import AppSuppliers from "./src/screens/AppSuppliers";
 import AppProfile from "./src/screens/AppProfile";
 import AppReport from "./src/screens/AppReport";
 import AppBanners from "./src/screens/AppBanners";
+import AppBanner from "./src/screens/AppBanner";
 import AppReportExport from "./src/screens/AppReportExport";
 import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
 import AppAddRequests from "./src/screens/AppAddRequests";
+import AppAddBanner from "./src/screens/AppAddBanner";
 import AppRequests from "./src/screens/AppRequests";
 import AppRequest from "./src/screens/AppRequest";
 import AppAddReturn from "./src/screens/AppAddReturn";
@@ -160,7 +163,7 @@ export default () => {
                     name="AppRequest"
                     component={AppRequest}
                     options={{
-                      title: "New Request",
+                      title: "Request",
                       headerShown: false,
                     }}
                   />
@@ -231,6 +234,21 @@ export default () => {
                     }}
                   />
                   <MainStack.Screen
+                    name="AppBanner"
+                    component={AppBanner}
+                    options={{
+                      title: "Banner",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppAddBanner"
+                    component={AppAddBanner}
+                    options={{
+                      title: "New Banner",
+                    }}
+                  />
+                  <MainStack.Screen
                     name="ReportScreen"
                     component={AppReport}
                     options={{
@@ -274,14 +292,24 @@ export default () => {
                   />
                 </>
               ) : (
-                <MainStack.Screen
-                  name="LoginScreen"
-                  component={AppLogin}
-                  options={{
-                    title: "Login",
-                    headerShown: false,
-                  }}
-                />
+                <>
+                  <MainStack.Screen
+                    name="LoginScreen"
+                    component={AppLogin}
+                    options={{
+                      title: "Login",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="SignUpScreen"
+                    component={AppSignUp}
+                    options={{
+                      title: "SignUp",
+                      headerShown: false,
+                    }}
+                  />
+                </>
               )}
             </MainStack.Navigator>
           </NavigationContainer>

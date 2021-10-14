@@ -43,34 +43,69 @@ export default function AppCarousel(props) {
   function renderItem({ item, index }) {
     const { type, title, content } = item;
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.item}
-        onPress={() => {
-          carouselRef.current.scrollToIndex(index);
-        }}
-      >
-        <Layout style={styles.lowerContainer}>
-          {AppRenderIf(
-            type == "offer",
-            <Icon
-              style={{ width: 30, height: 30, margin: "2%" }}
-              fill={AppColors.primary}
-              name="gift-outline"
-            />
-          )}
-          {AppRenderIf(
-            type == "alert",
-            <Icon
-              style={{ width: 30, height: 30, margin: "2%" }}
-              fill={AppColors.primary}
-              name="alert-triangle-outline"
-            />
-          )}
-          <Text style={styles.titleText}>{title}</Text>
-          <Text style={styles.contentText}>{content}</Text>
-        </Layout>
-      </TouchableOpacity>
+      <>
+        {AppRenderIf(
+          null == item.title,
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.item}
+            onPress={() => {
+              carouselRef.current.scrollToIndex(index);
+            }}
+          >
+            <Layout style={styles.lowerContainer}>
+              <Icon
+                style={{ width: 30, height: 30, margin: "2%" }}
+                fill={AppColors.primary}
+                name="sync-outline"
+              />
+              <Text style={styles.titleText}>Loading</Text>
+              <Text style={styles.contentText}>
+                Refresh the App to see new Content
+              </Text>
+            </Layout>
+          </TouchableOpacity>
+        )}
+        {AppRenderIf(
+          null != item.title,
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.item}
+            onPress={() => {
+              carouselRef.current.scrollToIndex(index);
+            }}
+          >
+            <Layout style={styles.lowerContainer}>
+              {AppRenderIf(
+                type == "offer",
+                <Icon
+                  style={{ width: 30, height: 30, margin: "2%" }}
+                  fill={AppColors.primary}
+                  name="gift-outline"
+                />
+              )}
+              {AppRenderIf(
+                type == "alert",
+                <Icon
+                  style={{ width: 30, height: 30, margin: "2%" }}
+                  fill={AppColors.primary}
+                  name="alert-triangle-outline"
+                />
+              )}
+              {AppRenderIf(
+                type == "notification",
+                <Icon
+                  style={{ width: 30, height: 30, margin: "2%" }}
+                  fill={AppColors.primary}
+                  name="bell-outline"
+                />
+              )}
+              <Text style={styles.titleText}>{title}</Text>
+              <Text style={styles.contentText}>{content}</Text>
+            </Layout>
+          </TouchableOpacity>
+        )}
+      </>
     );
   }
 

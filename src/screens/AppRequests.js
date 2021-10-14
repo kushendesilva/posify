@@ -15,7 +15,6 @@ function AppRequests({ navigation, route }) {
   const CheckIcon = (props) => (
     <Icon {...props} name="checkmark-circle-outline" />
   );
-  const ReqAddIcon = (props) => <Icon {...props} name="plus-circle-outline" />;
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
   const [reqVisible, setReqVisible] = React.useState(false);

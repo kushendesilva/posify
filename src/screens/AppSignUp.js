@@ -13,7 +13,7 @@ import { Icon, Button, Input, Modal, Card, Text } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 
-function AppLogin({ navigation }) {
+function AppSignUp({ navigation }) {
   const LoginIcon = (props) => <Icon {...props} name="chevron-right-outline" />;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,26 +28,6 @@ function AppLogin({ navigation }) {
       <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
     </TouchableWithoutFeedback>
   );
-
-  const [forgetEmail, setForgetEmail] = useState("");
-
-  const [visible, setVisible] = React.useState(false);
-  const showPopUp = () => setVisible(true);
-  const hidePopUp = () => setVisible(false);
-
-  const [snackVisible, setSnackVisible] = React.useState(false);
-  const onToggleSnackBar = () => setSnackVisible(!snackVisible);
-  const onDismissSnackBar = () => setSnackVisible(false);
-
-  const onForgetPress = () => {
-    firebase
-      .auth()
-      .sendPasswordResetEmail(forgetEmail.toLowerCase())
-      .then((response) => {
-        hidePopUp();
-        onToggleSnackBar();
-      });
-  };
 
   const onLoginPress = () => {
     firebase
@@ -92,10 +72,19 @@ function AppLogin({ navigation }) {
           },
         ]}
       >
-        <Text style={styles.text}>Welcome to Posify!</Text>
+        <Text style={styles.text}>Create A New Account</Text>
 
         <View style={styles.innerFooter}>
           <ScrollView>
+            <Input
+              style={{ marginHorizontal: "2%", marginVertical: "1%" }}
+              size="large"
+              status="primary"
+              value={email}
+              label="Name"
+              placeholder="Your Name"
+              onChangeText={(nextValue) => setEmail(nextValue)}
+            />
             <Input
               style={{ marginHorizontal: "2%", marginVertical: "1%" }}
               size="large"
@@ -116,14 +105,7 @@ function AppLogin({ navigation }) {
               secureTextEntry={secureTextEntry}
               onChangeText={(nextValue) => setPassword(nextValue)}
             />
-            <Button
-              status="basic"
-              appearance="ghost"
-              onPress={showPopUp}
-              style={{ marginTop: "2%" }}
-            >
-              Forgot Password?
-            </Button>
+
             <Button
               status="primary"
               accessoryRight={LoginIcon}
@@ -131,77 +113,26 @@ function AppLogin({ navigation }) {
               onPress={() => onLoginPress()}
               size="large"
             >
-              Login
+              Sign Up
             </Button>
 
             <Button
               appearance="ghost"
-              onPress={() => navigation.navigate("SignUpScreen")}
+              onPress={() => navigation.navigate("LoginScreen")}
             >
-              Create New Account
+              Login?
             </Button>
           </ScrollView>
         </View>
       </View>
-      <Snackbar
-        duration={500}
-        visible={snackVisible}
-        onDismiss={onDismissSnackBar}
-      >
-        Email Sent.
-      </Snackbar>
-      <Modal
-        visible={visible}
-        backdropStyle={styles.backdrop}
-        onBackdropPress={() => setVisible(false)}
-      >
-        <Card disabled={true}>
-          <Text
-            status="primary"
-            style={{
-              textAlign: "center",
-              margin: "5%",
-              paddingHorizontal: "15%",
-              fontWeight: "bold",
-            }}
-            category="h6"
-          >
-            Forgot Password?
-          </Text>
-          <Input
-            style={{ margin: "5%" }}
-            size="large"
-            status="primary"
-            value={forgetEmail}
-            placeholder="Your Email"
-            onChangeText={(nextValue) => setForgetEmail(nextValue)}
-          />
-          <Button
-            size="large"
-            style={{ margin: "5%", marginBottom: "2%" }}
-            onPress={() => {
-              onForgetPress();
-            }}
-          >
-            Send Email
-          </Button>
-          <Button
-            status="danger"
-            appearance="ghost"
-            onPress={() => setVisible(false)}
-          >
-            Cancel
-          </Button>
-        </Card>
-      </Modal>
     </View>
   );
 }
 
-export default AppLogin;
+export default AppSignUp;
 
 const { height } = Dimensions.get("screen");
-const height_logo = height * 0.15;
+const height_logo = height * 0.12;
 
 const styles = StyleSheet.create({
   container: {
@@ -214,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   footer: {
-    flex: 1.25,
+    flex: 1.5,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -222,14 +153,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
     justifyContent: "center",
   },
-  innerFooter: { padding: "4%", marginTop: "5%" },
+  innerFooter: { padding: "4%" },
   logo: {
     width: height_logo,
     height: height_logo,
   },
   button: {
     padding: "4%",
-    margin: "2%",
+    marginTop: "5%",
+    marginHorizontal: "2%",
   },
   text: {
     color: AppColors.primary,

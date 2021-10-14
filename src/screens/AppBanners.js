@@ -2,7 +2,7 @@ import React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import Screen from "../components/Screen";
 import { Icon, Card, Button, Text, useTheme } from "@ui-kitten/components";
-import { Provider, Portal, Dialog, Paragraph } from "react-native-paper";
+import { Provider, Portal, Dialog, ToggleButton } from "react-native-paper";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
@@ -16,15 +16,35 @@ function AppBanners({ navigation }) {
   );
   const NewIcon = (props) => <Icon {...props} name="plus-outline" />;
 
-  const [visible, setVisible] = React.useState(false);
+  const [bannerVisible, setBannerVisible] = React.useState(false);
 
-  const showDialog = () => setVisible(true);
+  const showBannerDialog = () => setBannerVisible(true);
 
-  const hideDialog = () => setVisible(false);
+  const hideBannerDialog = () => setBannerVisible(false);
+
+  const bannerID = Date.now().toString();
+
+  const [type, setType] = React.useState("alert");
 
   const [banners, setBanners] = React.useState([]);
 
   const bannerRef = firebase.firestore().collection("banners");
+
+  const createBanner = () => {
+    {
+      const data = {
+        bannerID,
+        type,
+      };
+      bannerRef
+        .doc(bannerID)
+        .set(data)
+        .then((_doc) => {})
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
 
   React.useEffect(() => {
     bannerRef.onSnapshot(
@@ -55,6 +75,15 @@ function AppBanners({ navigation }) {
                 {AppRenderIf(
                   null != item.title,
                   <Card
+                    onPress={(values) =>
+                      navigation.navigate("AppBanner", {
+                        banner: {
+                          bannerID: item.bannerID,
+                          title: item.title,
+                          content: item.content,
+                        },
+                      })
+                    }
                     style={{
                       margin: "2%",
                       justifyContent: "center",
@@ -88,6 +117,19 @@ function AppBanners({ navigation }) {
                         name="alert-triangle-outline"
                       />
                     )}
+                    {AppRenderIf(
+                      item.type == "notification",
+                      <Icon
+                        style={{
+                          width: 30,
+                          height: 30,
+                          marginBottom: "2%",
+                          alignSelf: "center",
+                        }}
+                        fill={AppColors.primary}
+                        name="bell-outline"
+                      />
+                    )}
                     <Text style={styles.title}>{item.title}</Text>
 
                     <Text style={{ textAlign: "center" }} category="label">
@@ -99,15 +141,40 @@ function AppBanners({ navigation }) {
             )}
           />
           <Portal>
-            <Dialog visible={visible} onDismiss={hideDialog}>
-              <Dialog.Title>Confirmation</Dialog.Title>
+            <Dialog visible={bannerVisible} onDismiss={hideBannerDialog}>
               <Dialog.Content>
-                <Paragraph>Confirm Creating a New Banner</Paragraph>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Text
+                    style={{ fontWeight: "bold", margin: "5%" }}
+                    category="h6"
+                  >
+                    Choose The Banner Type
+                  </Text>
+                  <ToggleButton.Row
+                    onValueChange={(value) => setType(value)}
+                    value={type}
+                  >
+                    <ToggleButton
+                      icon="alert-outline"
+                      value="alert"
+                    ></ToggleButton>
+                    <ToggleButton
+                      icon="gift-outline"
+                      value="offer"
+                    ></ToggleButton>
+                    <ToggleButton
+                      icon="bell-outline"
+                      value="notification"
+                    ></ToggleButton>
+                  </ToggleButton.Row>
+                </View>
               </Dialog.Content>
               <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
                 <Button
                   accessoryRight={CancelIcon}
-                  onPress={hideDialog}
+                  onPress={hideBannerDialog}
                   status="danger"
                 >
                   Cancel
@@ -116,7 +183,11 @@ function AppBanners({ navigation }) {
                 <Button
                   accessoryRight={CheckIcon}
                   onPress={() => {
-                    hideDialog();
+                    hideBannerDialog();
+                    createBanner();
+                    navigation.navigate("AppAddBanner", {
+                      bannerID: bannerID,
+                    });
                   }}
                   status="success"
                 >
@@ -131,7 +202,7 @@ function AppBanners({ navigation }) {
           style={styles.fab}
           status="primary"
           accessoryLeft={NewIcon}
-          onPress={showDialog}
+          onPress={showBannerDialog}
         />
       </Screen>
     </Provider>
