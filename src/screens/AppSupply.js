@@ -16,7 +16,7 @@ import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppRequest({ route, navigation }) {
+function AppSupply({ route, navigation }) {
   const { request, user } = route.params;
 
   const [preparingChecked, setPreparingChecked] = React.useState(
@@ -326,4 +326,4 @@ function AppRequest({ route, navigation }) {
   );
 }
 
-export default AppRequest;
+export default AppSupply;

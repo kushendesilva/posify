@@ -7,7 +7,7 @@ import { Icon, Card, Text, useTheme, Button } from "@ui-kitten/components";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppRequests({ navigation, route }) {
+function AppSupplies({ navigation, route }) {
   const theme = useTheme();
   const { user } = route.params;
 
@@ -494,4 +494,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppRequests;
+export default AppSupplies;

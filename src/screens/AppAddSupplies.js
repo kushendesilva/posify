@@ -16,7 +16,7 @@ import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppAddRequests({ navigation, route }) {
+function AppAddSupplies({ navigation, route }) {
   const [visibleSnack, setVisibleSnack] = React.useState(false);
 
   const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
@@ -129,7 +129,7 @@ function AppAddRequests({ navigation, route }) {
     <View>
       <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="New Request" subtitle={user.fullName} />
+        <Appbar.Content title="New Request" subtitle={user.name} />
         <Appbar.Action
           onPress={(values) => navigation.navigate("RequestsScreen")}
           icon="arrow-collapse-right"
@@ -327,7 +327,7 @@ function AppAddRequests({ navigation, route }) {
   );
 }
 
-export default AppAddRequests;
+export default AppAddSupplies;
 
 const styles = StyleSheet.create({
   card: {

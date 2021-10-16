@@ -45,30 +45,59 @@ function AppSignUp({ navigation }) {
       alert("Select An Account Type.");
       return;
     }
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((response) => {
-        const uid = response.user.uid;
-        //const itemID = response.doc.id;
-        const data = {
-          id: uid,
-          email,
-          fullName,
-          type,
-        };
+    if (type == "supplier") {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((response) => {
+          const uid = response.user.uid;
+          //const itemID = response.doc.id;
+          const data = {
+            id: uid,
+            email,
+            fullName,
+            type,
+          };
 
-        const usersRef = firebase.firestore().collection("users");
-        usersRef
-          .doc(uid)
-          .set(data)
-          .catch((error) => {
-            alert(error);
-          });
-      })
-      .catch((error) => {
-        alert(error);
-      });
+          const usersRef = firebase.firestore().collection("users");
+          usersRef
+            .doc(uid)
+            .set(data)
+            .catch((error) => {
+              alert(error);
+            });
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    }
+    if (type == "store") {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((response) => {
+          const uid = response.user.uid;
+          //const itemID = response.doc.id;
+          const data = {
+            id: uid,
+            email,
+            fullName,
+            type,
+            category: "c",
+          };
+
+          const usersRef = firebase.firestore().collection("users");
+          usersRef
+            .doc(uid)
+            .set(data)
+            .catch((error) => {
+              alert(error);
+            });
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    }
   };
 
   return (

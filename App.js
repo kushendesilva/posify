@@ -21,9 +21,15 @@ import AppSuppliers from "./src/screens/AppSuppliers";
 import AppProfile from "./src/screens/AppProfile";
 import AppReport from "./src/screens/AppReport";
 import AppBanners from "./src/screens/AppBanners";
+import AppSupply from "./src/screens/AppSupply";
+import AppSupplies from "./src/screens/AppSupplies";
+import AppAddSupplies from "./src/screens/AppAddSupplies";
+import AppDelSupplies from "./src/screens/AppDelSupplies";
 import AppBanner from "./src/screens/AppBanner";
 import AppReportExport from "./src/screens/AppReportExport";
 import AppSelectShop from "./src/screens/AppSelectShop";
+import AppSelectSupplier from "./src/screens/AppSelectSupplier";
+import AppSelectSupply from "./src/screens/AppSelectSupply";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
 import AppAddRequests from "./src/screens/AppAddRequests";
 import AppAddBanner from "./src/screens/AppAddBanner";
@@ -175,6 +181,20 @@ export default () => {
                     }}
                   />
                   <MainStack.Screen
+                    name="AppSelectSupply"
+                    component={AppSelectSupply}
+                    options={{
+                      title: "Select",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="SelectSupplierScreen"
+                    component={AppSelectSupplier}
+                    options={{
+                      title: "Select Supplier",
+                    }}
+                  />
+                  <MainStack.Screen
                     name="AddInvoiceScreen"
                     component={AppAddInvoice}
                     options={{
@@ -224,6 +244,35 @@ export default () => {
                     component={AppAddShop}
                     options={{
                       title: "New Shop",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppSupply"
+                    component={AppSupply}
+                    options={{
+                      title: "Supply",
+                      headerShown: false,
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppSupplies"
+                    component={AppSupplies}
+                    options={{
+                      title: "Supplies",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppAddSupplies"
+                    component={AppAddSupplies}
+                    options={{
+                      title: "New Supply Request",
+                    }}
+                  />
+                  <MainStack.Screen
+                    name="AppDelSupplies"
+                    component={AppDelSupplies}
+                    options={{
+                      title: "Remove Supply Request",
                     }}
                   />
                   <MainStack.Screen
