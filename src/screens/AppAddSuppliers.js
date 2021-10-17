@@ -40,13 +40,13 @@ function AppAddSuppliers(props) {
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         const uid = response.user.uid;
         //const itemID = response.doc.id;
         const data = {
           id: uid,
-          email,
+          email: email.toLowerCase(),
           fullName,
           type: "supplier",
         };
@@ -96,6 +96,7 @@ function AppAddSuppliers(props) {
               style={{ marginHorizontal: "2%", marginVertical: "1%" }}
               size="large"
               status="primary"
+              autoCapitalize={false}
             />
             <Input
               secureTextEntry

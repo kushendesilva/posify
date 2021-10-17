@@ -135,61 +135,19 @@ function AppAddRequests({ navigation, route }) {
           icon="arrow-collapse-right"
         />
       </Appbar>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "1%",
-          margin: "1%",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Title style={{ marginHorizontal: "2%", fontSize: 12 }}>
-            Payment Method
-          </Title>
-          <Snackbar
-            duration={500}
-            visible={visibleSnack}
-            onDismiss={onDismissSnackBar}
-          >
-            Successful
-          </Snackbar>
-          <ToggleButton.Row
-            onValueChange={(value) => setValue(value)}
-            value={value}
-          >
-            <ToggleButton icon="cash" value="cash"></ToggleButton>
-            <ToggleButton icon="credit-card" value="card"></ToggleButton>
-            <ToggleButton
-              icon="card-text-outline"
-              value="cheque"
-            ></ToggleButton>
-          </ToggleButton.Row>
-        </View>
-        <Divider style={{ marginLeft: "2%", width: 1, height: "100%" }} />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        ></View>
-      </View>
-      <Divider />
       <Searchbar
         onChangeText={(text) => searchFilterFunction(text)}
         onClear={(text) => searchFilterFunction("")}
         placeholder="Search"
         value={search}
       />
-
+      <Snackbar
+        duration={500}
+        visible={visibleSnack}
+        onDismiss={onDismissSnackBar}
+      >
+        Successful
+      </Snackbar>
       <DataTable>
         <FlatList
           data={filteredDataSource}
@@ -303,18 +261,21 @@ function AppAddRequests({ navigation, route }) {
                       )}
                     </DataTable.Cell>
                     <DataTable.Cell style={{ justifyContent: "center" }}>
-                      <Button
-                        status="primary"
-                        size="small"
-                        accessoryRight={AddIcon}
-                        onPress={() => {
-                          createInvoice();
-                          onToggleSnackBar();
-                          updateStock();
-                        }}
-                      >
-                        Add
-                      </Button>
+                      {AppRenderIf(
+                        quantity < itemStock,
+                        <Button
+                          status="primary"
+                          size="small"
+                          accessoryRight={AddIcon}
+                          onPress={() => {
+                            createInvoice();
+                            onToggleSnackBar();
+                            updateStock();
+                          }}
+                        >
+                          Add
+                        </Button>
+                      )}
                     </DataTable.Cell>
                   </DataTable.Row>
                 </>

@@ -24,7 +24,6 @@ import AppBanners from "./src/screens/AppBanners";
 import AppSupply from "./src/screens/AppSupply";
 import AppSupplies from "./src/screens/AppSupplies";
 import AppAddSupplies from "./src/screens/AppAddSupplies";
-import AppDelSupplies from "./src/screens/AppDelSupplies";
 import AppBanner from "./src/screens/AppBanner";
 import AppReportExport from "./src/screens/AppReportExport";
 import AppSelectShop from "./src/screens/AppSelectShop";
@@ -266,13 +265,7 @@ export default () => {
                     component={AppAddSupplies}
                     options={{
                       title: "New Supply Request",
-                    }}
-                  />
-                  <MainStack.Screen
-                    name="AppDelSupplies"
-                    component={AppDelSupplies}
-                    options={{
-                      title: "Remove Supply Request",
+                      headerShown: false,
                     }}
                   />
                   <MainStack.Screen

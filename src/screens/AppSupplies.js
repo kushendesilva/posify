@@ -3,13 +3,19 @@ import { View, FlatList, StyleSheet, BackHandler } from "react-native";
 import ExtendedButton from "../components/ExtendedButton";
 import Screen from "../components/Screen";
 import { Provider, Portal, Dialog, ToggleButton } from "react-native-paper";
-import { Icon, Card, Text, useTheme, Button } from "@ui-kitten/components";
+import {
+  Icon,
+  Card,
+  Text,
+  useTheme,
+  Button,
+  Calendar,
+} from "@ui-kitten/components";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppSupplies({ navigation, route }) {
+function AppSupplies({ navigation }) {
   const theme = useTheme();
-  const { user } = route.params;
 
   const CheckIcon = (props) => (
     <Icon {...props} name="checkmark-circle-outline" />
@@ -23,39 +29,8 @@ function AppSupplies({ navigation, route }) {
 
   const hideReqDialog = () => setReqVisible(false);
 
-  const requestId = Date.now().toString();
-  const getCurrentDate = () => {
-    var date = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
-    return date + "/" + month + "/" + year;
-  };
+  const requestRef = firebase.firestore().collection("supplies");
 
-  const requestRef = firebase.firestore().collection("requests");
-
-  const createRequest = () => {
-    {
-      const data = {
-        requestID: requestId,
-        date: getCurrentDate(),
-        shopName: user.fullName,
-        payMethod: value,
-        preparing: false,
-        prepared: false,
-        unavailable: false,
-        delivered: false,
-      };
-      requestRef
-        .doc(requestId)
-        .set(data)
-        .then((_doc) => {})
-        .catch((error) => {
-          alert(error);
-        });
-    }
-  };
-
-  const [value, setValue] = React.useState("cash");
   const [requests, setRequests] = React.useState([]);
 
   React.useEffect(() => {
@@ -75,6 +50,8 @@ function AppSupplies({ navigation, route }) {
     );
   }, []);
 
+  const [date, setDate] = React.useState(new Date());
+
   return (
     <Provider>
       <Screen>
@@ -83,88 +60,25 @@ function AppSupplies({ navigation, route }) {
             data={requests.sort((a, b) =>
               a.requestID.localeCompare(b.requestID)
             )}
-            keyExtractor={(invoice) => invoice.id}
+            keyExtractor={(request) => request.id}
             renderItem={({ item }) => (
               <>
                 {AppRenderIf(
-                  null != item.shopName &&
-                    item.preparing != true &&
+                  null != item.supplier &&
+                    item.delivered != true &&
                     item.unavailable != true,
                   <Card
                     status="primary"
                     style={{ margin: "2%" }}
                     onPress={(values) => {
-                      navigation.navigate("AppRequest", {
+                      navigation.navigate("AppSupply", {
                         request: {
                           docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                      }}
-                    >
-                      <View
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Text category="label">{item.date}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName &&
-                    item.preparing == true &&
-                    item.prepared != true,
-                  <Card
-                    status="warning"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
+                          requiredDate: item.requiredDate,
+                          supplier: item.supplier,
+                          received: item.received,
                           delivered: item.delivered,
+                          unavailable: item.unavailable,
                         },
                         user: { type: "admin" },
                       });
@@ -186,47 +100,45 @@ function AppSupplies({ navigation, route }) {
                         <Icon
                           style={{ width: 30, height: 30, margin: "2%" }}
                           fill={theme["color-primary-default"]}
-                          name="repeat-outline"
+                          name="archive-outline"
                         />
                         <Text
                           style={{ fontSize: 12, textTransform: "capitalize" }}
                         >
-                          {item.payMethod}
+                          {item.requiredDate}
                         </Text>
                       </View>
 
                       <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
+                        <Text style={styles.title}>{item.supplier}</Text>
                         <View
                           style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Text category="label">{item.requestID}</Text>
                         </View>
                       </View>
                     </View>
                   </Card>
                 )}
                 {AppRenderIf(
-                  null != item.shopName &&
-                    item.prepared == true &&
-                    item.delivered != true,
+                  null != item.supplier &&
+                    item.delivered == true &&
+                    item.received != true,
                   <Card
                     status="success"
                     style={{ margin: "2%" }}
                     onPress={(values) => {
-                      navigation.navigate("AppRequest", {
+                      navigation.navigate("AppSupply", {
                         request: {
                           docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
+                          requiredDate: item.requiredDate,
+                          supplier: item.supplier,
+                          received: item.received,
                           delivered: item.delivered,
+                          unavailable: item.unavailable,
                         },
                         user: { type: "admin" },
                       });
@@ -248,105 +160,43 @@ function AppSupplies({ navigation, route }) {
                         <Icon
                           style={{ width: 30, height: 30, margin: "2%" }}
                           fill={theme["color-primary-default"]}
-                          name="repeat-outline"
+                          name="archive-outline"
                         />
                         <Text
                           style={{ fontSize: 12, textTransform: "capitalize" }}
                         >
-                          {item.payMethod}
+                          {item.requiredDate}
                         </Text>
                       </View>
 
                       <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
+                        <Text style={styles.title}>{item.supplier}</Text>
                         <View
                           style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Text category="label">{item.requestID}</Text>
                         </View>
                       </View>
                     </View>
                   </Card>
                 )}
                 {AppRenderIf(
-                  null != item.shopName && item.unavailable == true,
-                  <Card
-                    status="danger"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                          delivered: item.delivered,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                      }}
-                    >
-                      <View
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Text category="label">{item.date}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName && item.delivered == true,
+                  null != item.supplier && item.received == true,
                   <Card
                     status="basic"
                     style={{ margin: "2%" }}
                     onPress={(values) => {
-                      navigation.navigate("AppRequest", {
+                      navigation.navigate("AppSupply", {
                         request: {
                           docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
+                          requiredDate: item.requiredDate,
+                          supplier: item.supplier,
+                          received: item.received,
                           delivered: item.delivered,
+                          unavailable: item.unavailable,
                         },
                         user: { type: "admin" },
                       });
@@ -368,24 +218,82 @@ function AppSupplies({ navigation, route }) {
                         <Icon
                           style={{ width: 30, height: 30, margin: "2%" }}
                           fill={theme["color-primary-default"]}
-                          name="repeat-outline"
+                          name="archive-outline"
                         />
                         <Text
                           style={{ fontSize: 12, textTransform: "capitalize" }}
                         >
-                          {item.payMethod}
+                          {item.requiredDate}
                         </Text>
                       </View>
 
                       <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
+                        <Text style={styles.title}>{item.supplier}</Text>
                         <View
                           style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Text category="label">{item.requestID}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Card>
+                )}
+                {AppRenderIf(
+                  null != item.supplier && item.unavailable == true,
+                  <Card
+                    status="danger"
+                    style={{ margin: "2%" }}
+                    onPress={(values) => {
+                      navigation.navigate("AppSupply", {
+                        request: {
+                          docID: item.requestID,
+                          requiredDate: item.requiredDate,
+                          supplier: item.supplier,
+                          received: item.received,
+                          delivered: item.delivered,
+                          unavailable: item.unavailable,
+                        },
+                        user: { type: "admin" },
+                      });
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <View
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icon
+                          style={{ width: 30, height: 30, margin: "2%" }}
+                          fill={theme["color-primary-default"]}
+                          name="archive-outline"
+                        />
+                        <Text
+                          style={{ fontSize: 12, textTransform: "capitalize" }}
+                        >
+                          {item.requiredDate}
+                        </Text>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <Text style={styles.title}>{item.supplier}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text category="label">{item.requestID}</Text>
                         </View>
                       </View>
                     </View>
@@ -404,22 +312,20 @@ function AppSupplies({ navigation, route }) {
                     style={{ fontWeight: "bold", margin: "5%" }}
                     category="h6"
                   >
-                    Choose Your Payment Method
+                    Choose the Required Date
                   </Text>
-                  <ToggleButton.Row
-                    onValueChange={(value) => setValue(value)}
-                    value={value}
-                  >
-                    <ToggleButton icon="cash" value="cash"></ToggleButton>
-                    <ToggleButton
-                      icon="credit-card"
-                      value="card"
-                    ></ToggleButton>
-                    <ToggleButton
-                      icon="card-text-outline"
-                      value="cheque"
-                    ></ToggleButton>
-                  </ToggleButton.Row>
+                  <React.Fragment>
+                    <Calendar
+                      date={date}
+                      onSelect={(nextDate) => setDate(nextDate)}
+                    />
+                    <Text
+                      category="label"
+                      style={{ margin: "2%", fontWeight: "bold" }}
+                    >
+                      Selected date: {date.toLocaleDateString()}
+                    </Text>
+                  </React.Fragment>
                 </View>
               </Dialog.Content>
               <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -435,10 +341,8 @@ function AppSupplies({ navigation, route }) {
                   accessoryRight={CheckIcon}
                   onPress={() => {
                     hideReqDialog();
-                    createRequest();
-                    navigation.navigate("AddRequestsScreen", {
-                      user: user,
-                      requestId: requestId,
+                    navigation.navigate("SelectSupplierScreen", {
+                      date: date.toLocaleDateString(),
                     });
                   }}
                   status="success"

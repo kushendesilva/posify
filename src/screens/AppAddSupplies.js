@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, StyleSheet, Text } from "react-native";
-
+import { View, FlatList, StyleSheet } from "react-native";
 import {
   DataTable,
   TextInput,
@@ -11,74 +10,53 @@ import {
   Appbar,
   Snackbar,
 } from "react-native-paper";
-import { Button, Icon } from "@ui-kitten/components";
+import { Button, Icon, Calendar, Text } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 function AppAddSupplies({ navigation, route }) {
-  const [visibleSnack, setVisibleSnack] = React.useState(false);
-
-  const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
-
-  const onDismissSnackBar = () => setVisibleSnack(false);
-
   const AddIcon = (props) => <Icon {...props} name="plus-outline" />;
 
-  const { user, requestId } = route.params;
-
-  const stockRef = firebase.firestore().collection("stockItems");
-  const updateStock = () => {
-    const data = {
-      stock: itemStock - quantity,
-      itemName: itemName,
-      unitPriceA: unitPriceA,
-      unitPriceB: unitPriceB,
-      unitPriceC: unitPriceC,
-      stockPrice: stockPrice,
-    };
-    stockRef
-      .doc(itemID)
-      .set(data)
-      .then((_doc) => {
-        //  navigation.goBack();
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  };
-
-  const [value, setValue] = React.useState("cash");
+  const { request } = route.params;
 
   const [quantity, setQuantity] = React.useState(0);
-  const [itemID, setItemID] = React.useState("");
-  const [itemStock, setItemStock] = React.useState("");
-  const [unitPriceA, setUnitPriceA] = React.useState(0);
-  const [unitPriceB, setUnitPriceB] = React.useState(0);
-  const [unitPriceC, setUnitPriceC] = React.useState(0);
   const [itemName, setItemName] = React.useState("");
   const [unitPrice, setunitPrice] = React.useState(0);
   const [stockPrice, setStockPrice] = React.useState(0);
   const onChangeSearch = (query) => setSearchQuery(query);
   const [searchQuery, setSearchQuery] = React.useState("");
 
-  const invoiceRef = firebase
+  const inventoryRef = firebase
     .firestore()
-    .collection("requests")
-    .doc(requestId)
+    .collection("supplies")
+    .doc(request.requestID)
     .collection("invItems");
 
-  const createInvoice = () => {
+  const createRequest = () => {
     {
       const data = {
         itemName: itemName,
         quantity: parseInt(quantity),
         stockPrice: parseFloat(stockPrice),
-        unitPrice: parseFloat(unitPrice),
       };
-      invoiceRef
+      inventoryRef
         .add(data)
         .then((_doc) => {})
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
+
+  const supplyRef = firebase.firestore().collection("supplies");
+
+  const updateRequest = () => {
+    {
+      const data = { supplier: request.name };
+      supplyRef
+        .doc(request.requestID)
+        .update(data)
         .catch((error) => {
           alert(error);
         });
@@ -125,64 +103,33 @@ function AppAddSupplies({ navigation, route }) {
     }
   };
 
+  const [visibleSnack, setVisibleSnack] = React.useState(false);
+
+  const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
+
+  const onDismissSnackBar = () => setVisibleSnack(false);
+
   return (
     <View>
       <Appbar style={{ backgroundColor: AppColors.primary }}>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="New Request" subtitle={user.name} />
+        <Appbar.Content title="Supply Request" subtitle={request.name} />
+        <Snackbar
+          duration={400}
+          visible={visibleSnack}
+          onDismiss={onDismissSnackBar}
+        >
+          Added Successfully
+        </Snackbar>
         <Appbar.Action
-          onPress={(values) => navigation.navigate("RequestsScreen")}
+          onPress={() => {
+            updateRequest();
+            navigation.navigate("AppSupplies");
+          }}
           icon="arrow-collapse-right"
         />
       </Appbar>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "1%",
-          margin: "1%",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Title style={{ marginHorizontal: "2%", fontSize: 12 }}>
-            Payment Method
-          </Title>
-          <Snackbar
-            duration={500}
-            visible={visibleSnack}
-            onDismiss={onDismissSnackBar}
-          >
-            Successful
-          </Snackbar>
-          <ToggleButton.Row
-            onValueChange={(value) => setValue(value)}
-            value={value}
-          >
-            <ToggleButton icon="cash" value="cash"></ToggleButton>
-            <ToggleButton icon="credit-card" value="card"></ToggleButton>
-            <ToggleButton
-              icon="card-text-outline"
-              value="cheque"
-            ></ToggleButton>
-          </ToggleButton.Row>
-        </View>
-        <Divider style={{ marginLeft: "2%", width: 1, height: "100%" }} />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        ></View>
-      </View>
-      <Divider />
+
       <Searchbar
         onChangeText={(text) => searchFilterFunction(text)}
         onClear={(text) => searchFilterFunction("")}
@@ -197,128 +144,49 @@ function AppAddSupplies({ navigation, route }) {
           keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
           renderItem={({ item }) => (
             <>
-              {AppRenderIf(
-                0 < item.stock,
-                <>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{ justifyContent: "center" }}>
-                      {item.itemName}
-                    </DataTable.Cell>
-                  </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell style={{ justifyContent: "center" }}>
+                  {item.itemName}
+                </DataTable.Cell>
+              </DataTable.Row>
 
-                  <DataTable.Row>
-                    {/* <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell> */}
-                    {AppRenderIf(
-                      user.category == "a",
-                      <DataTable.Cell style={{ justifyContent: "center" }}>
-                        Unit Price: Rs.
-                        {item.unitPriceA}
-                      </DataTable.Cell>
-                    )}
-                    {AppRenderIf(
-                      user.category == "b",
-                      <DataTable.Cell style={{ justifyContent: "center" }}>
-                        Unit Price: Rs.
-                        {item.unitPriceB}
-                      </DataTable.Cell>
-                    )}
-                    {AppRenderIf(
-                      user.category == "c",
-                      <DataTable.Cell style={{ justifyContent: "center" }}>
-                        Unit Price: Rs.
-                        {item.unitPriceC}
-                      </DataTable.Cell>
-                    )}
-                    <DataTable.Cell
-                      style={{ justifyContent: "center", alignItems: "center" }}
-                    >
-                      {AppRenderIf(
-                        user.category == "a",
-                        <TextInput
-                          placeholder={"Quantity: " + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceA),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
-                      )}
-                      {AppRenderIf(
-                        user.category == "b",
-                        <TextInput
-                          placeholder={"Quantity: " + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceB),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
-                      )}
-                      {AppRenderIf(
-                        user.category == "c",
-                        <TextInput
-                          placeholder={"Quantity: " + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceC),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
-                      )}
-                    </DataTable.Cell>
-                    <DataTable.Cell style={{ justifyContent: "center" }}>
-                      <Button
-                        status="primary"
-                        size="small"
-                        accessoryRight={AddIcon}
-                        onPress={() => {
-                          createInvoice();
-                          onToggleSnackBar();
-                          updateStock();
-                        }}
-                      >
-                        Add
-                      </Button>
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                </>
-              )}
+              <DataTable.Row>
+                <DataTable.Cell style={{ justifyContent: "center" }}>
+                  Price: Rs.
+                  {item.stockPrice}
+                </DataTable.Cell>
+                <DataTable.Cell
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <TextInput
+                    placeholder={"Quantity"}
+                    mode="outlined"
+                    keyboardType="number-pad"
+                    style={{
+                      backgroundColor: AppColors.background,
+                      height: 25,
+                    }}
+                    onChangeText={(text) => {
+                      setQuantity(text),
+                        setItemName(item.itemName),
+                        setStockPrice(item.stockPrice);
+                    }}
+                  ></TextInput>
+                </DataTable.Cell>
+                <DataTable.Cell style={{ justifyContent: "center" }}>
+                  <Button
+                    status="primary"
+                    size="small"
+                    accessoryRight={AddIcon}
+                    onPress={() => {
+                      createRequest();
+                      onToggleSnackBar();
+                    }}
+                  >
+                    Add
+                  </Button>
+                </DataTable.Cell>
+              </DataTable.Row>
             </>
           )}
         />

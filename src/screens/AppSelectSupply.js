@@ -4,8 +4,7 @@ import { View } from "react-native";
 import AppColors from "../configs/AppColors";
 import Screen from "../components/Screen";
 
-function AppSelectSupply({ navigation, route }) {
-  const { user } = route.params;
+function AppSelectSupply({ navigation }) {
   return (
     <Screen>
       <Card
@@ -34,11 +33,7 @@ function AppSelectSupply({ navigation, route }) {
         </View>
       </Card>
       <Card
-        onPress={() =>
-          navigation.navigate("AppSupplies", {
-            user: user,
-          })
-        }
+        onPress={() => navigation.navigate("AppSupplies")}
         style={{
           marginVertical: "2%",
           marginHorizontal: "4%",

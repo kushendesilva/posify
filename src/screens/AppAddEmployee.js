@@ -40,13 +40,13 @@ function AppAddEmployee(props) {
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         const uid = response.user.uid;
         //const itemID = response.doc.id;
         const data = {
           id: uid,
-          email,
+          email: email.toLowerCase(),
           fullName,
           type: "employee",
         };

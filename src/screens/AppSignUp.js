@@ -142,6 +142,7 @@ function AppSignUp({ navigation }) {
               label="Email"
               placeholder="Enter Your Email"
               onChangeText={(nextValue) => setEmail(nextValue)}
+              autoCapitalize={false}
             />
 
             <Input

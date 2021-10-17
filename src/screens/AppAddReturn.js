@@ -110,6 +110,9 @@ function AppAddReturns({ navigation, route }) {
         stockPrice: totalStock,
         total: totalPrice,
         returns: totalReturns,
+        preparing: false,
+        prepared: false,
+        delivered: false,
       };
       dbRef
         .collection("invoices")
@@ -222,7 +225,7 @@ function AppAddReturns({ navigation, route }) {
           onPress={(values) => {
             onToggleSnackBar();
             addReturns();
-            navigation.navigate("AppHome");
+            navigation.navigate("InvoicesScreen");
           }}
           icon="arrow-collapse-right"
         />

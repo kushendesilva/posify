@@ -133,11 +133,7 @@ function AppHome({ navigation }) {
             <ExtendedCard
               icon="car-outline"
               title="Supplies"
-              onPress={() =>
-                navigation.navigate("AppSelectSupply", {
-                  user: user,
-                })
-              }
+              onPress={() => navigation.navigate("AppSelectSupply")}
             />
           </View>
           <View style={{ flexDirection: "row" }}>

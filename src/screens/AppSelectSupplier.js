@@ -12,26 +12,28 @@ import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
 
-function AppSelectSupplier(props) {
-  const [shops, setShops] = useState([]);
+function AppSelectSupplier({ navigation, route }) {
+  const { date } = route.params;
 
-  const invoiceId = Date.now().toString();
+  const [supplier, setSupplier] = useState([]);
 
-  const shopRef = firebase
+  const requestID = Date.now().toString();
+
+  const supplierRef = firebase
     .firestore()
     .collection("users")
-    .where("type", "==", "store");
+    .where("type", "==", "supplier");
 
   useEffect(() => {
-    shopRef.onSnapshot(
+    supplierRef.onSnapshot(
       (querySnapshot) => {
-        const newShops = [];
+        const newSuppliers = [];
         querySnapshot.forEach((doc) => {
-          const shop = doc.data();
-          shop.id = doc.id;
-          newShops.push(shop);
+          const supplier = doc.data();
+          supplier.id = doc.id;
+          newSuppliers.push(supplier);
         });
-        setShops(newShops);
+        setSupplier(newSuppliers);
       },
       (error) => {
         console.log(error);
@@ -39,17 +41,20 @@ function AppSelectSupplier(props) {
     );
   }, []);
 
-  //create invoice
-  const dbRef = firebase.firestore();
+  //create request
+  const supplyRef = firebase.firestore().collection("supplies");
 
-  const createInvoice = () => {
+  const createRequest = () => {
     {
       const data = {
-        invoiceID: invoiceId,
+        requestID,
+        requiredDate: date,
+        unavailable: false,
+        delivered: false,
+        received: false,
       };
-      dbRef
-        .collection("invoices")
-        .doc(invoiceId)
+      supplyRef
+        .doc(requestID)
         .set(data)
         .catch((error) => {
           alert(error);
@@ -63,13 +68,13 @@ function AppSelectSupplier(props) {
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   React.useEffect(() => {
-    shopRef.onSnapshot(
+    supplierRef.onSnapshot(
       (querySnapshot) => {
         const newStock = [];
         querySnapshot.forEach((doc) => {
-          const shop = doc.data();
-          shop.id = doc.id;
-          newStock.push(shop);
+          const supplier = doc.data();
+          supplier.id = doc.id;
+          newStock.push(supplier);
         });
         setFilteredDataSource(newStock), setMasterDataSource(newStock);
       },
@@ -106,7 +111,7 @@ function AppSelectSupplier(props) {
     <View style={styles.container}>
       <StatusBar backgroundColor={AppColors.primary} barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={styles.text}>Select the Shop</Text>
+        <Text style={styles.text}>Select the Supplier</Text>
       </View>
       <Searchbar
         style={{
@@ -125,7 +130,7 @@ function AppSelectSupplier(props) {
         <View>
           <FlatList
             data={filteredDataSource}
-            keyExtractor={(shop) => shop.id.toString()}
+            keyExtractor={(supplier) => supplier.id.toString()}
             renderItem={({ item }) => (
               <Card
                 status="primary"
@@ -134,12 +139,11 @@ function AppSelectSupplier(props) {
                   marginHorizontal: "15%",
                 }}
                 onPress={(values) => {
-                  createInvoice(),
-                    props.navigation.navigate("AddInvoiceScreen", {
-                      invoice: {
+                  createRequest(),
+                    navigation.navigate("AppAddSupplies", {
+                      request: {
                         name: item.fullName,
-                        category: item.category,
-                        docID: invoiceId,
+                        requestID: requestID,
                       },
                     });
                 }}
@@ -158,15 +162,7 @@ function AppSelectSupplier(props) {
                   >
                     {item.fullName}
                   </Text>
-                  <Text category="label">
-                    Price Category :{" "}
-                    <Text
-                      category="label"
-                      style={{ textTransform: "uppercase" }}
-                    >
-                      {item.category}
-                    </Text>
-                  </Text>
+                  <Text category="label">{item.email}</Text>
                 </View>
               </Card>
             )}

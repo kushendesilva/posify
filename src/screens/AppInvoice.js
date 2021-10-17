@@ -12,7 +12,7 @@ import {
   Paragraph,
   Dialog,
 } from "react-native-paper";
-import { Button } from "@ui-kitten/components";
+import { Button, CheckBox } from "@ui-kitten/components";
 import * as Print from "expo-print";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
@@ -20,6 +20,16 @@ import { firebase } from "../configs/Database";
 
 function AppInvoice({ route, navigation }) {
   const { invoice } = route.params;
+
+  const [preparingChecked, setPreparingChecked] = React.useState(
+    invoice.preparing
+  );
+  const [preparedChecked, setPreparedChecked] = React.useState(
+    invoice.prepared
+  );
+  const [deliveredChecked, setDeliveredChecked] = React.useState(
+    invoice.delivered
+  );
 
   const hideComponents = () => {
     setShowComponents(false);
@@ -104,23 +114,141 @@ function AppInvoice({ route, navigation }) {
     );
   }, []);
 
+  const requestRef = firebase
+    .firestore()
+    .collection("invoices")
+    .doc(invoice.docID);
+
+  const onChecked = () => {
+    const data = {
+      preparing: preparingChecked,
+      prepared: preparedChecked,
+      delivered: deliveredChecked,
+    };
+    requestRef
+      .update(data)
+      .then((_doc) => {
+        navigation.goBack();
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+
   return (
     <Provider>
       <ScrollView>
         {AppRenderIf(
           showComponents == true,
-          <Appbar style={{ backgroundColor: AppColors.primary }}>
+          <Appbar
+            style={{
+              backgroundColor: AppColors.primary,
+              elevation: 0,
+            }}
+          >
             <Appbar.BackAction onPress={() => navigation.goBack()} />
-            <Appbar.Content title="Invoice" subtitle={invoice.docID} />
-            <Appbar.Action
-              icon="trash-can-outline"
-              onPress={showConfirmation}
-            />
+            {AppRenderIf(
+              preparingChecked == true,
+              <Appbar.Action
+                icon="refresh"
+                onPress={() => {
+                  setPreparingChecked(false);
+                  setPreparedChecked(false);
+                  setDeliveredChecked(false);
+                }}
+              />
+            )}
+            {AppRenderIf(
+              preparingChecked != true,
+              <Appbar.Content title="Invoice" subtitle={invoice.docID} />
+            )}
+            {AppRenderIf(
+              preparingChecked == true && preparedChecked != true,
+              <Appbar.Content title="Invoice" subtitle="Preparing" />
+            )}
+            {AppRenderIf(
+              preparedChecked == true && deliveredChecked != true,
+              <Appbar.Content title="Invoice" subtitle="Prepared" />
+            )}
+            {AppRenderIf(
+              deliveredChecked == true,
+              <Appbar.Content title="Invoice" subtitle="Delivered" />
+            )}
+
+            {AppRenderIf(
+              preparingChecked != true,
+              <View
+                style={{
+                  borderRadius: 4,
+                  margin: 2,
+                  padding: 6,
+                  backgroundColor: AppColors.yellow,
+                }}
+              >
+                <CheckBox
+                  style={{ margin: 2 }}
+                  status="control"
+                  checked={preparingChecked}
+                  onChange={(nextChecked) => setPreparingChecked(nextChecked)}
+                >
+                  Preparing
+                </CheckBox>
+              </View>
+            )}
+
+            {AppRenderIf(
+              preparingChecked == true &&
+                preparedChecked != true &&
+                deliveredChecked != true,
+              <View
+                style={{
+                  borderRadius: 4,
+                  margin: 2,
+                  padding: 6,
+                  backgroundColor: AppColors.green,
+                }}
+              >
+                <CheckBox
+                  style={{ margin: 2 }}
+                  status="control"
+                  checked={preparedChecked}
+                  onChange={(nextChecked) => setPreparedChecked(nextChecked)}
+                >
+                  Prepared
+                </CheckBox>
+              </View>
+            )}
+            {AppRenderIf(
+              preparedChecked == true && deliveredChecked != true,
+              <View
+                style={{
+                  borderRadius: 4,
+                  margin: 2,
+                  padding: 6,
+                  backgroundColor: AppColors.secondary,
+                }}
+              >
+                <CheckBox
+                  style={{ margin: 2 }}
+                  status="control"
+                  checked={deliveredChecked}
+                  onChange={(nextChecked) => setDeliveredChecked(nextChecked)}
+                >
+                  Delivered
+                </CheckBox>
+              </View>
+            )}
+
+            <Appbar.Action icon="check-all" onPress={onChecked} />
             <Appbar.Action
               icon="printer"
               onPress={() => {
                 setShowComponents(false);
               }}
+            />
+            <Appbar.Action
+              icon="trash-can-outline"
+              onPress={showConfirmation}
             />
           </Appbar>
         )}

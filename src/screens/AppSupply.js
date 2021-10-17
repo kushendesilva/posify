@@ -11,7 +11,7 @@ import {
   Paragraph,
   Dialog,
 } from "react-native-paper";
-import { CheckBox, Text, Button } from "@ui-kitten/components";
+import { CheckBox, Button } from "@ui-kitten/components";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
@@ -19,11 +19,8 @@ import { firebase } from "../configs/Database";
 function AppSupply({ route, navigation }) {
   const { request, user } = route.params;
 
-  const [preparingChecked, setPreparingChecked] = React.useState(
-    request.preparing
-  );
-  const [preparedChecked, setPreparedChecked] = React.useState(
-    request.prepared
+  const [receivedChecked, setReceivedChecked] = React.useState(
+    request.received
   );
   const [deliveredChecked, setDeliveredChecked] = React.useState(
     request.delivered
@@ -41,7 +38,7 @@ function AppSupply({ route, navigation }) {
   const onDeleteButtonPress = () => {
     firebase
       .firestore()
-      .collection("requests")
+      .collection("supplies")
       .doc(request.docID)
       .delete()
       .then(
@@ -57,13 +54,12 @@ function AppSupply({ route, navigation }) {
 
   const requestRef = firebase
     .firestore()
-    .collection("requests")
+    .collection("supplies")
     .doc(request.docID);
 
   const onChecked = () => {
     const data = {
-      preparing: preparingChecked,
-      prepared: preparedChecked,
+      received: receivedChecked,
       delivered: deliveredChecked,
       unavailable: unavailableChecked,
     };
@@ -81,7 +77,7 @@ function AppSupply({ route, navigation }) {
 
   const requestItemRef = firebase
     .firestore()
-    .collection("requests")
+    .collection("supplies")
     .doc(request.docID)
     .collection("invItems");
 
@@ -113,7 +109,7 @@ function AppSupply({ route, navigation }) {
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           {AppRenderIf(
-            unavailableChecked != true && preparingChecked != true,
+            unavailableChecked != true && deliveredChecked != true,
             <Appbar.Content title="Request" subtitle={request.docID} />
           )}
           {AppRenderIf(
@@ -121,71 +117,22 @@ function AppSupply({ route, navigation }) {
             <Appbar.Content title="Request" subtitle="Unavailable" />
           )}
           {AppRenderIf(
-            preparingChecked == true && preparedChecked != true,
-            <Appbar.Content title="Request" subtitle="Preparing" />
-          )}
-          {AppRenderIf(
-            preparedChecked == true &&
-              unavailableChecked != true &&
-              deliveredChecked != true,
-            <Appbar.Content title="Request" subtitle="Prepared" />
-          )}
-          {AppRenderIf(
-            deliveredChecked == true && unavailableChecked != true,
+            deliveredChecked == true && receivedChecked != true,
             <Appbar.Content title="Request" subtitle="Delivered" />
+          )}
+          {AppRenderIf(
+            receivedChecked == true && unavailableChecked != true,
+            <Appbar.Content title="Request" subtitle="Received" />
           )}
 
           {AppRenderIf(
-            unavailableChecked != true && preparingChecked != true,
+            unavailableChecked != true && deliveredChecked != true,
             <View
               style={{
                 borderRadius: 4,
                 margin: 2,
                 padding: 6,
                 backgroundColor: AppColors.yellow,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={preparingChecked}
-                onChange={(nextChecked) => setPreparingChecked(nextChecked)}
-              >
-                Preparing
-              </CheckBox>
-            </View>
-          )}
-
-          {AppRenderIf(
-            preparingChecked == true &&
-              preparedChecked != true &&
-              deliveredChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.green,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={preparedChecked}
-                onChange={(nextChecked) => setPreparedChecked(nextChecked)}
-              >
-                Prepared
-              </CheckBox>
-            </View>
-          )}
-          {AppRenderIf(
-            preparedChecked == true && deliveredChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.secondary,
               }}
             >
               <CheckBox
@@ -200,7 +147,28 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            unavailableChecked != true && preparingChecked != true,
+            deliveredChecked == true && receivedChecked != true,
+            <View
+              style={{
+                borderRadius: 4,
+                margin: 2,
+                padding: 6,
+                backgroundColor: AppColors.green,
+              }}
+            >
+              <CheckBox
+                style={{ margin: 2 }}
+                status="control"
+                checked={receivedChecked}
+                onChange={(nextChecked) => setReceivedChecked(nextChecked)}
+              >
+                Received
+              </CheckBox>
+            </View>
+          )}
+
+          {AppRenderIf(
+            unavailableChecked != true && deliveredChecked != true,
             <View
               style={{
                 borderRadius: 4,
@@ -221,19 +189,18 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            user.type == "store",
+            user.type == "admin",
             <Appbar.Action
               icon="trash-can-outline"
               onPress={showConfirmation}
             />
           )}
           {AppRenderIf(
-            preparingChecked == true || unavailableChecked == true,
+            deliveredChecked == true || unavailableChecked == true,
             <Appbar.Action
               icon="refresh"
               onPress={() => {
-                setPreparingChecked(false);
-                setPreparedChecked(false);
+                setReceivedChecked(false);
                 setDeliveredChecked(false);
                 setUnavailableChecked(false);
               }}
@@ -250,22 +217,12 @@ function AppSupply({ route, navigation }) {
             }}
           >
             <View style={{ alignItems: "center" }}>
-              <Caption>Request : {request.docID}</Caption>
-              <Caption>Date : {request.date.toString()}</Caption>
-              <Caption>Shop : {request.shopName}</Caption>
+              <Caption>Supply Request : {request.docID}</Caption>
+              <Caption>Required Date : {request.requiredDate}</Caption>
+              <Caption>Supplier : {request.supplier}</Caption>
             </View>
           </View>
           <Divider />
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Cell>Payment Method :</DataTable.Cell>
-              <DataTable.Cell numeric>
-                <Text style={{ textTransform: "capitalize" }}>
-                  {request.payMethod}
-                </Text>
-              </DataTable.Cell>
-            </DataTable.Header>
-          </DataTable>
           <DataTable>
             <DataTable.Header>
               <DataTable.Title>Items</DataTable.Title>
@@ -279,10 +236,10 @@ function AppSupply({ route, navigation }) {
               renderItem={({ item }) => (
                 <DataTable.Row>
                   <DataTable.Cell>{item.itemName}</DataTable.Cell>
-                  <DataTable.Cell numeric>Rs.{item.unitPrice}</DataTable.Cell>
+                  <DataTable.Cell numeric>Rs.{item.stockPrice}</DataTable.Cell>
                   <DataTable.Cell numeric>{item.quantity}</DataTable.Cell>
                   <DataTable.Cell numeric>
-                    Rs.{item.unitPrice * item.quantity}
+                    Rs.{item.stockPrice * item.quantity}
                   </DataTable.Cell>
                 </DataTable.Row>
               )}

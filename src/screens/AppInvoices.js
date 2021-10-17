@@ -110,8 +110,9 @@ function AppInvoices({ navigation }) {
                   </Card>
                 )}
                 {AppRenderIf(
-                  null != item.shopName,
+                  null != item.shopName && item.preparing != true,
                   <Card
+                    status="primary"
                     style={{ margin: "2%" }}
                     onLongPress={(values) => {
                       navigation.navigate("AppDelInvoice", {
@@ -129,6 +130,203 @@ function AppInvoices({ navigation }) {
                           shopName: item.shopName,
                           date: item.date,
                           total: item.total,
+                          preparing: item.preparing,
+                          prepared: item.prepared,
+                          delivered: item.delivered,
+                        },
+                      });
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <View
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icon
+                          style={{ width: 30, height: 30, margin: "2%" }}
+                          fill={theme["color-primary-default"]}
+                          name="file-text-outline"
+                        />
+                        <Text style={{ fontSize: 12 }}>{item.invoiceID}</Text>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <Text style={styles.title}>{item.shopName}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text category="label">{item.date}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Card>
+                )}
+                {AppRenderIf(
+                  null != item.shopName &&
+                    item.preparing == true &&
+                    item.prepared != true,
+                  <Card
+                    status="warning"
+                    style={{ margin: "2%" }}
+                    onLongPress={(values) => {
+                      navigation.navigate("AppDelInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                        },
+                      });
+                    }}
+                    onPress={(values) => {
+                      navigation.navigate("AppInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                          payMethod: item.payMethod,
+                          returns: item.returns,
+                          shopName: item.shopName,
+                          date: item.date,
+                          total: item.total,
+                          preparing: item.preparing,
+                          prepared: item.prepared,
+                          delivered: item.delivered,
+                        },
+                      });
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <View
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icon
+                          style={{ width: 30, height: 30, margin: "2%" }}
+                          fill={theme["color-primary-default"]}
+                          name="file-text-outline"
+                        />
+                        <Text style={{ fontSize: 12 }}>{item.invoiceID}</Text>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <Text style={styles.title}>{item.shopName}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text category="label">{item.date}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Card>
+                )}
+                {AppRenderIf(
+                  null != item.shopName &&
+                    item.prepared == true &&
+                    item.delivered != true,
+                  <Card
+                    status="success"
+                    style={{ margin: "2%" }}
+                    onLongPress={(values) => {
+                      navigation.navigate("AppDelInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                        },
+                      });
+                    }}
+                    onPress={(values) => {
+                      navigation.navigate("AppInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                          payMethod: item.payMethod,
+                          returns: item.returns,
+                          shopName: item.shopName,
+                          date: item.date,
+                          total: item.total,
+                          preparing: item.preparing,
+                          prepared: item.prepared,
+                          delivered: item.delivered,
+                        },
+                      });
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <View
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icon
+                          style={{ width: 30, height: 30, margin: "2%" }}
+                          fill={theme["color-primary-default"]}
+                          name="file-text-outline"
+                        />
+                        <Text style={{ fontSize: 12 }}>{item.invoiceID}</Text>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <Text style={styles.title}>{item.shopName}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text category="label">{item.date}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Card>
+                )}
+
+                {AppRenderIf(
+                  null != item.shopName && item.delivered == true,
+                  <Card
+                    status="basic"
+                    style={{ margin: "2%" }}
+                    onLongPress={(values) => {
+                      navigation.navigate("AppDelInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                        },
+                      });
+                    }}
+                    onPress={(values) => {
+                      navigation.navigate("AppInvoice", {
+                        invoice: {
+                          docID: item.invoiceID,
+                          payMethod: item.payMethod,
+                          returns: item.returns,
+                          shopName: item.shopName,
+                          date: item.date,
+                          total: item.total,
+                          preparing: item.preparing,
+                          prepared: item.prepared,
+                          delivered: item.delivered,
                         },
                       });
                     }}
