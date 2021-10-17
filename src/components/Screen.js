@@ -1,11 +1,11 @@
 import React from "react";
 import { Layout, useTheme } from "@ui-kitten/components";
-import { StatusBar, StyleSheet } from "react-native";
+import { StatusBar } from "react-native";
 
-function Screen({ children }) {
+function Screen({ children, color = "#FFFFFF" }) {
   const theme = useTheme();
   return (
-    <Layout style={styles.screen}>
+    <Layout style={{ flex: 1, backgroundColor: color }}>
       <StatusBar
         backgroundColor={theme["color-primary-default"]}
         barStyle="light-content"
@@ -14,11 +14,5 @@ function Screen({ children }) {
     </Layout>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-});
 
 export default Screen;

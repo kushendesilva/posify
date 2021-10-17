@@ -19,32 +19,10 @@ import { ScrollView } from "react-native";
 import Screen from "../components/Screen";
 import { View } from "react-native";
 
-function AppHome({ navigation }) {
+function AppHome({ navigation, route }) {
+  const { user } = route.params;
+
   const themeContext = React.useContext(ThemeContext);
-
-  const [loading, setLoading] = React.useState(true);
-  const [user, setUser] = React.useState(null);
-
-  React.useEffect(() => {
-    const usersRef = firebase.firestore().collection("users");
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        usersRef
-          .doc(user.uid)
-          .get()
-          .then((document) => {
-            const userData = document.data();
-            setLoading(false);
-            setUser(userData);
-          })
-          .catch((error) => {
-            setLoading(false);
-          });
-      } else {
-        setLoading(false);
-      }
-    });
-  }, []);
 
   const closeApp = () => BackHandler.exitApp();
 
@@ -96,7 +74,7 @@ function AppHome({ navigation }) {
         )}
       </Layout>
       {AppRenderIf(
-        selectedIndex == 0,
+        selectedIndex == 0 && user.type == "admin",
         <ScrollView
           contentContainerStyle={{
             justifyContent: "center",
@@ -150,6 +128,7 @@ function AppHome({ navigation }) {
           </View>
         </ScrollView>
       )}
+
       {AppRenderIf(
         selectedIndex == 1,
         <ScrollView>

@@ -8,30 +8,6 @@ import { firebase } from "../configs/Database";
 function AppProfile(props) {
   const { user } = props.route.params;
 
-  // const [profile, setProfile] = React.useState([]);
-
-  // const profileRef = firebase
-  //   .firestore()
-  //   .collection("users")
-  //   .where("email", "==", user.email);
-
-  // React.useEffect(() => {
-  //   profileRef.onSnapshot(
-  //     (querySnapshot) => {
-  //       const newProfile = [];
-  //       querySnapshot.forEach((doc) => {
-  //         const profile = doc.data();
-  //         profile.id = doc.id;
-  //         newProfile.push(profile);
-  //       });
-  //       setProfile(newProfile);
-  //     },
-  //     (error) => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }, []);
-
   const userRef = firebase.firestore().collection("users").doc(user.id);
 
   const onEditButtonPress = () => {

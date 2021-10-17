@@ -12,6 +12,7 @@ import AppColors from "./src/configs/AppColors";
 
 import AppLogin from "./src/screens/AppLogin";
 import AppSignUp from "./src/screens/AppSignUp";
+import AppQuickLogin from "./src/screens/AppQuickLogin";
 import AppHome from "./src/screens/AppHome";
 import AppHelp from "./src/screens/AppHelp";
 import AppShop from "./src/screens/AppShop";
@@ -101,6 +102,14 @@ export default () => {
             >
               {user ? (
                 <>
+                  <MainStack.Screen
+                    name="AppQuickLogin"
+                    component={AppQuickLogin}
+                    options={{
+                      title: "Quick Login",
+                      headerShown: false,
+                    }}
+                  />
                   <MainStack.Screen
                     name="AppHome"
                     component={AppHome}
