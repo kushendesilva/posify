@@ -258,7 +258,7 @@ function AppSignUp({ navigation }) {
                       appearance="alternative"
                       category="p1"
                     >
-                      Select an Account Type
+                      Account Type
                     </Text>
 
                     <ToggleButton.Row
