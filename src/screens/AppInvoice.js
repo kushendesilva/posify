@@ -19,7 +19,7 @@ import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 function AppInvoice({ route, navigation }) {
-  const { invoice } = route.params;
+  const { invoice, user } = route.params;
 
   const [preparingChecked, setPreparingChecked] = React.useState(
     invoice.preparing
@@ -148,7 +148,8 @@ function AppInvoice({ route, navigation }) {
           >
             <Appbar.BackAction onPress={() => navigation.goBack()} />
             {AppRenderIf(
-              preparingChecked == true,
+              preparingChecked == true &&
+                (user.type == "admin" || user.type == "employee"),
               <Appbar.Action
                 icon="refresh"
                 onPress={() => {
@@ -174,82 +175,97 @@ function AppInvoice({ route, navigation }) {
               deliveredChecked == true,
               <Appbar.Content title="Invoice" subtitle="Delivered" />
             )}
-
             {AppRenderIf(
-              preparingChecked != true,
-              <View
-                style={{
-                  borderRadius: 4,
-                  margin: 2,
-                  padding: 6,
-                  backgroundColor: AppColors.yellow,
-                }}
-              >
-                <CheckBox
-                  style={{ margin: 2 }}
-                  status="control"
-                  checked={preparingChecked}
-                  onChange={(nextChecked) => setPreparingChecked(nextChecked)}
-                >
-                  Preparing
-                </CheckBox>
-              </View>
-            )}
+              user.type == "admin" || user.type == "employee",
+              <>
+                {AppRenderIf(
+                  preparingChecked != true,
+                  <View
+                    style={{
+                      borderRadius: 4,
+                      margin: 2,
+                      padding: 6,
+                      backgroundColor: AppColors.yellow,
+                    }}
+                  >
+                    <CheckBox
+                      style={{ margin: 2 }}
+                      status="control"
+                      checked={preparingChecked}
+                      onChange={(nextChecked) =>
+                        setPreparingChecked(nextChecked)
+                      }
+                    >
+                      Preparing
+                    </CheckBox>
+                  </View>
+                )}
 
-            {AppRenderIf(
-              preparingChecked == true &&
-                preparedChecked != true &&
-                deliveredChecked != true,
-              <View
-                style={{
-                  borderRadius: 4,
-                  margin: 2,
-                  padding: 6,
-                  backgroundColor: AppColors.green,
-                }}
-              >
-                <CheckBox
-                  style={{ margin: 2 }}
-                  status="control"
-                  checked={preparedChecked}
-                  onChange={(nextChecked) => setPreparedChecked(nextChecked)}
-                >
-                  Prepared
-                </CheckBox>
-              </View>
+                {AppRenderIf(
+                  preparingChecked == true &&
+                    preparedChecked != true &&
+                    deliveredChecked != true,
+                  <View
+                    style={{
+                      borderRadius: 4,
+                      margin: 2,
+                      padding: 6,
+                      backgroundColor: AppColors.green,
+                    }}
+                  >
+                    <CheckBox
+                      style={{ margin: 2 }}
+                      status="control"
+                      checked={preparedChecked}
+                      onChange={(nextChecked) =>
+                        setPreparedChecked(nextChecked)
+                      }
+                    >
+                      Prepared
+                    </CheckBox>
+                  </View>
+                )}
+                {AppRenderIf(
+                  preparedChecked == true && deliveredChecked != true,
+                  <View
+                    style={{
+                      borderRadius: 4,
+                      margin: 2,
+                      padding: 6,
+                      backgroundColor: AppColors.secondary,
+                    }}
+                  >
+                    <CheckBox
+                      style={{ margin: 2 }}
+                      status="control"
+                      checked={deliveredChecked}
+                      onChange={(nextChecked) =>
+                        setDeliveredChecked(nextChecked)
+                      }
+                    >
+                      Delivered
+                    </CheckBox>
+                  </View>
+                )}
+              </>
             )}
             {AppRenderIf(
-              preparedChecked == true && deliveredChecked != true,
-              <View
-                style={{
-                  borderRadius: 4,
-                  margin: 2,
-                  padding: 6,
-                  backgroundColor: AppColors.secondary,
-                }}
-              >
-                <CheckBox
-                  style={{ margin: 2 }}
-                  status="control"
-                  checked={deliveredChecked}
-                  onChange={(nextChecked) => setDeliveredChecked(nextChecked)}
-                >
-                  Delivered
-                </CheckBox>
-              </View>
+              user.type == "admin" || user.type == "employee",
+              <Appbar.Action icon="check-all" onPress={onChecked} />
             )}
-
-            <Appbar.Action icon="check-all" onPress={onChecked} />
             <Appbar.Action
               icon="printer"
               onPress={() => {
                 setShowComponents(false);
               }}
             />
-            <Appbar.Action
-              icon="trash-can-outline"
-              onPress={showConfirmation}
-            />
+            {AppRenderIf(
+              user.type == "admin",
+              <Appbar.Action
+                icon="trash-can-outline"
+                onPress={showConfirmation}
+              />
+            )}
           </Appbar>
         )}
         <View style={{ paddingBottom: "5%" }}>

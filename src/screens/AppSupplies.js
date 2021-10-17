@@ -14,7 +14,9 @@ import {
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
-function AppSupplies({ navigation }) {
+function AppSupplies({ navigation, route }) {
+  const { user } = route.params;
+
   const theme = useTheme();
 
   const CheckIcon = (props) => (
@@ -79,8 +81,8 @@ function AppSupplies({ navigation }) {
                           received: item.received,
                           delivered: item.delivered,
                           unavailable: item.unavailable,
+                          type: user.type,
                         },
-                        user: { type: "admin" },
                       });
                     }}
                   >
@@ -139,8 +141,8 @@ function AppSupplies({ navigation }) {
                           received: item.received,
                           delivered: item.delivered,
                           unavailable: item.unavailable,
+                          type: user.type,
                         },
-                        user: { type: "admin" },
                       });
                     }}
                   >
@@ -197,8 +199,8 @@ function AppSupplies({ navigation }) {
                           received: item.received,
                           delivered: item.delivered,
                           unavailable: item.unavailable,
+                          type: user.type,
                         },
-                        user: { type: "admin" },
                       });
                     }}
                   >
@@ -255,8 +257,8 @@ function AppSupplies({ navigation }) {
                           received: item.received,
                           delivered: item.delivered,
                           unavailable: item.unavailable,
+                          type: user.type,
                         },
-                        user: { type: "admin" },
                       });
                     }}
                   >
@@ -353,13 +355,16 @@ function AppSupplies({ navigation }) {
             </Dialog>
           </Portal>
         </View>
-        <Button
-          size="large"
-          style={styles.fab}
-          status="primary"
-          accessoryLeft={NewIcon}
-          onPress={showReqDialog}
-        />
+        {AppRenderIf(
+          user.type == "admin" || user.type == "employee",
+          <Button
+            size="large"
+            style={styles.fab}
+            status="primary"
+            accessoryLeft={NewIcon}
+            onPress={showReqDialog}
+          />
+        )}
       </Screen>
     </Provider>
   );

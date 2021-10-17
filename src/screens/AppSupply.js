@@ -17,7 +17,7 @@ import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 function AppSupply({ route, navigation }) {
-  const { request, user } = route.params;
+  const { request } = route.params;
 
   const [receivedChecked, setReceivedChecked] = React.useState(
     request.received
@@ -126,7 +126,9 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            unavailableChecked != true && deliveredChecked != true,
+            unavailableChecked != true &&
+              deliveredChecked != true &&
+              request.type == "supplier",
             <View
               style={{
                 borderRadius: 4,
@@ -168,7 +170,9 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            unavailableChecked != true && deliveredChecked != true,
+            unavailableChecked != true &&
+              deliveredChecked != true &&
+              request.type == "supplier",
             <View
               style={{
                 borderRadius: 4,
@@ -189,14 +193,15 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            user.type == "admin",
+            request.type == "admin",
             <Appbar.Action
               icon="trash-can-outline"
               onPress={showConfirmation}
             />
           )}
           {AppRenderIf(
-            deliveredChecked == true || unavailableChecked == true,
+            deliveredChecked == true ||
+              (unavailableChecked == true && request.type == "supplier"),
             <Appbar.Action
               icon="refresh"
               onPress={() => {
@@ -206,7 +211,10 @@ function AppSupply({ route, navigation }) {
               }}
             />
           )}
-          <Appbar.Action icon="check-all" onPress={onChecked} />
+          {AppRenderIf(
+            request.type == "supplier",
+            <Appbar.Action icon="check-all" onPress={onChecked} />
+          )}
         </Appbar>
         <View style={{ paddingBottom: "5%" }}>
           <View

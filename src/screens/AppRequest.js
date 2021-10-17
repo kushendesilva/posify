@@ -134,92 +134,97 @@ function AppRequest({ route, navigation }) {
             deliveredChecked == true && unavailableChecked != true,
             <Appbar.Content title="Request" subtitle="Delivered" />
           )}
-
           {AppRenderIf(
-            unavailableChecked != true && preparingChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.yellow,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={preparingChecked}
-                onChange={(nextChecked) => setPreparingChecked(nextChecked)}
-              >
-                Preparing
-              </CheckBox>
-            </View>
-          )}
+            user.type == "admin" || user.type == "employee",
+            <>
+              {AppRenderIf(
+                unavailableChecked != true && preparingChecked != true,
+                <View
+                  style={{
+                    borderRadius: 4,
+                    margin: 2,
+                    padding: 6,
+                    backgroundColor: AppColors.yellow,
+                  }}
+                >
+                  <CheckBox
+                    style={{ margin: 2 }}
+                    status="control"
+                    checked={preparingChecked}
+                    onChange={(nextChecked) => setPreparingChecked(nextChecked)}
+                  >
+                    Preparing
+                  </CheckBox>
+                </View>
+              )}
 
-          {AppRenderIf(
-            preparingChecked == true &&
-              preparedChecked != true &&
-              deliveredChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.green,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={preparedChecked}
-                onChange={(nextChecked) => setPreparedChecked(nextChecked)}
-              >
-                Prepared
-              </CheckBox>
-            </View>
-          )}
-          {AppRenderIf(
-            preparedChecked == true && deliveredChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.secondary,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={deliveredChecked}
-                onChange={(nextChecked) => setDeliveredChecked(nextChecked)}
-              >
-                Delivered
-              </CheckBox>
-            </View>
-          )}
+              {AppRenderIf(
+                preparingChecked == true &&
+                  preparedChecked != true &&
+                  deliveredChecked != true,
+                <View
+                  style={{
+                    borderRadius: 4,
+                    margin: 2,
+                    padding: 6,
+                    backgroundColor: AppColors.green,
+                  }}
+                >
+                  <CheckBox
+                    style={{ margin: 2 }}
+                    status="control"
+                    checked={preparedChecked}
+                    onChange={(nextChecked) => setPreparedChecked(nextChecked)}
+                  >
+                    Prepared
+                  </CheckBox>
+                </View>
+              )}
+              {AppRenderIf(
+                preparedChecked == true && deliveredChecked != true,
+                <View
+                  style={{
+                    borderRadius: 4,
+                    margin: 2,
+                    padding: 6,
+                    backgroundColor: AppColors.secondary,
+                  }}
+                >
+                  <CheckBox
+                    style={{ margin: 2 }}
+                    status="control"
+                    checked={deliveredChecked}
+                    onChange={(nextChecked) => setDeliveredChecked(nextChecked)}
+                  >
+                    Delivered
+                  </CheckBox>
+                </View>
+              )}
 
-          {AppRenderIf(
-            unavailableChecked != true && preparingChecked != true,
-            <View
-              style={{
-                borderRadius: 4,
-                margin: 2,
-                padding: 6,
-                backgroundColor: AppColors.red,
-              }}
-            >
-              <CheckBox
-                style={{ margin: 2 }}
-                status="control"
-                checked={unavailableChecked}
-                onChange={(nextChecked) => setUnavailableChecked(nextChecked)}
-              >
-                Unavailable
-              </CheckBox>
-            </View>
+              {AppRenderIf(
+                unavailableChecked != true && preparingChecked != true,
+                <View
+                  style={{
+                    borderRadius: 4,
+                    margin: 2,
+                    padding: 6,
+                    backgroundColor: AppColors.red,
+                  }}
+                >
+                  <CheckBox
+                    style={{ margin: 2 }}
+                    status="control"
+                    checked={unavailableChecked}
+                    onChange={(nextChecked) =>
+                      setUnavailableChecked(nextChecked)
+                    }
+                  >
+                    Unavailable
+                  </CheckBox>
+                </View>
+              )}
+            </>
           )}
-
           {AppRenderIf(
             user.type == "store",
             <Appbar.Action
@@ -228,7 +233,8 @@ function AppRequest({ route, navigation }) {
             />
           )}
           {AppRenderIf(
-            preparingChecked == true || unavailableChecked == true,
+            (preparingChecked == true || unavailableChecked == true) &&
+              (user.type == "admin" || user.type == "employee"),
             <Appbar.Action
               icon="refresh"
               onPress={() => {
@@ -239,7 +245,10 @@ function AppRequest({ route, navigation }) {
               }}
             />
           )}
-          <Appbar.Action icon="check-all" onPress={onChecked} />
+          {AppRenderIf(
+            user.type == "admin" || user.type == "employee",
+            <Appbar.Action icon="check-all" onPress={onChecked} />
+          )}
         </Appbar>
         <View style={{ paddingBottom: "5%" }}>
           <View

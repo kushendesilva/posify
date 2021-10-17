@@ -1,7 +1,12 @@
 import React from "react";
-import { StyleSheet, BackHandler } from "react-native";
-import ExtendedButton from "../components/ExtendedButton";
-import ExtendedCard from "../components/ExtendedCard";
+import {
+  StyleSheet,
+  BackHandler,
+  View,
+  FlatList,
+  ScrollView,
+} from "react-native";
+
 import {
   Icon,
   Button,
@@ -9,18 +14,25 @@ import {
   BottomNavigation,
   BottomNavigationTab,
   Layout,
+  Card,
+  useTheme,
 } from "@ui-kitten/components";
 import { Provider, Portal, Dialog } from "react-native-paper";
+
+import ExtendedButton from "../components/ExtendedButton";
+import ExtendedCard from "../components/ExtendedCard";
+import Screen from "../components/Screen";
+
 import AppRenderIf from "../configs/AppRenderIf";
-import AppCarousel from "./AppCarousel";
 import { firebase } from "../configs/Database";
 import { ThemeContext } from "../configs/theme";
-import { ScrollView } from "react-native";
-import Screen from "../components/Screen";
-import { View } from "react-native";
+
+import AppCarousel from "./AppCarousel";
 
 function AppHome({ navigation, route }) {
   const { user } = route.params;
+
+  const theme = useTheme();
 
   const themeContext = React.useContext(ThemeContext);
 
@@ -49,6 +61,27 @@ function AppHome({ navigation, route }) {
 
   const hideDialog = () => setVisible(false);
 
+  const requestRef = firebase.firestore().collection("supplies");
+
+  const [requests, setRequests] = React.useState([]);
+
+  React.useEffect(() => {
+    requestRef.onSnapshot(
+      (querySnapshot) => {
+        const newRequest = [];
+        querySnapshot.forEach((doc) => {
+          const request = doc.data();
+          request.id = doc.id;
+          newRequest.push(request);
+        });
+        setRequests(newRequest);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }, []);
+
   return (
     <Screen>
       <Layout>
@@ -74,7 +107,7 @@ function AppHome({ navigation, route }) {
         )}
       </Layout>
       {AppRenderIf(
-        selectedIndex == 0 && user.type == "admin",
+        selectedIndex == 0 && user.type != "supplier",
         <ScrollView
           contentContainerStyle={{
             justifyContent: "center",
@@ -82,6 +115,7 @@ function AppHome({ navigation, route }) {
           }}
         >
           <AppCarousel />
+
           <View style={{ flexDirection: "row" }}>
             <ExtendedCard
               icon="file-text-outline"
@@ -102,31 +136,305 @@ function AppHome({ navigation, route }) {
               }
             />
           </View>
-          <View style={{ flexDirection: "row" }}>
-            <ExtendedCard
-              icon="cube-outline"
-              title="Stock"
-              onPress={() => navigation.navigate("StockScreen")}
-            />
-            <ExtendedCard
-              icon="car-outline"
-              title="Supplies"
-              onPress={() => navigation.navigate("AppSelectSupply")}
-            />
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <ExtendedCard
-              icon="shopping-cart-outline"
-              title="Stores"
-              onPress={() => navigation.navigate("ShopScreen")}
-            />
-            <ExtendedCard
-              icon="people-outline"
-              title="Employees"
-              onPress={() => navigation.navigate("EmployeeScreen")}
-            />
-          </View>
+          {AppRenderIf(
+            user.type == "admin",
+            <>
+              <View style={{ flexDirection: "row" }}>
+                <ExtendedCard
+                  icon="cube-outline"
+                  title="Stock"
+                  onPress={() => navigation.navigate("StockScreen")}
+                />
+                <ExtendedCard
+                  icon="car-outline"
+                  title="Supplies"
+                  onPress={(values) => {
+                    navigation.navigate("AppSelectSupply", {
+                      user: user,
+                    });
+                  }}
+                />
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <ExtendedCard
+                  icon="shopping-cart-outline"
+                  title="Stores"
+                  onPress={() => navigation.navigate("ShopScreen")}
+                />
+                <ExtendedCard
+                  icon="people-outline"
+                  title="Employees"
+                  onPress={() => navigation.navigate("EmployeeScreen")}
+                />
+              </View>
+            </>
+          )}
         </ScrollView>
+      )}
+      {AppRenderIf(
+        selectedIndex == 0 && user.type == "supplier",
+        <>
+          <View style={styles.screen}>
+            <FlatList
+              data={requests.sort((a, b) =>
+                a.requestID.localeCompare(b.requestID)
+              )}
+              keyExtractor={(request) => request.id}
+              renderItem={({ item }) => (
+                <>
+                  {AppRenderIf(
+                    null != item.supplier &&
+                      item.delivered != true &&
+                      item.unavailable != true,
+                    <Card
+                      status="primary"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppSupply", {
+                          request: {
+                            docID: item.requestID,
+                            requiredDate: item.requiredDate,
+                            supplier: item.supplier,
+                            received: item.received,
+                            delivered: item.delivered,
+                            unavailable: item.unavailable,
+                          },
+                          user: { type: "admin" },
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="archive-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.requiredDate}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>Supply Request</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.requestID}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.supplier &&
+                      item.delivered == true &&
+                      item.received != true,
+                    <Card
+                      status="success"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppSupply", {
+                          request: {
+                            docID: item.requestID,
+                            requiredDate: item.requiredDate,
+                            supplier: item.supplier,
+                            received: item.received,
+                            delivered: item.delivered,
+                            unavailable: item.unavailable,
+                            type: user.type,
+                          },
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="archive-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.requiredDate}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>Supply Request</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.requestID}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.supplier && item.received == true,
+                    <Card
+                      status="basic"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppSupply", {
+                          request: {
+                            docID: item.requestID,
+                            requiredDate: item.requiredDate,
+                            supplier: item.supplier,
+                            received: item.received,
+                            delivered: item.delivered,
+                            unavailable: item.unavailable,
+                          },
+                          user: { type: "admin" },
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="archive-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.requiredDate}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>Supply Request</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.requestID}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.supplier && item.unavailable == true,
+                    <Card
+                      status="danger"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppSupply", {
+                          request: {
+                            docID: item.requestID,
+                            requiredDate: item.requiredDate,
+                            supplier: item.supplier,
+                            received: item.received,
+                            delivered: item.delivered,
+                            unavailable: item.unavailable,
+                          },
+                          user: { type: "admin" },
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="archive-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.requiredDate}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>Supply Request</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.requestID}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                </>
+              )}
+            />
+          </View>
+        </>
       )}
 
       {AppRenderIf(
@@ -142,16 +450,22 @@ function AppHome({ navigation, route }) {
                 })
               }
             />
-            <ExtendedButton
-              title="Reports"
-              tabIcon={ReportsIcon}
-              onPress={() => navigation.navigate("ReportScreen")}
-            />
-            <ExtendedButton
-              title="Banners"
-              tabIcon={BannersIcon}
-              onPress={() => navigation.navigate("AppBanners")}
-            />
+            {AppRenderIf(
+              user.type == "admin",
+              <>
+                <ExtendedButton
+                  title="Reports"
+                  tabIcon={ReportsIcon}
+                  onPress={() => navigation.navigate("ReportScreen")}
+                />
+
+                <ExtendedButton
+                  title="Banners"
+                  tabIcon={BannersIcon}
+                  onPress={() => navigation.navigate("AppBanners")}
+                />
+              </>
+            )}
 
             {AppRenderIf(
               themeContext.theme == "light",

@@ -100,6 +100,7 @@ function AppQuickLogin({ navigation }) {
               .signOut()
               .then(
                 () => {
+                  toggleMenu();
                   showDialog();
                 },
                 function (error) {

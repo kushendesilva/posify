@@ -75,325 +75,701 @@ function AppRequests({ navigation, route }) {
     );
   }, []);
 
+  const [storeRequests, setStoreRequests] = React.useState([]);
+  const storeRequestRef = firebase
+    .firestore()
+    .collection("requests")
+    .where("shopName", "==", user.fullName);
+
+  React.useEffect(() => {
+    storeRequestRef.onSnapshot(
+      (querySnapshot) => {
+        const newRequest = [];
+        querySnapshot.forEach((doc) => {
+          const request = doc.data();
+          request.id = doc.id;
+          newRequest.push(request);
+        });
+        setStoreRequests(newRequest);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }, []);
+
   return (
     <Provider>
       <Screen>
         <View style={styles.screen}>
-          <FlatList
-            data={requests.sort((a, b) =>
-              a.requestID.localeCompare(b.requestID)
-            )}
-            keyExtractor={(invoice) => invoice.id}
-            renderItem={({ item }) => (
-              <>
-                {AppRenderIf(
-                  null != item.shopName &&
-                    item.preparing != true &&
-                    item.unavailable != true,
-                  <Card
-                    status="primary"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
+          {AppRenderIf(
+            user.type == "admin" || user.type == "employee",
+            <FlatList
+              data={requests.sort((a, b) =>
+                a.requestID.localeCompare(b.requestID)
+              )}
+              keyExtractor={(invoice) => invoice.id}
+              renderItem={({ item }) => (
+                <>
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.preparing != true &&
+                      item.unavailable != true,
+                    <Card
+                      status="primary"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                          },
+                          user: user,
+                        });
                       }}
                     >
                       <View
                         style={{
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
                         <View
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName &&
-                    item.preparing == true &&
-                    item.prepared != true,
-                  <Card
-                    status="warning"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                          delivered: item.delivered,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.preparing == true &&
+                      item.prepared != true,
+                    <Card
+                      status="warning"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
                       }}
                     >
                       <View
                         style={{
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
                         <View
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName &&
-                    item.prepared == true &&
-                    item.delivered != true,
-                  <Card
-                    status="success"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                          delivered: item.delivered,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.prepared == true &&
+                      item.delivered != true,
+                    <Card
+                      status="success"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
                       }}
                     >
                       <View
                         style={{
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
                         <View
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName && item.unavailable == true,
-                  <Card
-                    status="danger"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                          delivered: item.delivered,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName && item.unavailable == true,
+                    <Card
+                      status="danger"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
                       }}
                     >
                       <View
                         style={{
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
                         <View
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Card>
-                )}
-                {AppRenderIf(
-                  null != item.shopName && item.delivered == true,
-                  <Card
-                    status="basic"
-                    style={{ margin: "2%" }}
-                    onPress={(values) => {
-                      navigation.navigate("AppRequest", {
-                        request: {
-                          docID: item.requestID,
-                          payMethod: item.payMethod,
-                          shopName: item.shopName,
-                          date: item.date,
-                          preparing: item.preparing,
-                          prepared: item.prepared,
-                          unavailable: item.unavailable,
-                          delivered: item.delivered,
-                        },
-                        user: { type: "admin" },
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName && item.delivered == true,
+                    <Card
+                      status="basic"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
                       }}
                     >
                       <View
                         style={{
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        <Icon
-                          style={{ width: 30, height: 30, margin: "2%" }}
-                          fill={theme["color-primary-default"]}
-                          name="repeat-outline"
-                        />
-                        <Text
-                          style={{ fontSize: 12, textTransform: "capitalize" }}
-                        >
-                          {item.payMethod}
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.title}>{item.requestID}</Text>
                         <View
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
-                          <Text category="label">{item.date}</Text>
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Card>
-                )}
-              </>
-            )}
-          />
+                    </Card>
+                  )}
+                </>
+              )}
+            />
+          )}
+
+          {AppRenderIf(
+            user.type == "store",
+            <FlatList
+              data={storeRequests.sort((a, b) =>
+                a.requestID.localeCompare(b.requestID)
+              )}
+              keyExtractor={(invoice) => invoice.id}
+              renderItem={({ item }) => (
+                <>
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.preparing != true &&
+                      item.unavailable != true,
+                    <Card
+                      status="primary"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                          },
+                          user: user,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.preparing == true &&
+                      item.prepared != true,
+                    <Card
+                      status="warning"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName &&
+                      item.prepared == true &&
+                      item.delivered != true,
+                    <Card
+                      status="success"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName && item.unavailable == true,
+                    <Card
+                      status="danger"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                  {AppRenderIf(
+                    null != item.shopName && item.delivered == true,
+                    <Card
+                      status="basic"
+                      style={{ margin: "2%" }}
+                      onPress={(values) => {
+                        navigation.navigate("AppRequest", {
+                          request: {
+                            docID: item.requestID,
+                            payMethod: item.payMethod,
+                            shopName: item.shopName,
+                            date: item.date,
+                            preparing: item.preparing,
+                            prepared: item.prepared,
+                            unavailable: item.unavailable,
+                            delivered: item.delivered,
+                          },
+                          user: user,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icon
+                            style={{ width: 30, height: 30, margin: "2%" }}
+                            fill={theme["color-primary-default"]}
+                            name="repeat-outline"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.payMethod}
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.title}>{item.requestID}</Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text category="label">{item.date}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Card>
+                  )}
+                </>
+              )}
+            />
+          )}
+
           <Portal>
             <Dialog visible={reqVisible} onDismiss={hideReqDialog}>
               <Dialog.Content>
@@ -449,13 +825,16 @@ function AppRequests({ navigation, route }) {
             </Dialog>
           </Portal>
         </View>
-        <Button
-          size="large"
-          style={styles.fab}
-          status="primary"
-          accessoryLeft={NewIcon}
-          onPress={showReqDialog}
-        />
+        {AppRenderIf(
+          user.type == "store",
+          <Button
+            size="large"
+            style={styles.fab}
+            status="primary"
+            accessoryLeft={NewIcon}
+            onPress={showReqDialog}
+          />
+        )}
       </Screen>
     </Provider>
   );
