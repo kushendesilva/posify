@@ -297,16 +297,7 @@ function AppRequest({ route, navigation }) {
               )}
             />
           </DataTable>
-          <Title
-            style={{
-              fontWeight: "bold",
-              fontSize: 16,
-              alignSelf: "flex-end",
-              marginEnd: "3.5%",
-            }}
-          >
-            Total : Rs.{request.total}
-          </Title>
+
           <Divider />
         </View>
         <Portal>

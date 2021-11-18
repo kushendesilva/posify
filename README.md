@@ -1,9 +1,30 @@
-# Posify
+## Posify <img src="/assets/images/logo.png" alt="Preview" width="25" />
 
-A Hybrid Mobile Application, developed using React Native :innocent:
+Posify is a React Native Application I developed for My University Project :computer:
+
+## Screenshots
+
+<img src="/assets/images/1.png" alt="Preview" width="200" />
+<img src="/assets/images/2.png" alt="Preview" width="200" />
+<img src="/assets/images/3.png" alt="Preview" width="200" />
+<img src="/assets/images/4.png" alt="Preview" width="200" />
+<img src="/assets/images/5.png" alt="Preview" width="200" />
+<img src="/assets/images/6.png" alt="Preview" width="200" />
+<img src="/assets/images/7.png" alt="Preview" width="200" />
+<img src="/assets/images/8.png" alt="Preview" width="200" />
+<img src="/assets/images/9.png" alt="Preview" width="200" />
+<img src="/assets/images/10.png" alt="Preview" width="200" />
+<img src="/assets/images/11.png" alt="Preview" width="200" />
+<img src="/assets/images/12.png" alt="Preview" width="200" />
+<img src="/assets/images/13.png" alt="Preview" width="200" />
+<img src="/assets/images/14.png" alt="Preview" width="200" />
+<img src="/assets/images/15.png" alt="Preview" width="200" />
+<img src="/assets/images/16.png" alt="Preview" width="200" />
+
+## Downloads
+
+**Android:** [APK](https://github.com/kushenthimira/posify/raw/main/downloads/Android.apk)
+
+## Contact Me
 
 **Author:** [Kushen De Silva (@kushenthimira)](https://github.com/kushenthimira) | [Facebook](https://facebook.com/ciphernpc) | [LinkedIn](https://linkedin.com/in/kushenthimira) | [WhatsApp](https://wa.me/94717827878) |
-
-<a href="https://expo.dev/@kushenthimira/Posify">
-<img src="/assets/icon.png" alt="Project Logo" width="200" />
-</a>
