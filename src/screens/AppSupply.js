@@ -149,7 +149,9 @@ function AppSupply({ route, navigation }) {
           )}
 
           {AppRenderIf(
-            deliveredChecked == true && receivedChecked != true,
+            deliveredChecked == true &&
+              receivedChecked != true &&
+              request.type == "admin",
             <View
               style={{
                 borderRadius: 4,
@@ -212,7 +214,7 @@ function AppSupply({ route, navigation }) {
             />
           )}
           {AppRenderIf(
-            request.type == "supplier",
+            request.type == "supplier" || request.type == "admin",
             <Appbar.Action icon="check-all" onPress={onChecked} />
           )}
         </Appbar>
@@ -253,16 +255,7 @@ function AppSupply({ route, navigation }) {
               )}
             />
           </DataTable>
-          <Title
-            style={{
-              fontWeight: "bold",
-              fontSize: 16,
-              alignSelf: "flex-end",
-              marginEnd: "3.5%",
-            }}
-          >
-            Total : Rs.{request.total}
-          </Title>
+
           <Divider />
         </View>
         <Portal>

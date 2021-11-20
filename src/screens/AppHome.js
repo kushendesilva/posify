@@ -198,8 +198,8 @@ function AppHome({ navigation, route }) {
                             received: item.received,
                             delivered: item.delivered,
                             unavailable: item.unavailable,
+                            type: user.type,
                           },
-                          user: { type: "admin" },
                         });
                       }}
                     >
@@ -322,8 +322,8 @@ function AppHome({ navigation, route }) {
                             received: item.received,
                             delivered: item.delivered,
                             unavailable: item.unavailable,
+                            type: user.type,
                           },
-                          user: { type: "admin" },
                         });
                       }}
                     >
@@ -383,8 +383,8 @@ function AppHome({ navigation, route }) {
                             received: item.received,
                             delivered: item.delivered,
                             unavailable: item.unavailable,
+                            type: user.type,
                           },
-                          user: { type: "admin" },
                         });
                       }}
                     >
