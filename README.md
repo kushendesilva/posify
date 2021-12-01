@@ -1,6 +1,6 @@
-<a href="https://posify-web.web.app/">## Posify <img src="/assets/images/logo.png" alt="Website" width="25" /></a>
+## Posify <a href="https://posify-web.web.app/"><img src="/assets/images/logo.png" alt="Website" width="25" /></a>
 
-Posify is a React Native Application I developed for My University Project :computer:
+<a href="https://posify-web.web.app/">Posify</a> is a React Native Application I developed for My University Project :computer:
 
 ## Downloads
 
