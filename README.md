@@ -2,6 +2,11 @@
 
 Posify is a React Native Application I developed for My University Project :computer:
 
+## Important
+
+**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v4.0/Android.apk)
+**Other:** [Web](https://posify-web.web.app/)
+
 ## Screenshots
 
 <img src="/assets/images/1.png" alt="Preview" width="200" />
@@ -20,10 +25,6 @@ Posify is a React Native Application I developed for My University Project :comp
 <img src="/assets/images/14.png" alt="Preview" width="200" />
 <img src="/assets/images/15.png" alt="Preview" width="200" />
 <img src="/assets/images/16.png" alt="Preview" width="200" />
-
-## Downloads
-
-**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v4.0/Android.apk)
 
 ## Contact Me
 
