@@ -1,6 +1,10 @@
-## Posify <img src="/assets/images/logo.png" alt="Preview" width="25" />
+## Posify <a href="https://posify-web.web.app/"><img src="/assets/images/logo.png" alt="Website" width="25" /></a>
 
-Posify ([APK](https://github.com/kushenthimira/posify/releases/download/v4.0/Android.apk) / [Web](https://posify-web.web.app/)) is a React Native Application I developed for My University Project :computer:
+Posify is a React Native Application I developed for My University Project :computer:
+
+## Downloads
+
+**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v4.0/Android.apk)
 
 ## Screenshots
 
