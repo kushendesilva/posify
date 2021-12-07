@@ -1,8 +1,7 @@
 import React from "react";
-import { View, FlatList, StyleSheet, BackHandler } from "react-native";
-import ExtendedButton from "../components/ExtendedButton";
+import { View, FlatList, StyleSheet } from "react-native";
 import Screen from "../components/Screen";
-import { Provider, Portal, Dialog, ToggleButton } from "react-native-paper";
+import { Provider, Portal, Dialog } from "react-native-paper";
 import {
   Icon,
   Card,

@@ -182,9 +182,9 @@ function AppReport(props) {
           onPress={(values) => {
             props.navigation.navigate("ReportExport", {
               selectedDate: {
-                date: date,
-                month: month,
-                year: year,
+                date: parseInt(date, 10),
+                month: parseInt(month, 10),
+                year: parseInt(year, 10),
               },
             });
           }}

@@ -388,7 +388,7 @@ function AppInvoice({ route, navigation }) {
                 setShowComponents(true);
               }}
             >
-              මුද්‍රණය කරන්න
+              Print
             </Button>
           )}
         </View>
