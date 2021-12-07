@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
-import { View } from "react-native";
-import { Input, Button, Icon, Text, Card } from "@ui-kitten/components";
+import { View, StyleSheet } from "react-native";
+import {
+  Input,
+  Button,
+  Icon,
+  Text,
+  Card,
+  Layout,
+  Divider,
+} from "@ui-kitten/components";
 import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
 
@@ -54,23 +62,16 @@ function AppReport(props) {
 
   return (
     <Screen>
-      <Card
-        status="primary"
-        style={{
-          marginTop: "5%",
-          marginHorizontal: "10%",
-        }}
-      >
+      <Card style={styles.card} disabled>
         <Text
           style={{
             textAlign: "center",
             fontSize: 16,
           }}
         >
-          Date:{" "}
+          DATE:{" "}
           <Text
             style={{
-              textAlign: "center",
               fontWeight: "bold",
               fontSize: 16,
             }}
@@ -78,122 +79,171 @@ function AppReport(props) {
             {getCurrentDate()}
           </Text>
         </Text>
+        <Divider style={{ marginVertical: "0.5%" }} />
+        <Layout
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              marginHorizontal: "2%",
+            }}
+          >
+            TOTAL INCOME:{" "}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            Rs. {totalPrice}.00
+          </Text>
+        </Layout>
+        <Layout
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              marginHorizontal: "2%",
+            }}
+          >
+            TOTAL EXPENSES:{" "}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            Rs. {totalStock}.00
+          </Text>
+        </Layout>
+        <Divider style={{ marginVertical: "0.5%" }} />
+        <Layout
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              marginHorizontal: "2%",
+            }}
+          >
+            NET PROFIT / LOSS:{" "}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            Rs. {Math.abs(totalPrice - totalStock)}.00
+          </Text>
+        </Layout>
+        <Layout
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              marginHorizontal: "2%",
+            }}
+          >
+            PROFIT / LOSS PERCENTAGE(%):{" "}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            {Math.abs(((totalPrice - totalStock) / totalStock) * 100)} %
+          </Text>
+        </Layout>
+        <Divider style={{ marginVertical: "0.5%" }} />
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "center",
             alignItems: "center",
+            justifyContent: "center",
+            marginTop: "2%",
           }}
         >
-          <Text
+          <Input
             style={{
-              textAlign: "center",
-              fontSize: 16,
               marginHorizontal: "2%",
+              marginBottom: "1%",
+              width: "30%",
+            }}
+            size="large"
+            status="primary"
+            value={date}
+            label="Day"
+            placeholder="Type the Day"
+            accessoryLeft={CalIcon}
+            onChangeText={(text) => setDate(text)}
+            keyboardType="number-pad"
+          />
+          <Input
+            style={{
+              marginHorizontal: "2%",
+              marginBottom: "1%",
+              width: "30%",
+            }}
+            size="large"
+            status="primary"
+            value={month}
+            label="Month"
+            placeholder="Type the Month"
+            accessoryLeft={CalIcon}
+            onChangeText={(text) => setMonth(text)}
+            keyboardType="number-pad"
+          />
+          <Input
+            style={{
+              marginHorizontal: "2%",
+              marginBottom: "2%",
+              width: "30%",
+            }}
+            size="large"
+            status="primary"
+            value={year}
+            label="Year"
+            placeholder="Type the Year"
+            accessoryLeft={CalIcon}
+            onChangeText={(text) => setYear(text)}
+            keyboardType="number-pad"
+          />
+          <Button
+            style={{ padding: "4%", width: "30%" }}
+            accessoryRight={SaveIcon}
+            size="giant"
+            onPress={(values) => {
+              props.navigation.navigate("ReportExport", {
+                selectedDate: {
+                  date: parseInt(date, 10),
+                  month: parseInt(month, 10),
+                  year: parseInt(year, 10),
+                },
+              });
             }}
           >
-            Incomes:{" "}
-            <Text
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: 16,
-              }}
-            >
-              Rs.{totalPrice}
-            </Text>
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              marginHorizontal: "2%",
-            }}
-          >
-            Expenses:{" "}
-            <Text
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: 16,
-              }}
-            >
-              Rs.{totalStock}
-            </Text>
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              marginHorizontal: "2%",
-            }}
-          >
-            Profit:{" "}
-            <Text
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: 16,
-              }}
-            >
-              Rs.{totalPrice - totalStock}
-            </Text>
-          </Text>
+            Submit
+          </Button>
         </View>
       </Card>
-      <View style={{ marginHorizontal: "10%", marginTop: "5%" }}>
-        <Input
-          style={{ marginHorizontal: "2%", marginBottom: "1%" }}
-          size="large"
-          status="primary"
-          value={date}
-          label="Day"
-          placeholder="Type the Day"
-          accessoryLeft={CalIcon}
-          onChangeText={(text) => setDate(text)}
-          keyboardType="number-pad"
-        />
-        <Input
-          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
-          size="large"
-          status="primary"
-          value={month}
-          label="Month"
-          placeholder="Type the Month"
-          accessoryLeft={CalIcon}
-          onChangeText={(text) => setMonth(text)}
-          keyboardType="number-pad"
-        />
-        <Input
-          style={{ marginHorizontal: "2%", marginVertical: "1%" }}
-          size="large"
-          status="primary"
-          value={year}
-          label="Year"
-          placeholder="Type the Year"
-          accessoryLeft={CalIcon}
-          onChangeText={(text) => setYear(text)}
-          keyboardType="number-pad"
-        />
-        <Button
-          style={{ padding: "5%", marginTop: "5%" }}
-          accessoryRight={SaveIcon}
-          size="giant"
-          onPress={(values) => {
-            props.navigation.navigate("ReportExport", {
-              selectedDate: {
-                date: date,
-                month: month,
-                year: year,
-              },
-            });
-          }}
-        >
-          Submit
-        </Button>
-      </View>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  topContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  card: {
+    flex: 1,
+  },
+});
 
 export default AppReport;

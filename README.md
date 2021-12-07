@@ -4,7 +4,7 @@
 
 ## Downloads
 
-**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v4.0/Android.apk)
+**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v5.0/Android.apk)
 
 ## Screenshots
 
@@ -21,6 +21,7 @@
 <img src="/assets/images/11.png" alt="Preview" width="200" />
 <img src="/assets/images/12.png" alt="Preview" width="200" />
 <img src="/assets/images/13.png" alt="Preview" width="200" />
+<img src="/assets/images/17.jpg" alt="Preview" width="200" />
 <img src="/assets/images/14.png" alt="Preview" width="200" />
 <img src="/assets/images/15.png" alt="Preview" width="200" />
 <img src="/assets/images/16.png" alt="Preview" width="200" />

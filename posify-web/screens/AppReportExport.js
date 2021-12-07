@@ -1,8 +1,9 @@
 import React from "react";
-import { View } from "react-native";
-import { Text, Card } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
+import { Card, Layout, Text, Divider } from "@ui-kitten/components";
 import Screen from "../components/Screen";
 import { firebase } from "../configs/Database";
+import AppColors from "../configs/AppColors";
 
 function AppReportExport({ navigation, route }) {
   const { selectedDate } = route.params;
@@ -44,98 +45,158 @@ function AppReportExport({ navigation, route }) {
       }
     );
   }, []);
+
+  const data = [
+    {
+      name: "INCOME",
+      population: parseInt(totalPrice),
+      color: AppColors.green,
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 13,
+    },
+    {
+      name: "EXPENSES",
+      population: parseInt(totalStock),
+      color: AppColors.red,
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 13,
+    },
+  ];
+
+  const Header = (props) => (
+    <View {...props}>
+      <Text category="h6" style={{ fontWeight: "bold" }}>
+        Daily Report
+      </Text>
+      <Text category="s1">Income & Expense Report</Text>
+    </View>
+  );
+
   return (
     <Screen>
-      <Card
-        status="primary"
-        style={{
-          marginVertical: "2%",
-          marginHorizontal: "15%",
-        }}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 16,
-          }}
-        >
-          Date:{" "}
-          <Text
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: 16,
-            }}
-          >
-            {getDate()}
-          </Text>
-        </Text>
-        <View
-          style={{
-            marginTop: "5%",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <React.Fragment>
+        <Card style={styles.card} header={Header}>
           <Text
             style={{
               textAlign: "center",
               fontSize: 16,
-              marginHorizontal: "2%",
             }}
           >
-            Incomes:{" "}
+            DATE:{" "}
             <Text
               style={{
-                textAlign: "center",
                 fontWeight: "bold",
                 fontSize: 16,
               }}
             >
-              Rs.{totalPrice}
+              {getDate()}
             </Text>
           </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              marginHorizontal: "2%",
-            }}
+          <Divider style={{ marginVertical: "0.5%" }} />
+          <Layout
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            Expenses:{" "}
             <Text
               style={{
-                textAlign: "center",
+                fontSize: 16,
+                marginHorizontal: "2%",
+              }}
+            >
+              TOTAL INCOME:{" "}
+            </Text>
+            <Text
+              style={{
                 fontWeight: "bold",
                 fontSize: 16,
               }}
             >
-              Rs.{totalStock}
+              Rs. {totalPrice}.00
             </Text>
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              marginHorizontal: "2%",
-            }}
+          </Layout>
+          <Layout
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            Profit:{" "}
             <Text
               style={{
-                textAlign: "center",
+                fontSize: 16,
+                marginHorizontal: "2%",
+              }}
+            >
+              TOTAL EXPENSES:{" "}
+            </Text>
+            <Text
+              style={{
                 fontWeight: "bold",
                 fontSize: 16,
               }}
             >
-              Rs.{totalPrice - totalStock}
+              Rs. {totalStock}.00
             </Text>
-          </Text>
-        </View>
-      </Card>
+          </Layout>
+          <Divider style={{ marginVertical: "0.5%" }} />
+          <Layout
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                marginHorizontal: "2%",
+              }}
+            >
+              NET PROFIT / LOSS:{" "}
+            </Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              Rs. {Math.abs(totalPrice - totalStock)}.00
+            </Text>
+          </Layout>
+          <Layout
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                marginHorizontal: "2%",
+              }}
+            >
+              PROFIT / LOSS PERCENTAGE(%):{" "}
+            </Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              {Math.abs(((totalPrice - totalStock) / totalStock) * 100)} %
+            </Text>
+          </Layout>
+          <Divider style={{ marginVertical: "0.5%" }} />
+        </Card>
+      </React.Fragment>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  topContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  card: {
+    flex: 1,
+    margin: 2,
+  },
+  footerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  footerControl: {
+    marginHorizontal: 2,
+  },
+});
 
 export default AppReportExport;
