@@ -22,12 +22,11 @@ import {
 } from "react-native";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
-import Screen from "../components/Screen";
 
 function AppQuickLogin({ navigation }) {
   const { height } = Dimensions.get("screen");
   const height_logo = height * 0.13;
-
+  const { currentUser } = firebase.auth();
   const [loading, setLoading] = React.useState(true);
   const [user, setUser] = React.useState(null);
 
@@ -141,7 +140,10 @@ function AppQuickLogin({ navigation }) {
           },
         ]}
       >
-        <Text style={styles.text}>Welcome to Posify!</Text>
+        <Text style={styles.text}>
+          {currentUser.email.charAt(0).toUpperCase() +
+            currentUser.email.slice(1)}
+        </Text>
 
         <View style={styles.innerFooter}>
           <ScrollView>
@@ -163,7 +165,7 @@ function AppQuickLogin({ navigation }) {
                 <Layout
                   style={{
                     flexDirection: "row",
-                    justifyContent: "flex-start",
+                    justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
                 >
@@ -185,7 +187,6 @@ function AppQuickLogin({ navigation }) {
                     width: 30,
                     height: 30,
                     margin: "5%",
-                    alignSelf: "flex-end",
                   }}
                   fill={AppColors.primary}
                   name="chevron-right-outline"

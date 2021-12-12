@@ -4,7 +4,7 @@
 
 ## Downloads
 
-**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v5.0/Android.apk)
+**Android:** [APK](https://github.com/kushenthimira/posify/releases/download/v5.0/Posify.apk)
 
 ## Screenshots
 

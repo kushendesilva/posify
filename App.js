@@ -1,8 +1,8 @@
 import React from "react";
-
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import { ActivityIndicator, Title } from "react-native-paper";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -82,7 +82,18 @@ export default () => {
   }, []);
 
   if (loading) {
-    return <></>;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          color={AppColors.primary}
+        />
+        <Title style={{ color: AppColors.primary, marginTop: "1%" }}>
+          Loading
+        </Title>
+      </View>
+    );
   }
 
   return (
